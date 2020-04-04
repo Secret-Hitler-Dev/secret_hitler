@@ -11,11 +11,11 @@ send PR to this repo  <br>
 
 ### Setup
 Navigate to https://cloud.mongodb.com/v2/5e87d324b78f040b48d030bb#clusters and login<br>
-Go to Database Access > Add new database user<br>
+Go to Database Access -> Add new database user<br>
 Remember credentials for the new user<br>
-Navigate to server\<br>
-copy .env.template > .env<br>
-Replace <user> and <pass> with database user credentials<br>
+Navigate to services <br>
+copy .env.template -> .env <br>
+Replace <user> and <pass> with database user credentials <br>
 save .env file
 
 ### Server
