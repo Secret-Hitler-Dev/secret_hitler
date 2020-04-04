@@ -5,6 +5,7 @@ var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
+var Player = require('./models/Player');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded( {extended: true} ));
