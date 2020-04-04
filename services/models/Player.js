@@ -55,9 +55,9 @@ var playerSchema = new Schema({
     isAlive: {
         type: Boolean,
         default: true
-    },
-    { timestamps: true }
-});
+    }
+},
+{ timestamps: true });
 
 playerSchema.index({ playerId: 1 }, {unique: true});
 
