@@ -9,16 +9,35 @@ pull from this repo to your local  <br>
 push to your fork  <br>
 send PR to this repo  <br>
 
-### Mongo
-npm install  <br>
-npm mongo  <br>
-npm mongod  <br>
-in a seperate terminal, run mongod  <br>
-in the previous terminal, run node index.js  <br>
+### Setup
+Navigate to https://cloud.mongodb.com/v2/5e87d324b78f040b48d030bb#clusters and login<br>
+Go to Database Access > Add new database user<br>
+Remember credentials for the new user<br>
+Navigate to server\<br>
+copy .env.template > .env<br>
+Replace <user> and <pass> with database user credentials<br>
+save .env file
 
-### Client
-npm install  <br>
-node server.js  <br>
+### Server
+cd server<br>
+npm install<br>
+
+### Application
+cd server/application<br>
+npm install<br>
+
+### Development
+cd server<br>
+npm start<br>
+
+cd server/application<br>
+npm start<br>
 
 
-Add your initials to the package.json file
+### production
+cd server<br>
+npm run build<br>
+npm start<br>
+go to localhost:port to view app<br>
+
+Add your initials to the package.json file<br>
