@@ -1,9 +1,17 @@
+require('dotenv').config()
 var mongoose = require('mongoose');
+
+let db = mongoose.connection;
+db.once('open', () => console.log('connected to the database'));
+// checks if connection with the database is successful
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+
+const Schema = mongoose.Schema;
 
 /**
  * Player Schema
  */
-var playerSchema = new mongoose.Schema({
+var playerSchema = new Schema({
     playerId: {
         type: Number,
         required: true,
@@ -47,7 +55,8 @@ var playerSchema = new mongoose.Schema({
     isAlive: {
         type: Boolean,
         default: true
-    }
+    },
+    { timestamps: true }
 });
 
 playerSchema.index({ playerId: 1 }, {unique: true});
