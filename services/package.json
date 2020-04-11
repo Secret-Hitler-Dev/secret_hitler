@@ -33,6 +33,7 @@
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.1.2",
     "react-scripts": "^3.4.1",
+<<<<<<< HEAD
     "request": "^2.88.2",
     "request-promise": "^4.2.5",
     "shortid": "^2.2.15",
@@ -40,6 +41,10 @@
     "socket.io-client": "^2.3.0",
     "styled-components": "^5.0.1",
     "uniqid": "^5.2.0"
+=======
+    "shortid": "^2.2.15",
+    "styled-components": "^5.0.1"
+>>>>>>>  added create and join apis. this resolves #17
   },
   "devDependencies": {
     "@babel/core": "^7.8.7",
