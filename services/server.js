@@ -51,6 +51,7 @@ var port = 8080;
 // APIs go here
 const player = require('./apis/player.js')(app);
 const user = require('./apis/users.js')(app);
+const game = require('./apis/game.js')(app);
 const withAuth = require('./apis/middleware');
 
 // Common Routes

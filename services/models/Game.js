@@ -12,30 +12,50 @@ const Schema = mongoose.Schema;
  * Game Schema
  */
 var gameSchema = new Schema({
+    // a small readable code that non-hosting players an use to join the game.
     code: {
         type: String,
         unique: true,
         required: true
     },
-    players:  [Player],
+    players:  [{
+        type: Schema.Types.ObjectId,
+        ref: 'Player'}],
     numPlayers: {
         type: Number,
         min: 1,
-        max: 10
+        max: 10,
+        default: 1
     },
-    liberalPoliciesEnacted: Number,
-    fascistPoliciesEnacted: Number,
+    liberalPoliciesEnacted: {
+        type: Number,
+        default: 0
+    },
+    fascistPoliciesEnacted: {
+        type: Number,
+        default: 0
+    },
     electionFailureCount: {
         type: Number,
         min: 0,
-        max: 3
+        max: 3,
+        default: 0
     },
-    president: Player,
-    chancellor: Player,
-    currentPlayer: Player,
+    president: {
+        type: Schema.Types.ObjectId,
+        ref: 'Player'
+    },
+    chancellor: {
+        type: Schema.Types.ObjectId,
+        ref: 'Player'
+    },
+    currentPlayer: {
+        type: Schema.Types.ObjectId,
+        ref: 'Player'
+    },
     presidentPower: {
         type: String,
-        enum: ["None, Investigate", "Inspect Cards", "Kill", "Veto"],
+        enum: ["None", "Investigate", "Inspect Cards", "Kill", "Veto"],
         default: "None"
     }
 },

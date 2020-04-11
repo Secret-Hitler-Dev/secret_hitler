@@ -15,8 +15,8 @@ var playerSchema = new Schema({
     userId: {
         type: Schema.Types.ObjectId,
         ref: 'User',
-        required: true,
-        unique: true
+        required: false,
+        unique: false
     },
     playerName: {
         type: String,

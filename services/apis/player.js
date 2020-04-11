@@ -1,7 +1,6 @@
 require('dotenv').config()
 
 var Player = require("../models/Player");
-var uniqid = require('uniqid');
 const bcrypt = require('bcryptjs');
 const Cryptr = require('cryptr');
 const cryptr = new Cryptr(process.env.SECRET);
@@ -29,14 +28,22 @@ module.exports = function(app) {
     });
 
     app.post('/api/createPlayer', function(req, res) {
-        var newPlayer = new Player({
-            userId: req.body.userId,
-            playerName: req.body.playerName,
-            password: bcrypt.hashSync(req.body.password, salt)
-        });
-
+        var newPlayer;
+        if (req.body.userId) {
+            newPlayer = new Player({
+                userId: req.body.userId,
+                playerName: req.body.playerName,
+                password: bcrypt.hashSync(req.body.password, salt)
+            });
+        } else {
+            newPlayer = new Player({
+                playerName: req.body.playerName,
+                password: bcrypt.hashSync(req.body.password, salt)
+            });
+        }
         newPlayer.save(function(err, player) {
             if (err) {
+                console.log("stuff");
                 res.status(400)
                     .json({
                         status: 'error',
@@ -47,7 +54,7 @@ module.exports = function(app) {
                 res.status(202)
                     .json({
                         status: 'success',
-                        data: player.playerId,
+                        data: player._id,
                         message: "Player " + player.playerName + " added"
                     });
             }
@@ -77,7 +84,7 @@ module.exports = function(app) {
     });
 
     app.delete('/api/deletePlayer', function(req, res) {
-        Player.findOneAndDelete({playerId : req.body.playerId}, function(err, player) {
+        Player.findOneAndDelete({_id : req.body._id}, function(err, player) {
             if (err) {
                 res.status(400)
                 .json({
