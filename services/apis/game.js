@@ -49,18 +49,17 @@ module.exports = function(app) {
             } else {
                 game = retrievedGame;
                 // game must have space for the player
-                if (game.numPlayers < 10) {
-                    console.log("hello");
-                    console.log(game.players);
-                    
-                    if (game.players.includes(req.body._id)) {
-                        res.status(202)
-                        .json({
-                            status: 'success',
-                            data: update._id,
-                            message: "Player already in, rejoined game: " + update.code
-                        });
-                    } else {
+                console.log(game.players);
+                console.log(req.body._id);
+                if (game.players.includes(req.body._id)) {
+                    res.status(202)
+                    .json({
+                        status: 'success',
+                        data: game.code,
+                        message: "Player already in, rejoined game: " + game.code
+                    });
+                } else {
+                    if (game.numPlayers < 10) {
                         game.players.push(req.body._id);
                         game.numPlayers += 1;
                         game.save(function(err, update) {
@@ -80,14 +79,14 @@ module.exports = function(app) {
                                 });
                             }                            
                         });
+                    } else {
+                        res.status(400)
+                        .json({
+                            status: 'error',
+                            data: {},
+                            message: "this party is full"
+                        });
                     }
-                } else {
-                    res.status(400)
-                    .json({
-                        status: 'error',
-                        data: {},
-                        message: "this party is full"
-                    });
                 }
             }
         });

@@ -58,38 +58,39 @@ const withAuth = require('./apis/middleware');
 
 // Listeners
 io.on('connection', socket => {
-    socket.on('playerJoin', (player_id, gameCode) => {
+    socket.on('playerJoin', async (player_id, gameCode) => {
         console.log("inside listener")
         let body = {
             _id: player_id,
             gameCode: gameCode
         };
     
-        requests.postRequest('/api/joinGame', body);
-
-        socket.emit('joined', 'player in game');
+        var res;
+        // the listeners for these will be in the client code
+        try{
+            res = await requests.postRequest('/api/joinGame', body);
+            socket.emit('joinResult', res.error == null ? res : res.error);
+        } catch (err) {
+            socket.emit('joinResult', 'error');
+        }
     });
     
 });
 
 //  client testing
-let sockett = require('socket.io-client')('http://127.0.0.1:8080');
-app.post('/testing', (req, res) => {
-    console.log(req.body);
-    let _id = req.body.id;
-    let gameCode = req.body.code;
+// let sockett = require('socket.io-client')('http://127.0.0.1:8080');
+// app.post('/testing', (req, res) => {
+//     console.log(req.body);
+//     let _id = req.body.id;
+//     let gameCode = req.body.code;
 
-    sockett.emit('playerJoin', _id, gameCode);
+//     sockett.emit('playerJoin', _id, gameCode);
     
-    sockett.on('joined', (message) => {
-        res.status(200)
-        .json({
-            status: 'success',
-            data: {},
-            message: message
-        });
-    });
-});
+//     sockett.on('joinResult', (result) => {
+//         console.log(result);
+//         return;
+//     });
+// });
 
 // Common Routes
 

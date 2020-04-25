@@ -1,7 +1,7 @@
 const request = require('request-promise');
 
 module.exports = {
-    postRequest: (endpoint, body, req, res) => {
+    postRequest: async (endpoint, body) => {
         console.log(body);
         let options = {
             method: 'POST',
@@ -10,8 +10,15 @@ module.exports = {
             json: true
         };
         console.log(options);
-        request(options).then(response => response).catch(err => err);
-                
+        var res;
+        await request(options)
+        .then(response => {
+            res = response;
+        })
+        .catch(err => {
+            res = err;
+        });
+        return res;
         
     }
 };
