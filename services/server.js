@@ -6,6 +6,8 @@ var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
+var socket = require('socket.io');
+var requests = require('./server-utils')
 const cookieParser = require('cookie-parser');
 
 // bundler
@@ -21,7 +23,7 @@ mongoose.Promise = global.Promise;
 
 // The main instance of HTTP server
 var server = require('http').Server(app);
-
+var io = socket(server);
 
 app.use(express.static(path.join(__dirname, '/application/public')));
 app.use(webpackDevMiddleware(compiler, {
@@ -53,6 +55,41 @@ const player = require('./apis/player.js')(app);
 const user = require('./apis/users.js')(app);
 const game = require('./apis/game.js')(app);
 const withAuth = require('./apis/middleware');
+
+// Listeners
+io.on('connection', socket => {
+    socket.on('playerJoin', (player_id, gameCode) => {
+        console.log("inside listener")
+        let body = {
+            _id: player_id,
+            gameCode: gameCode
+        };
+    
+        requests.postRequest('/api/joinGame', body);
+
+        socket.emit('joined', 'player in game');
+    });
+    
+});
+
+//  client testing
+let sockett = require('socket.io-client')('http://127.0.0.1:8080');
+app.post('/testing', (req, res) => {
+    console.log(req.body);
+    let _id = req.body.id;
+    let gameCode = req.body.code;
+
+    sockett.emit('playerJoin', _id, gameCode);
+    
+    sockett.on('joined', (message) => {
+        res.status(200)
+        .json({
+            status: 'success',
+            data: {},
+            message: message
+        });
+    });
+});
 
 // Common Routes
 
