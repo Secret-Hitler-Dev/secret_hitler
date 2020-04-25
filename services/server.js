@@ -67,6 +67,14 @@ const withAuth = require('./apis/middleware');
 
 // helpers
 
+
+app.get('/*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'application/public', 'index.html'), (err) => {
+        if (err) res.status(500).send(err);
+    });
+});
+
+
 // Start listening for requests
 server.listen(process.env.PORT || port, function () {
     console.log(`Server running at http://${hostname}:${port}/`);

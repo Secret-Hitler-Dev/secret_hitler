@@ -105,4 +105,20 @@ module.exports = function(app) {
             return login(err, data, password, req, res);
         });
     });
+
+    app.get('/api/checkToken', withAuth, function(req, res) {
+        var token = req.headers.cookie.split("=")[1];
+        var decoded = jwt.verify(token, process.env.SECRET);
+        var email = decode(decoded.emailhash);
+        
+        Users.findByEmail(email, function(err, data) {
+            res.status(200).json({
+                firstname: data.firstname,
+                lastname: data.lastname,
+                email: data.email,
+                isAdmin: data.admin,
+                id: data._id
+            });
+        });
+    });
 };
