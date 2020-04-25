@@ -34,6 +34,9 @@
     "react-router-dom": "^5.1.2",
     "react-scripts": "^3.4.1",
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>>  this closes #21
     "request": "^2.88.2",
     "request-promise": "^4.2.5",
     "shortid": "^2.2.15",
