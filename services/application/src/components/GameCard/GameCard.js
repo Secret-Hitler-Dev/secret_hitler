@@ -148,7 +148,7 @@ class GameCard extends Component {
                             width="80%"
                             margin={{"top":(-2.1 * this.state.reveal * width) + "px"}}
                             className={"tile-effect-"  + (this.props.data.fascist ? "fas" : "lib")}
-                            style={{"borderRadius": "10px"}}
+                            style={{"borderRadius": "10px", "border": "2px solid #4744429a"}}
                         />
                     }
                 </Box>

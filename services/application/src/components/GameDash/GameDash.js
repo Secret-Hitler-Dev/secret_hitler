@@ -361,6 +361,8 @@ class GameDash extends Component {
                                 align="center"
                                 justify="start"
                             >
+                                {// add start game too
+                                }
                                 {this.state.host && 
                                     <Box
                                         direction="row"
@@ -391,23 +393,49 @@ class GameDash extends Component {
                                 </Box>   
                             </Box>
                             <Box
+                                width="30%"
                                 height="100%" 
                                 direction="row"
-                                gap="small"
-                                align="center"
-                                justify="start"
+                                align="end"
+                                justify="center"
                             >
-                                
+                                <Image 
+                                    src={PolicyFascist} 
+                                    width="30%"
+                                    className="fanCard"
+                                />
+
+                                <Image 
+                                    src={PolicyLiberal} 
+                                    width="30%"
+                                    className="fanCard"
+                                />
+                                <Image 
+                                    src={PolicyFascist} 
+                                    width="30%"
+                                    className="fanCard"
+                                />
                             </Box>
 
                             <Box
+                                width="25%"
                                 height="100%" 
                                 direction="row"
                                 gap="small"
-                                align="center"
-                                justify="start"
+                                align="end"
+                                justify="between"
                             >
-                                
+                                <Image 
+                                    src={VoteJa} 
+                                    width="50%"
+                                    className="fanCard"
+                                />
+
+                                <Image 
+                                    src={VoteNein} 
+                                    width="50%"
+                                    className="fanCard"
+                                />
                             </Box>
 
                         </Box>
