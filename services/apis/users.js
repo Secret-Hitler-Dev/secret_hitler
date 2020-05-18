@@ -1,6 +1,7 @@
 require('dotenv').config()
 
 var Users = require("../models/User");
+var Player = require("../models/Player");
 var General = require("../models/User");
 const withAuth = require('./middleware');
 const bcrypt = require('bcryptjs');
@@ -20,10 +21,14 @@ function decode(email) {
     return cryptr.decrypt(email);
 }
 
-function createSession(email, req, res, data) {
-    var emailhash = encode(email);
-    
-    const token = jwt.sign({emailhash}, process.env.SECRET, {
+function createSession(identifier, isGuest, req, res, data) {
+    var payload = {
+        hashedID: encode(identifier),
+        isGuest: encode(isGuest),
+        hashedPlayerId: encode(data.playerId),
+        hashedPlayerName: encode(data.playerTag)
+    }
+    const token = jwt.sign(payload, process.env.SECRET, {
         expiresIn: 60*60*100
     });
 
@@ -43,14 +48,39 @@ function killSession(req, res) {
     return res.clearCookie("token").sendStatus(200);
 }
 
-function login(err, data, password, req, res) {
+function login(err, data, email, password, req, res) {
     if (!err && data) {
-        var user = {
-            playerTag: data.playerTag,
-            verified: data.verified
-        };
-        if (verifyPass(data, password)) return createSession(data.email, req, res, user);
-        else res.status(401).json({ error: 0, msg: "Incorrect Password" });
+        if (verifyPass(data, password))  {
+            findPlayerByTag(data.playerTag, (err, player) => {
+                if (err || !player) {
+                    // create a player for this users first
+                    var userPlayer = new Player({
+                        playerName: data.playerTag,
+                        password: "doesntmatter"
+                    })
+                    // users first time playing a game
+                    userPlayer.save(function(err, newPlayer) {
+                        if (err) {
+                            res.status(400)
+                                .json({
+                                    status: 'error',
+                                    data: {},
+                                    message: " your player tag is probably taken"
+                                }); 
+                        } else { 
+                            return createSession(email, false, req, res, {playerId: newPlayer._id, playerTag: newPlayer.playerName, verified: data.verified});
+                        }
+                    });
+                } else if (player) {
+                    // not the first time playing a game
+                    return createSession(email, false, req, res, {playerId: player._id, playerTag: player.playerName, verified: data.verified});
+
+                }
+            });
+
+        } else {
+            res.status(401).json({ error: 0, msg: "Incorrect Password" });
+        } 
     } 
     else return res.status(401).json({ error: 1, msg: "Email does not exists" });
 }
@@ -67,6 +97,10 @@ function findByEmail(email, callback) {
 
 function findByTag(tag, callback) {
     Users.findOne({playerTag: tag}, callback);
+}
+
+function findPlayerByTag(tag, callback) {
+    Player.findOne({playerName: tag}, callback);
 }
 
 function getAll(callback) {
@@ -159,9 +193,34 @@ function updateUserInfo(email, data, callback) {
 module.exports = function(app) {
 
     // Authentication
-    app.post('/api/playAsGuest', (req, res) => {
-        var formData = req.body;
-        return createSession("guest."+formData.playerTag, req, res, {playerTag: formData.playerTag});
+    // app.post('/api/playAsGuest', (req, res) => {
+    //     var formData = req.body;
+    //     return createSession("guest."+formData.playerTag, req, res, {playerTag: formData.playerTag});
+    // });
+
+    app.post('/api/playAsGuest', function(req, res) {
+        console.log(req.body);
+        var salt = bcrypt.genSaltSync(15);
+        var newPlayer = new Player({
+            playerName: req.body.playerName,
+            password: bcrypt.hashSync(req.body.password, salt)
+        });
+
+        newPlayer.save(function(err, player) {
+            if (err) {
+                console.log("player");
+                console.log(player._id);
+                res.status(400)
+                    .json({
+                        status: 'error',
+                        data: {},
+                        message: " your player tag is probably taken, lol"
+                    }); 
+            } else { 
+                console.log("newplayer");
+                return createSession(player.playerName, true, req, res, {playerId: player._id, playerTag: player.playerName});
+            }
+        });
     });
 
     app.post('/api/signup', (req, res) => {
@@ -173,9 +232,19 @@ module.exports = function(app) {
                     if (err || !data) {
                         // tag doesn't exist we are good
                         createUser(formData, (err, data) => {
-                            if (err) return res.status(400).json({error: err, msg:"Failed to create user."});
-                            else return createSession(formData.email, req, res, {playerTag: formData.playerTag});
-                        });
+                            if (err) {
+                                return res.status(400).json({error: err, msg:"Failed to create user."});
+                            } else {
+                                // create a player for this user
+                                var userPlayer = new Player({
+                                    playerName: data.playerTag,
+                                    password: "doesntmatter"
+                                });
+                                userPlayer.save((err, player) => {
+                                    return createSession(formData.email, false, req, res, {playerId: player._id, playerTag: player.playerName});
+                                });                           
+                            }
+                            });
                     } 
                     else {
                         return res.status(401).json({ error: 1, msg: "Player Tag exists" });
@@ -190,6 +259,7 @@ module.exports = function(app) {
     });
 
     app.post('/api/signout', (req, res) => {
+        // delete player associated with this user
         return killSession(req, res);
     });
 
@@ -197,36 +267,45 @@ module.exports = function(app) {
         const {email, password} = req.body;
 
         findByEmail(email, (err, data) => {
-            return login(err, data, password, req, res);
+            return login(err, data, email, password, req, res);
         });
     });
 
     app.get('/api/checkToken', withAuth, function(req, res) {
+        // console.log("cookie");
+        // console.log(req.headers.cookie);
         var token = req.headers.cookie.split("=")[1];
         var decoded = jwt.verify(token, process.env.SECRET);
-        var email = decode(decoded.emailhash);
-
-        if (email.startsWith("guest.")) {
-            var playerTag = email.split(".")[1];
-            var verified = true;
+        // console.log("decoded");
+        // console.log(decoded);
+        var payload = {
+            identifier: decode(decoded.hashedID), // not used in guest case
+            isGuest: decode(decoded.isGuest),
+            playerId: decode(decoded.hashedPlayerId),
+            playerName: decode(decoded.hashedPlayerName)
+        }        
+        // console.log("payload");
+        // console.log(payload);
+        if (payload.isGuest) {
             collectStats((err, data) => {
                 return res.status(200).json({
-                    playerTag: playerTag,
-                    verified: verified,
-                    totalUsers: data.length
+                    playerTag: payload.playerName,
+                    verified: true,
+                    totalUsers: data.length,
+                    playerId: payload.playerId
                 });
             });
         } 
         else {
         
-            findByEmail(email, function(err, data) {
-                var playerTag = data.playerTag;
+            findByEmail(payload.identifier, function(err, data) {
                 var verified = data.verified;
                 collectStats((err, data) => {
                     return res.status(200).json({
-                        playerTag: playerTag,
+                        playerTag: payload.playerName,
                         verified: verified,
-                        totalUsers: data.length
+                        totalUsers: data.length,
+                        playerId: payload.playerId
                     });
                 });
             });

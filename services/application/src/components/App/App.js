@@ -4,7 +4,8 @@ import './App.css';
 import { Link, Route, Switch, BrowserRouter } from 'react-router-dom';
 import { Box, Heading, Grommet } from 'grommet';
 
-import {Home, Login, Logout, Register, Loading, Verify, Profile, Game} from 'Pages';
+import { Home, Login, Logout, Guest, Register, Loading, Verify, Profile, Game } from 'Pages';
+
 
 class App extends Component {
     _isMounted = false;
@@ -21,16 +22,22 @@ class App extends Component {
             currentGames: 0,
             totalLiberalWins: 0,
             totalFascistWins: 0,
-            guest: false
+            guest: false,
+            playerId: ''
         };
 
         this.logout = this.logout.bind(this);
         this.login = this.login.bind(this);
+        this.loginAsGuest = this.loginAsGuest.bind(this);
         this.setPlayerTag = this.setPlayerTag.bind(this);
     }
 
     login(data) {
-        this.setState({isLoggedIn: true, playerTag:data.playerTag, verified:data.verified, totalUsers: data.totalUsers, guest:data.guest});
+        this.setState({isLoggedIn: true, playerTag:data.playerTag, verified:data.verified, totalUsers: data.totalUsers, guest:data.guest, playerId: data.playerId});
+    }
+
+    loginAsGuest(data) {
+        this.setState({isLoggedIn: true, playerTag:data.playerTag, verified:data.verified, totalUsers: data.totalUsers, guest:data.guest, playerId: data.playerId});
     }
 
     logout() {
@@ -59,7 +66,6 @@ class App extends Component {
     componentDidMount() {
         this._isMounted = true;
 
-
         fetch('/api/checkToken', {
             headers: {
                 'Accept': 'application/json, text/plain, */*',  // It can be used to overcome cors errors
@@ -82,6 +88,7 @@ class App extends Component {
         })
         .then(data => {
             if (data) {
+                console.log("data from cookies:");
                 console.log(data);
                 if (this._isMounted) {
                     this.setState({
@@ -90,6 +97,7 @@ class App extends Component {
                         isLoggedIn:true,
                         loading:false,
                         verified: data.verified,
+                        playerId: data.playerId,
                         totalUsers: data.totalUsers
                     });
                 }
@@ -108,6 +116,7 @@ class App extends Component {
         var propsData = {
             login: this.login,
             logout:this.logout,
+            loginAsGuest:this.loginAsGuest,
             setPlayerTag: this.setPlayerTag,
             playerTag:this.state.playerTag,
             verified:this.state.verified,
@@ -116,7 +125,8 @@ class App extends Component {
             currentGames:this.state.currentGames,
             totalLiberalWins:this.state.totalLiberalWins,
             totalFascistWins:this.state.totalFascistWins,
-            guest:this.state.guest
+            guest:this.state.guest,
+            playerId: this.state.playerId
         };
 
         var content = this.state.loading ? <Loading /> :
@@ -149,6 +159,11 @@ class App extends Component {
                         <Game data={propsData}/>
 
                     }/>
+                    <Route exact path="/guest" component={() =>
+                        <Guest data={propsData}/>
+
+                    }/>
+
                     
                 </Switch>
             </BrowserRouter>

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
-import "./Login.css";
+import "./Guest.css";
 
 import {
     Box,
@@ -21,24 +21,25 @@ import {
   import { grommet } from "grommet/themes";
   import { MailOption, Hide, View, Add, FormClose, StatusGood, Alert  } from 'grommet-icons';
 
-class Login extends Component {
+class Guest extends Component {
 
     constructor(props) {
         super(props)
         this.state = {
-            email:'',
+            playerTag:'',
             password:'',
             invalid: false,
             reveal: false,
             error:'',
             working:false
         };
+
     }
 
     handleInputChange = (value) => {
         if (Object.keys(value).length ==  0) {
             this.setState({
-                email:'',
+                playerTag:'',
                 password:'',
                 invalid: false,
                 reveal: false,
@@ -66,35 +67,53 @@ class Login extends Component {
     }
 
     submit = () => {
+        console.log("submitted");
+        console.log(this.state);
+        console.log(this.state.playerTag);
+        console.log(this.state.password);
+
         this.setState({
             error:''
         });
         this.setWorking(true);
-        fetch('/api/signin', {
+        let requestBody = {
+            playerName: this.state.playerTag,
+            password: this.state.password
+        };
+
+        fetch('/api/playAsGuest', {
             method: 'POST',
-            body: JSON.stringify(this.state),
+            body:  JSON.stringify(requestBody),
             headers: {
                 'Accept': 'application/json, text/plain, */*',  // It can be used to overcome cors errors
                 'Content-Type': 'application/json'
             }
         })
         .then(res => {
+            console.log("Res")
+            console.log(res)
             this.setWorking(false);
             return res.json();
         })
         .then(data => {
+            console.log("data")
+            console.log(data);
             if ('error' in data) {
                 this.setState({error: data.msg});
+                console.log("error");
             }
             else {
-                console.log("from inside login")
-                console.log(data)
-                this.props.data.login(data);
+                console.log("data!!!:")
+                console.log(data);
+                data.guest = true;
+                data.verified = true;
+                // set the states
+                this.props.data.loginAsGuest(data);
                 this.props.history.push('/');
             }
         }) 
         .catch(err => {
-            alert('Error logging in please try again');
+            alert('Error joining as guest, please try again');
         });
 
         
@@ -113,7 +132,12 @@ class Login extends Component {
         })
         .then(res => {
             console.log(res.status);
+            console.log(res);
             if (res.status === 200) {
+                console.log("DATATADTADTATD")
+                
+                this.props.data.loginAsGuest(res.data);
+
                 this.props.history.push('/');
             } 
         }) 
@@ -124,23 +148,6 @@ class Login extends Component {
 
     render() {
         var value = this.state;
-
-        const emailMask = [
-            {
-                regexp: /^[\w\-_.]+$/,
-                placeholder: 'example',
-            },
-            { fixed: '@' },
-            {
-                regexp: /^[\w]+$/,
-                placeholder: 'my',
-            },
-            { fixed: '.' },
-            {
-                regexp: /^[\w]+$/,
-                placeholder: 'com',
-            },
-        ];
 
         const onOpen = () => this.setInvalid(true);
 
@@ -165,7 +172,7 @@ class Login extends Component {
                         <Layer animation="fadeIn" modal={true}>
                             <Box background={orange} align="center" justify="center" pad="none" >
                                 <Box background={orange} align="center" justify="center" pad="large" round="small">
-                                    <Text size="xxlarge" color={offWhite}>LOGGING IN!</Text>
+                                    <Text size="xxlarge" color={offWhite}>JOINING!</Text>
                                 </Box>
                             </Box>
                         </Layer>
@@ -180,7 +187,7 @@ class Login extends Component {
                         round="xsmall"
                     >
                         <Box width="100%" background={grey} pad="large"> 
-                            <Text color={offWhite} size="xxlarge">Sign In</Text>
+                            <Text color={offWhite} size="xxlarge">Play As Guest</Text>
                         </Box>
                         {this.state.error != '' && 
                         <Box width="100%" background={orange} pad="small" direction="row" align="center"> 
@@ -194,11 +201,10 @@ class Login extends Component {
                                 onReset={() => this.handleInputChange({})}
                                 onSubmit={({ value }) => {this.submit()}}
                             >
-                                <FormField name="email" label="Email">
-                                    <MaskedInput
+                                <FormField name="Player Tag" label="playerTag">
+                                    <TextInput
                                         icon={<MailOption />}
-                                        mask={emailMask}
-                                        name="email"
+                                        name="playerTag"
                                     />
                                 </FormField>
                                 <FormField name="password" label="Password">
@@ -246,7 +252,7 @@ class Login extends Component {
                                     </Layer>
                                 )}
                                 <Box direction="row" gap="medium" margin={{"top":"40px"}}>
-                                    <Button type="submit" primary label="Login" color={orange}/>
+                                    <Button type="submit" primary label="Submit" color={orange}/>
                                     <Button label="Cancel" color={orange} onClick={() => this.props.history.push("/")}/>
                                 </Box>
                             </Form>
@@ -259,4 +265,4 @@ class Login extends Component {
     
 }
 
-export default withRouter(Login);
+export default withRouter(Guest);

@@ -53,44 +53,24 @@ var port = 8080;
 // APIs go here
 const player = require('./apis/player.js')(app);
 const user = require('./apis/users.js')(app);
-const game = require('./apis/game.js')(app);
+const game = require('./apis/game.js');
 const withAuth = require('./apis/middleware');
 
 // Listeners
 io.on('connection', socket => {
-    socket.on('playerJoin', async (player_id, gameCode) => {
+    socket.on('playerJoin', (player_id, gameCode) => {
         console.log("inside listener")
-        let body = {
-            _id: player_id,
-            gameCode: gameCode
-        };
-    
         var res;
         // the listeners for these will be in the client code
         try{
-            res = await requests.postRequest('/api/joinGame', body);
-            socket.emit('joinResult', res.error == null ? res : res.error);
+            res = game.joinGameAPI(gameCode, player_id, socket, io);
+            // socket.emit
         } catch (err) {
             socket.emit('joinResult', 'error');
         }
     });
     
 });
-
-//  client testing
-// let sockett = require('socket.io-client')('http://127.0.0.1:8080');
-// app.post('/testing', (req, res) => {
-//     console.log(req.body);
-//     let _id = req.body.id;
-//     let gameCode = req.body.code;
-
-//     sockett.emit('playerJoin', _id, gameCode);
-    
-//     sockett.on('joinResult', (result) => {
-//         console.log(result);
-//         return;
-//     });
-// });
 
 // Common Routes
 

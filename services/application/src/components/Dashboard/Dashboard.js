@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { Link, Route, Switch, BrowserRouter } from 'react-router-dom';
+import io from "socket.io-client";
+
 
 import "./Dashboard.css";
 
@@ -23,6 +25,8 @@ import { AiFillEdit, AiOutlineUsergroupAdd } from "react-icons/ai";
 
 import {Rules} from 'Components';
 
+const socket = io("http://localhost:8080/")
+
 class Dashboard extends Component {
     
 
@@ -30,9 +34,11 @@ class Dashboard extends Component {
         super(props)
         this.state = {
             roomCode:'',
-            error: ''
+            error: '',
+            joining: true,
+            socket: null
         };
-    }   
+    }  
 
     handleInputChange = (event) => {
         const { value, name } = event.target;
@@ -46,10 +52,15 @@ class Dashboard extends Component {
     }
 
     joinGame = () => {
-        // display an error if room is invalid 
-        var rc = this.state.roomCode;
-        this.setState({error:"Invalid Room ID: " + rc, roomCode:''});
-        this.setState({roomCode:''});
+        console.log("___________________________")
+        console.log(this.props.data);
+        console.log(this.state.roomCode);
+        console.log(this.props.data.playerTag);
+        console.log(this.props.data.playerId)
+        console.log("___________________________")
+
+        socket.emit('playerJoin', this.props.data.playerId, this.state.roomCode);
+        // // display an error if room is invalid 
     }
 
     createGame = () => {
@@ -58,6 +69,32 @@ class Dashboard extends Component {
 
     componentDidMount() {
         this.setState(this.props.data);
+
+        console.log("data from inside dashboard:");
+        console.log(this.props.data);
+
+        socket.on("joinResult", (result) => {
+            console.log("result of JOIN");
+            if (result.status === "error") {
+                console.log(result);
+                var rc = this.state.roomCode;
+                this.setState({error:result.message});
+            } else {
+                console.log(result)
+                if (result.status === "success") {
+                    console.log("redirect to game lobby: " + result.data)
+                } else {
+                    this.setState({
+                        error: true
+                    });
+                }
+            }
+            console.log("yeeaa buddy")
+            this.setState({
+                joining: false
+            });
+        });
+
     }
     
 
