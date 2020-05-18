@@ -1,7 +1,7 @@
 .fanCard{
     position:relative;
     transition: transform .2s;
-    border-radius: 5px;
+    border-radius: 10px;
     border: 2px solid #4744429a;
     box-shadow: 1px 1px 0px #fde0bc,
                 2px 2px 0px #fde0bc,
@@ -53,4 +53,8 @@
 .fanCard:nth-child(3):hover{
     z-index:2;
     transform: translate(1px , -20px) rotate(16deg) ;
+}
+
+.fanCard:hover {
+    cursor: pointer;
 }

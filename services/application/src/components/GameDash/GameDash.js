@@ -18,7 +18,7 @@ import { StatusInfoSmall } from "grommet-icons";
 
 import { AiFillEye } from "react-icons/ai";
 import { FaHandPaper, FaSkull } from "react-icons/fa";
-import { BsXCircleFill, BsCircle } from "react-icons/bs";
+import { BsXCircleFill, BsCircle, BsPlayFill } from "react-icons/bs";
 import { GiCardDraw, GiCardDiscard, GiEagleEmblem } from "react-icons/gi";
 import { GrPowerCycle } from "react-icons/gr";
 
@@ -38,7 +38,8 @@ import {
     PolicyLiberal,
     RoleFascist,
     RoleHitler,
-    RoleLiberal
+    RoleLiberal,
+    Policy
 } from 'GameAssets';
 
 const customFocus = deepMerge(grommet, {
@@ -48,6 +49,20 @@ const customFocus = deepMerge(grommet, {
       }
     }
 });
+
+const GAMEPHASE = {
+    CHANCELLOR_NOMINATION : 'chancellor_nomination',
+    ELECTION : 'election',
+    LEGISLATIVE_SESSION_PRESIDENT : 'legislative_session_president',
+    LEGISLATIVE_SESSION_CHANCELLOR : 'legislative_session_chancellor',
+    WAITING: 'waiting'
+}
+
+const VOTE = {
+    JA: "JA",
+    NEIN: "NEIN",
+    NONE: "NONE"
+}
 
 class GameDash extends Component {
     
@@ -68,7 +83,13 @@ class GameDash extends Component {
             electionTracker: 0,
             numberOfFascists:0,
             numberOfLiberals:0,
-            host:false
+            host:false,
+            gamePhase: GAMEPHASE.CHANCELLOR_NOMINATION,
+            electionPolicies: [Policy, Policy, Policy],
+            votePicked: false,
+            vote:VOTE.NONE,
+            gameStarted: false,
+            status: ''
         };
         
     }
@@ -86,12 +107,43 @@ class GameDash extends Component {
 
     resetGame = () => {
         console.log("RESET GAME!");
+        this.setStatus("RESET GAME");
+    }
+
+    startGame = () => {
+        console.log("RESET GAME!");
+        this.setStatus("START GAME");
     }
 
     leaveGame = () => {
         console.log("LEAVE GAME!");
+        this.setStatus("LEAVE GAME");
     }
 
+    pickFirst = () => {
+        this.setState({gamePhase: GAMEPHASE.WAITING});
+        
+    }
+
+    pickSecond = () => {
+        this.setState({gamePhase: GAMEPHASE.WAITING});
+    }
+
+    pickThird = () => {
+        this.setState({gamePhase: GAMEPHASE.WAITING});
+    }
+
+    setStatus = (status) => {
+        this.setState({status: status});
+    }
+
+    voteJa = () => {
+        this.setState({votePicked: true, vote:VOTE.JA});
+    }
+
+    voteNein = () => {
+        this.setState({votePicked: true, vote:VOTE.NEIN});
+    }
     
     reveal = (event) => {
         if (this.state.reveal > 0) {
@@ -124,7 +176,12 @@ class GameDash extends Component {
                 discardPile: 3,
                 electionTracker: 2,
                 numberOfFascists: playerNum >= 9 ? 4 : playerNum >= 7 ? 3 : 2,
-                numberOfLiberals: playerNum >= 9 ? playerNum - 4 : playerNum >= 7 ? playerNum - 3 : playerNum - 2
+                numberOfLiberals: playerNum >= 9 ? playerNum - 4 : playerNum >= 7 ? playerNum - 3 : playerNum - 2,
+                electionPolicies: [Policy, Policy, Policy],
+                votePicked: false,
+                gamePhase: GAMEPHASE.LEGISLATIVE_SESSION_PRESIDENT,
+                gameStarted: true,
+                status:"CHANCELLOR IS SELECTING A POLICY!"
             }
 
             if (testData.fascist) {
@@ -219,6 +276,7 @@ class GameDash extends Component {
                         round="xsmall"
                         pad="medium"
                         gap="small"
+                        overflow="none"
                     >
                         <Box 
                             width="60%" 
@@ -363,7 +421,7 @@ class GameDash extends Component {
                             >
                                 {// add start game too
                                 }
-                                {this.state.host && 
+                                {this.state.host && this.state.gameStarted && 
                                     <Box
                                         direction="row"
                                         gap="3px"
@@ -376,6 +434,21 @@ class GameDash extends Component {
                                     >
                                         <GrPowerCycle color={grey2} />
                                         <Text color={grey}>RESET</Text>
+                                    </Box>
+                                }
+                                {this.state.host && !this.state.gameStarted && 
+                                    <Box
+                                        direction="row"
+                                        gap="3px"
+                                        align="center"
+                                        justify="start"
+                                        onClick={()=>this.startGame()}
+                                        pad="10px"   
+                                        background={offWhite}
+                                        round="20px"                                     
+                                    >
+                                        <BsPlayFill color={grey2} />
+                                        <Text color={grey}>START GAME</Text>
                                     </Box>
                                 }
                                 <Box
@@ -392,51 +465,86 @@ class GameDash extends Component {
                                     <Text color={grey}>LEAVE GAME</Text>
                                 </Box>   
                             </Box>
-                            <Box
-                                width="30%"
-                                height="100%" 
-                                direction="row"
-                                align="end"
-                                justify="center"
-                            >
-                                <Image 
-                                    src={PolicyFascist} 
+                            {(this.state.gamePhase === GAMEPHASE.LEGISLATIVE_SESSION_CHANCELLOR ||
+                                this.state.gamePhase === GAMEPHASE.LEGISLATIVE_SESSION_PRESIDENT) ?
+                                <Box
                                     width="30%"
-                                    className="fanCard"
-                                />
+                                    height="100%" 
+                                    direction="row"
+                                    align="end"
+                                    justify="center"
+                                >
 
-                                <Image 
-                                    src={PolicyLiberal} 
-                                    width="30%"
-                                    className="fanCard"
-                                />
-                                <Image 
-                                    src={PolicyFascist} 
-                                    width="30%"
-                                    className="fanCard"
-                                />
-                            </Box>
+                                    <Image 
+                                        src={this.state.electionPolicies[0]} 
+                                        width="30%"
+                                        className="fanCard"
+                                        onClick={() => this.pickFirst()}
+                                    />
 
-                            <Box
-                                width="25%"
-                                height="100%" 
-                                direction="row"
-                                gap="small"
-                                align="end"
-                                justify="between"
-                            >
-                                <Image 
-                                    src={VoteJa} 
+                                    <Image 
+                                        src={this.state.electionPolicies[1]} 
+                                        width="30%"
+                                        className="fanCard"
+                                        onClick={() => this.pickSecond()}
+                                    />
+
+                                    <Image 
+                                        src={this.state.electionPolicies[2]} 
+                                        width="30%"
+                                        className="fanCard"
+                                        onClick={() => this.pickThird()}
+                                    />
+                                </Box>
+                            :
+                                <Box
                                     width="50%"
-                                    className="fanCard"
-                                />
+                                    direction="row"
+                                    align="center"
+                                    justify="center"
+                                >
+                                    <Text color={offWhite}>{this.state.status}</Text>
+                                </Box>
+                            }
 
-                                <Image 
-                                    src={VoteNein} 
-                                    width="50%"
-                                    className="fanCard"
-                                />
-                            </Box>
+                            {this.state.gamePhase === GAMEPHASE.ELECTION ? 
+                                <Box
+                                    width="25%"
+                                    height="100%" 
+                                    direction="row"
+                                    align="end"
+                                    justify="between"
+                                >
+                                    <Image 
+                                        src={VoteJa} 
+                                        width="50%"
+                                        className="fanCard"
+                                        onClick={() => this.voteJa()}
+                                    />
+
+                                    <Image 
+                                        src={VoteNein} 
+                                        width="50%"
+                                        className="fanCard"
+                                        onClick={() => this.voteNein()}
+                                    />
+                                    
+                                    <Box
+                                        width={{"min":"25%"}}
+                                        direction="row"
+                                        align="center"
+                                        justify="center"
+                                    >
+                                        <Text data-tip data-for="curentVote" color={offWhite}>{this.state.vote}</Text>
+                                        <ReactTooltip id="curentVote" type='info' backgroundColor={offWhite} textColor={grey} >
+                                            CURRENT VOTE
+                                        </ReactTooltip>
+                                    </Box>
+                                    
+                                </Box>
+                            :
+                                <Box width="25%"></Box>
+                            }
 
                         </Box>
                         

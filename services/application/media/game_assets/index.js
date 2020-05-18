@@ -22,3 +22,4 @@ export {default as CardFasR3P7} from './card_fas_3_7.png';
 export {default as CardFasR3P9} from './card_fas_3_9.png';
 export {default as CardFasR4} from './card_fas_4.png';
 export {default as CardFasR5} from './card_fas_5.png';
+export {default as Policy} from './policy.png';
