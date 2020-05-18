@@ -1,3 +1,7 @@
+*, ** {
+    transition-duration: 0.25s !important;
+}
+
 .fanCard{
     position:relative;
     transition: transform .2s;

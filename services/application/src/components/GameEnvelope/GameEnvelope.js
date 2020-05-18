@@ -15,6 +15,10 @@ import {
 } from 'grommet';
 
 import { StatusInfoSmall } from "grommet-icons";
+
+import { FaUserSecret } from "react-icons/fa";
+import { AiFillIdcard } from "react-icons/ai";
+
 import { deepMerge } from 'grommet/utils';
 import ReactTooltip from "react-tooltip";
 
@@ -112,8 +116,8 @@ class GameEnvelope extends Component {
         const role = this.props.data.fascist ? this.props.data.hitler ? RoleHitler : RoleFascist : RoleLiberal;
         const member = this.props.data.fascist ? MemberFascist : MemberLiberal;
         const memberColour = this.props.data.fascist ? orange : blue;
-        const roleText = !this.props.data.fascist ? "LIBERAL" : this.props.data.hitler ? "HITELER" : "FASCIST";
-        const memberText = !this.props.data.fascist ? "LIBERAL" : "FASCIST";
+        const roleText = !this.props.data.fascist ? " LIBERAL" : this.props.data.hitler ? " HITELER" : " FASCIST";
+        const memberText = !this.props.data.fascist ? " LIBERAL" : " FASCIST";
 
         return (
             <Grommet theme={customFocus} background="none">
@@ -136,8 +140,18 @@ class GameEnvelope extends Component {
                         data-tip data-for={'role' + this.state.id}
                     >
                         <Image src={role} width="100%"/>
-                        <ReactTooltip id={'role' + this.state.id} type='info' backgroundColor={memberColour}>
-                            <span>{roleText}</span>
+                        <ReactTooltip 
+                            id={'role' + this.state.id} 
+                            type='info' 
+                            backgroundColor={memberColour}
+                            overridePosition={ ({ left, top },currentEvent, currentTarget, node) => {
+                                top = top - 10;
+                                return { top, left }
+                            }}
+                            effect="solid"
+                            className="center-row tooltop-round policy-tool-tip"
+                        >
+                            <FaUserSecret color={offWhite}/> <span>{roleText}</span>
                         </ReactTooltip>
                     </Box>
                     <Box 
@@ -151,8 +165,18 @@ class GameEnvelope extends Component {
                         data-tip data-for={'member' + this.state.id}
                     >
                         <Image src={member} width="100%" />
-                        <ReactTooltip id={'member' + this.state.id} type='info' backgroundColor={memberColour}>
-                            <span>{memberText}</span>
+                        <ReactTooltip
+                            id={'member' + this.state.id} 
+                            type='info' 
+                            backgroundColor={memberColour}
+                            overridePosition={ ({ left, top },currentEvent, currentTarget, node) => {
+                                top = top - 10;
+                                return { top, left }
+                            }}
+                            effect="solid"
+                            className="center-row tooltop-round policy-tool-tip"
+                        >
+                            <AiFillIdcard color={offWhite} /> <span>{memberText}</span>
                         </ReactTooltip>
                     </Box>
                     <Box 

@@ -181,7 +181,7 @@ class GameDash extends Component {
 
             var testData = {
                 host: true,
-                fascist:true,
+                fascist:false,
                 hitler:false,
                 intel:'',
                 drawPile: 8,
@@ -309,7 +309,7 @@ class GameDash extends Component {
                             >
                                 <GiCardDraw color={offWhite}/>
                                 <Text color={offWhite}>{this.state.drawPile}</Text>
-                                <ReactTooltip id="drawPile" type='info' backgroundColor={offWhite} textColor={grey}>
+                                <ReactTooltip className="tooltop-round policy-tool-tip" id="drawPile" type='info' backgroundColor={offWhite} textColor={grey}>
                                     DRAW PILE
                                 </ReactTooltip>
                             </Box>
@@ -323,7 +323,7 @@ class GameDash extends Component {
                             >
                                 <FaSkull color={orange}/>
                                 <Text color={orange}>{this.state.numberOfFascists}</Text>
-                                <ReactTooltip id="numFas" type='info' backgroundColor={orange} >
+                                <ReactTooltip className="tooltop-round policy-tool-tip" id="numFas" type='info' backgroundColor={orange} >
                                     NUMBER OF FASCISTS
                                 </ReactTooltip>
                             </Box>
@@ -351,7 +351,7 @@ class GameDash extends Component {
                                     <BsCircle color={offWhite}/>
                                 }
 
-                                <ReactTooltip id="eTracker" type='info' backgroundColor={offWhite} textColor={grey}>
+                                <ReactTooltip className="tooltop-round policy-tool-tip" id="eTracker" type='info' backgroundColor={offWhite} textColor={grey}>
                                     ELECTION TRACKER
                                 </ReactTooltip>
                             </Box>
@@ -365,7 +365,7 @@ class GameDash extends Component {
                             >
                                 <GiEagleEmblem color={blue}/>
                                 <Text color={blue}>{this.state.numberOfLiberals}</Text>
-                                <ReactTooltip id="numLib" type='info' backgroundColor={blue}>
+                                <ReactTooltip className="tooltop-round policy-tool-tip" id="numLib" type='info' backgroundColor={blue}>
                                     NUMBER OF LIBERALS
                                 </ReactTooltip>
                             </Box>
@@ -379,7 +379,7 @@ class GameDash extends Component {
                             >
                                 <GiCardDiscard color={offWhite}/>
                                 <Text color={offWhite}>{this.state.discardPile}</Text>
-                                <ReactTooltip id="discardPile" type='info' backgroundColor={offWhite} textColor={grey}>
+                                <ReactTooltip className="tooltop-round policy-tool-tip" id="discardPile" type='info' backgroundColor={offWhite} textColor={grey}>
                                     DISCARD PILE
                                 </ReactTooltip>
                             </Box>
