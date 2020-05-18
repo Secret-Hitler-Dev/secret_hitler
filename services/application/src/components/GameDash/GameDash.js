@@ -483,7 +483,6 @@ class GameDash extends Component {
                                     direction="row"
                                     align="end"
                                     justify="center"
-                                    data-tip data-for="policySelectInstructions"
                                 >
 
                                     <Image 
@@ -491,6 +490,7 @@ class GameDash extends Component {
                                         width="30%"
                                         className="policy fanCard"
                                         onClick={() => this.pickFirst()}
+                                        data-tip data-for="policySelectInstructions"
                                     />
 
                                     <Image 
@@ -498,6 +498,7 @@ class GameDash extends Component {
                                         width="30%"
                                         className="policy fanCard"
                                         onClick={() => this.pickSecond()}
+                                        data-tip data-for="policySelectInstructions"
                                     />
 
                                     <Image 
@@ -505,6 +506,7 @@ class GameDash extends Component {
                                         width="30%"
                                         className="policy fanCard"
                                         onClick={() => this.pickThird()}
+                                        data-tip data-for="policySelectInstructions"
                                     />
                                     
                                     <ReactTooltip 
@@ -512,6 +514,12 @@ class GameDash extends Component {
                                         type='info' 
                                         backgroundColor={grey}
                                         textColor={offWhite}
+                                        overridePosition={ ({ left, top },currentEvent, currentTarget, node) => {
+                                            top = top - 10;
+                                            return { top, left }
+                                        }}
+                                        effect="solid"
+                                        className="policy-tool-tip"
                                     >
                                         {GAMEPHASE_MSG[this.state.gamePhase]}
                                     </ReactTooltip>

@@ -28,8 +28,16 @@ body {
 }
 
 
-.policy, .lightDropShadow {
+.policy, .lightDropShadow, .policy-tool-tip {
     -webkit-box-shadow: 4px 4px 11px -3px rgba(0,0,0,0.41);
     -moz-box-shadow: 4px 4px 11px -3px rgba(0,0,0,0.41);
     box-shadow: 4px 4px 11px -3px rgba(0,0,0,0.41);
+}
+
+.policy-tool-tip {
+    font-size: 11px !important;
+    padding: 5px !important;
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+    font-weight: bold !important;
 }

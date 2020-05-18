@@ -112,8 +112,13 @@ class GameCard extends Component {
 
         const backColour = this.props.data.fascist ? fasColours[special]: libColours[special]; 
         const borderColour = this.props.data.fascist ? fasColours[1]: libColours[1];
+        const borderColourLight = this.props.data.fascist ? fasColours[0]: libColours[0];
         
         const policyImage = this.props.data.fascist ? PolicyFascist : PolicyLiberal;
+
+        const ability = this.props.data.ability || "NO SPECIAL POWER";
+        const tooltipId = "ability-" + (this.props.data.fascist ? "fas-": "lib-") + this.props.data.factor;
+        console.log(tooltipId);
 
         return (
             <Grommet theme={customFocus} background="none">
@@ -149,8 +154,23 @@ class GameCard extends Component {
                             margin={{"top":(-2.1 * this.state.reveal * width) + "px"}}
                             className={"policy game-card-no-shadow tile-effect-"  + (this.props.data.fascist ? "fas" : "lib")}
                             style={{"borderRadius": "10px", "border": "0px solid #4744429a"}}
+                            data-tip data-for={tooltipId}
                         />
                     }
+                    <ReactTooltip 
+                        id={tooltipId} 
+                        type='info' 
+                        backgroundColor={borderColourLight}
+                        textColor={borderColour}
+                        overridePosition={ ({ left, top },currentEvent, currentTarget, node) => {
+                            top = top - 10;
+                            return { top, left }
+                        }}
+                        className='policy-tool-tip'
+                        effect="solid"
+                    >
+                        {ability}
+                    </ReactTooltip>
                 </Box>
             </Grommet>
              
