@@ -103,11 +103,11 @@ class GameCard extends Component {
         const offWhite = "#fde0bc";
         const blue = "#6d97b9";
 
-        const width = (this.props.data.width * 0.134);
+        const width = (this.props.data.width * 0.12);
         const height = 1.3576 * width;
         
-        const fasColours = ["#e1dbd0","#db5a3e"];
-        const libColours = ["#bfe0e0","#378895"];
+        const fasColours = ["#ffc5bb","#be240b"];
+        const libColours = ["#bfe0e0","#3e89ae"];
         const special = !this.props.data.special ? 0 : 1;
 
         const backColour = this.props.data.fascist ? fasColours[special]: libColours[special]; 

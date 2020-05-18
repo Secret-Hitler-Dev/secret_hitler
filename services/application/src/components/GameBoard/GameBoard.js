@@ -31,7 +31,9 @@ import {
     CardFasR3P7,
     CardFasR3P9,
     CardFasR4,
-    CardFasR5
+    CardFasR5,
+    CardFas,
+    CardLib
 } from 'GameAssets';
 
 import {GameCard} from 'Components';
@@ -88,9 +90,9 @@ class GameBoard extends Component {
                 msg = this.props.data.playerNum >= 9 ? "9 OR 10 PLAYERS: PLAYING WITH 3 FASCISTS AND HITLER, HITLER DOESN'T KNOW WHO THE FASCISTS ARE." : 
                 this.props.data.playerNum >= 7 ? "7 OR 8 PLAYERS: PLAYING WITH 2 FASCISTS AND HITLER, HITLER DOESN'T KNOW WHO THE FASCISTS ARE." : "5 OR 6 PLAYERS: PLAYING WITH 1 FASCISTS AND HITLER, HITLER KNOWS WHO THE FASCIST IS."; 
 
-                var icon1 = this.props.data.playerNum >= 9 ? CardFasR1P9 : null;
+                var icon1 = this.props.data.playerNum >= 9 ? CardFasR1P9 : CardFas;
                 var icon2 = this.props.data.playerNum >= 9 ? CardFasR2P9 : 
-                            this.props.data.playerNum >= 7 ? CardFasR2P7 : null;
+                            this.props.data.playerNum >= 7 ? CardFasR2P7 : CardFas;
                 var icon3 = this.props.data.playerNum >= 9 ? CardFasR3P9 : 
                             this.props.data.playerNum >= 7 ? CardFasR3P7 : CardFasR3P5;
                 var icon4 = CardFasR4;
@@ -170,7 +172,7 @@ class GameBoard extends Component {
                         factor:5,
                         width:w,
                         special:false,
-                        icon:null,
+                        icon:CardLib,
                         msg:[]
                     },
                     {
@@ -180,7 +182,7 @@ class GameBoard extends Component {
                         factor:5,
                         width:w,
                         special:false,
-                        icon:null,
+                        icon:CardLib,
                         msg:[]
                     },
                     {
@@ -190,7 +192,7 @@ class GameBoard extends Component {
                         factor:5,
                         width:w,
                         special:false,
-                        icon:null,
+                        icon:CardLib,
                         msg:[]
                     },
                     {
@@ -200,7 +202,7 @@ class GameBoard extends Component {
                         factor:5,
                         width:w,
                         special:false,
-                        icon:null,
+                        icon:CardLib,
                         msg:[]
                     },
                     {
@@ -233,6 +235,9 @@ class GameBoard extends Component {
         const width = this.state.width*0.97;
         const height = width * 0.3135;
 
+        const widthText = (1279 / 2000) * 100;
+        const heightText = (67 / 624) * 100;
+
         return (
             <Grommet theme={customFocus}>
                 <Box 
@@ -247,8 +252,9 @@ class GameBoard extends Component {
                     direction="column"
                     align="center"
                     justify="end"
-                    pad="medium"
-                    gap="xsmall"
+                    pad={{"bottom": "40px"}}
+                    gap="medium"
+                    className="lightDropShadow"
                 >
                     <Box
                         width="100%"
@@ -262,7 +268,7 @@ class GameBoard extends Component {
                             <GameCard id={"card" + item.id + i} data={item} />
                         ))}
                     </Box>
-                    <Text size="small" color={this.props.data.fascist ? orange : blue} > {this.state.msg}</Text>
+                    <Text width={widthText + "px"} height={heightText + "px"} size="11px" color={this.props.data.fascist ? orange : blue} > {this.state.msg}</Text>
 
                 </Box>
             </Grommet>
