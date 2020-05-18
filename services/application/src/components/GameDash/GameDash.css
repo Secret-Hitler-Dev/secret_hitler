@@ -2,25 +2,7 @@
     position:relative;
     transition: transform .2s;
     border-radius: 10px;
-    border: 2px solid #4744429a;
-    box-shadow: 1px 1px 0px #fde0bc,
-                2px 2px 0px #fde0bc,
-                3px 3px 0px #fde0bc,
-                4px 4px 0px #fde0bc,
-                5px 5px 0px #fde0bc,
-                6.5px 6.5px 0px #000;
-    -webkit-box-shadow: 1px 1px 0px #fde0bc,
-                        2px 2px 0px #fde0bc,
-                        3px 3px 0px #fde0bc,
-                        4px 4px 0px #fde0bc,
-                        5px 5px 0px #fde0bc,
-                        6.5px 6.5px 0px #000;
-    -moz-box-shadow: 1px 1px 0px #fde0bc,
-                    2px 2px 0px #fde0bc,
-                    3px 3px 0px #fde0bc,
-                    4px 4px 0px #fde0bc,
-                    5px 5px 0px #fde0bc,
-                    6.5px 6.5px 0px #000;
+    border: 0px solid #4744429a;
 }
 
 .fanCard:nth-child(1) {

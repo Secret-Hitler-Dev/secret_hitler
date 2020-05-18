@@ -106,11 +106,11 @@ class GameEnvelope extends Component {
         const E = {w: 637, h:1080}
 
         const offsetR = ((envWidth / R.w) * R.h) - (this.state.reveal * 1.5);
-        const offsetM = ((envWidth / M.w) * M.h) - this.state.reveal;
-        const offsetE = (((envWidth / M.w) * M.h) + (envWidth * 0.15))  - (this.state.reveal * 1.5);
+        const offsetM = ((envWidth / M.w) * M.h) - (this.state.reveal * 1.1);
+        const offsetE = (((envWidth / M.w) * M.h) + (envWidth * 0.15))  - (this.state.reveal * 0.9);
 
-        const role = this.props.data.role;
-        const member = this.props.data.member;
+        const role = this.props.data.fascist ? this.props.data.hitler ? RoleHitler : RoleFascist : RoleLiberal;
+        const member = this.props.data.fascist ? MemberFascist : MemberLiberal;
         const memberColour = this.props.data.fascist ? orange : blue;
         const roleText = !this.props.data.fascist ? "LIBERAL" : this.props.data.hitler ? "HITELER" : "FASCIST";
         const memberText = !this.props.data.fascist ? "LIBERAL" : "FASCIST";
@@ -118,7 +118,7 @@ class GameEnvelope extends Component {
         return (
             <Grommet theme={customFocus} background="none">
                 <Box
-                    width={(envWidth * 1.2) + "px"}
+                    width={(envWidth * 1.3) + "px"}
                     onClick={() => this.reveal()}
                     direction="column"
                     align="start"
@@ -127,15 +127,13 @@ class GameEnvelope extends Component {
                     <Box 
                         width={(envWidth * R.w) + "px"} 
                         height={offsetR + "px"}
-                        pad={(envWidth * 0.02) + "px" }
-                        round={(envWidth * (1/30)) + "px" }
-                        background={offWhite}
+                        pad="0px"
+                        round="0px"
                         direction="row"
                         align="center"
                         justify="start"
-                        className="game-card-border"
+                        className="game-card"
                         data-tip data-for={'role' + this.state.id}
-                        border="all"
                     >
                         <Image src={role} width="100%"/>
                         <ReactTooltip id={'role' + this.state.id} type='info' backgroundColor={memberColour}>
@@ -145,14 +143,12 @@ class GameEnvelope extends Component {
                     <Box 
                         width={(envWidth * M.w) + "px"} 
                         height={offsetR + "px"}
-                        background={offWhite}
                         direction="row"
                         align="center"
                         justify="start"
                         className="game-card"
                         margin={{"top":(-1 * offsetM) + "px"}}
                         data-tip data-for={'member' + this.state.id}
-                        border="all"
                     >
                         <Image src={member} width="100%" />
                         <ReactTooltip id={'member' + this.state.id} type='info' backgroundColor={memberColour}>
@@ -160,13 +156,12 @@ class GameEnvelope extends Component {
                         </ReactTooltip>
                     </Box>
                     <Box 
-                        width={((this.state.envWidth * E.w) + (this.state.envWidth / 2)) + "px"} 
+                        width={((this.state.envWidth * E.w) + (this.state.envWidth)) + "px"} 
                         height={offsetR + "px"}
-                        background={offWhite}
                         direction="row"
                         align="center"
                         justify="center"
-                        className="game-card"
+                        className="game-card-no-shadow"
                         margin={{"top":(-1 * offsetE) + "px"}}
                     >
                         <Image src={Envelope} width="100%" />

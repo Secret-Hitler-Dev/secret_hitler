@@ -19,7 +19,7 @@ import { StatusInfoSmall } from "grommet-icons";
 import { AiFillEye } from "react-icons/ai";
 import { FaHandPaper, FaSkull } from "react-icons/fa";
 import { BsXCircleFill, BsCircle, BsPlayFill } from "react-icons/bs";
-import { GiCardDraw, GiCardDiscard, GiEagleEmblem } from "react-icons/gi";
+import { GiCardDraw, GiCardDiscard, GiEagleEmblem, GiExitDoor } from "react-icons/gi";
 import { GrPowerCycle } from "react-icons/gr";
 
 import { deepMerge } from 'grommet/utils';
@@ -51,11 +51,27 @@ const customFocus = deepMerge(grommet, {
 });
 
 const GAMEPHASE = {
-    CHANCELLOR_NOMINATION : 'chancellor_nomination',
-    ELECTION : 'election',
-    LEGISLATIVE_SESSION_PRESIDENT : 'legislative_session_president',
-    LEGISLATIVE_SESSION_CHANCELLOR : 'legislative_session_chancellor',
-    WAITING: 'waiting'
+    CHANCELLOR_NOMINATION : 'CHANCELLOR_NOMINATION',
+    ELECTION : 'ELECTION',
+    LEGISLATIVE_SESSION_PRESIDENT : 'LEGISLATIVE_SESSION_PRESIDENT',
+    LEGISLATIVE_SESSION_CHANCELLOR : 'LEGISLATIVE_SESSION_CHANCELLOR',
+    WAITING: 'WAITING'
+}
+
+const GAMEPHASE_MSG = {
+    CHANCELLOR_NOMINATION : 'PICK YOUR CHANCELOR',
+    ELECTION : 'VOTE ON THIS GOVERNMENT',
+    LEGISLATIVE_SESSION_PRESIDENT : 'PICK A POLICY TO DISCARD',
+    LEGISLATIVE_SESSION_CHANCELLOR : 'PICK A POLICY TO ENACT',
+    WAITING: 'WAITING FOR THE NEXT PHASE'
+}
+
+const GAMEPHASE_STATUS = {
+    CHANCELLOR_NOMINATION : 'PRESIDENT IS PICKING A CHANCELLOR!',
+    ELECTION : 'VOTING ON GOVERNMENT!',
+    LEGISLATIVE_SESSION_PRESIDENT : 'CHANCELLOR IS DISCARDING A POLICY!',
+    LEGISLATIVE_SESSION_CHANCELLOR : 'CHANCELLOR IS SELECTING A POLICY!',
+    WAITING: 'WAITING FOR THE NEXT PHASE'
 }
 
 const VOTE = {
@@ -73,8 +89,6 @@ class GameDash extends Component {
             msg: '',
             reveal: 0,
             envWidth: 80,
-            role:null, 
-            member:null, 
             fascist:false,
             hitler:false,
             intel: '',
@@ -166,9 +180,7 @@ class GameDash extends Component {
             var playerNum = this.props.data.players.length;
 
             var testData = {
-                role:RoleHitler, 
                 host: true,
-                member:MemberFascist, 
                 fascist:true,
                 hitler:false,
                 intel:'',
@@ -177,7 +189,7 @@ class GameDash extends Component {
                 electionTracker: 2,
                 numberOfFascists: playerNum >= 9 ? 4 : playerNum >= 7 ? 3 : 2,
                 numberOfLiberals: playerNum >= 9 ? playerNum - 4 : playerNum >= 7 ? playerNum - 3 : playerNum - 2,
-                electionPolicies: [Policy, Policy, Policy],
+                electionPolicies: [PolicyFascist, PolicyLiberal, PolicyLiberal],
                 votePicked: false,
                 gamePhase: GAMEPHASE.LEGISLATIVE_SESSION_PRESIDENT,
                 gameStarted: true,
@@ -253,8 +265,6 @@ class GameDash extends Component {
                             <GameEnvelope 
                                 data={{
                                     envWidth:90, 
-                                    role:this.state.role, 
-                                    member:this.state.member, 
                                     fascist:this.state.fascist,
                                     hitler:this.state.hitler
                                 }}
@@ -461,7 +471,7 @@ class GameDash extends Component {
                                     background={offWhite}
                                     round="20px"                                     
                                 >
-                                    <GrPowerCycle color={grey2} />
+                                    <GiExitDoor color={grey2} />
                                     <Text color={grey}>LEAVE GAME</Text>
                                 </Box>   
                             </Box>
@@ -473,28 +483,38 @@ class GameDash extends Component {
                                     direction="row"
                                     align="end"
                                     justify="center"
+                                    data-tip data-for="policySelectInstructions"
                                 >
 
                                     <Image 
                                         src={this.state.electionPolicies[0]} 
                                         width="30%"
-                                        className="fanCard"
+                                        className="policy fanCard"
                                         onClick={() => this.pickFirst()}
                                     />
 
                                     <Image 
                                         src={this.state.electionPolicies[1]} 
                                         width="30%"
-                                        className="fanCard"
+                                        className="policy fanCard"
                                         onClick={() => this.pickSecond()}
                                     />
 
                                     <Image 
                                         src={this.state.electionPolicies[2]} 
                                         width="30%"
-                                        className="fanCard"
+                                        className="policy fanCard"
                                         onClick={() => this.pickThird()}
                                     />
+                                    
+                                    <ReactTooltip 
+                                        id="policySelectInstructions" 
+                                        type='info' 
+                                        backgroundColor={grey}
+                                        textColor={offWhite}
+                                    >
+                                        {GAMEPHASE_MSG[this.state.gamePhase]}
+                                    </ReactTooltip>
                                 </Box>
                             :
                                 <Box
@@ -503,7 +523,7 @@ class GameDash extends Component {
                                     align="center"
                                     justify="center"
                                 >
-                                    <Text color={offWhite}>{this.state.status}</Text>
+                                    <Text color={offWhite}>{GAMEPHASE_STATUS[this.state.gamePhase]}</Text>
                                 </Box>
                             }
 
@@ -518,14 +538,14 @@ class GameDash extends Component {
                                     <Image 
                                         src={VoteJa} 
                                         width="50%"
-                                        className="fanCard"
+                                        className="policy fanCard"
                                         onClick={() => this.voteJa()}
                                     />
 
                                     <Image 
                                         src={VoteNein} 
                                         width="50%"
-                                        className="fanCard"
+                                        className="policy fanCard"
                                         onClick={() => this.voteNein()}
                                     />
                                     
