@@ -16,14 +16,6 @@ function encode(email) {
     return cryptr.encrypt(email);
 }
 
-function getAll(callback) {
-    Users.find({}, callback);
-}
-
-function collectStats(callback) {
-    getAll(callback);
-}
-
 function decode(email) {
     if (!email) return "";
     return cryptr.decrypt(email);
