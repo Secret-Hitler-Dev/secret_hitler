@@ -1,4 +1,7 @@
 const request = require('request-promise');
+var Users = require("./models/User");
+const bcrypt = require('bcryptjs');
+const Cryptr = require('cryptr');
 
 module.exports = {
     postRequest: async (endpoint, body) => {
@@ -20,5 +23,7 @@ module.exports = {
         });
         return res;
         
-    }
+    },
+
+    cryptr: new Cryptr(process.env.SECRET),
 };

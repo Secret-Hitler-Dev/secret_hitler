@@ -7,6 +7,10 @@ cache:
   directories:
     - "node_modules"
 before_script: cd services
+branches:
+  - intergration
 script:
-  - npm run travis
+  - npm run test
+  - npm run test-backend
+  - npm run test-frontend
 

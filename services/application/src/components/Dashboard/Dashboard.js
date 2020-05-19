@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { Link, Route, Switch, BrowserRouter } from 'react-router-dom';
+import io from "socket.io-client";
+
 
 import "./Dashboard.css";
 
@@ -23,6 +25,8 @@ import { AiFillEdit, AiOutlineUsergroupAdd } from "react-icons/ai";
 
 import {Rules} from 'Components';
 
+const socket = io("http://localhost:8080/")
+
 class Dashboard extends Component {
     
 
@@ -30,9 +34,11 @@ class Dashboard extends Component {
         super(props)
         this.state = {
             roomCode:'',
-            error: ''
+            error: '',
+            joining: true,
+            socket: null
         };
-    }   
+    }  
 
     handleInputChange = (event) => {
         const { value, name } = event.target;
@@ -46,10 +52,7 @@ class Dashboard extends Component {
     }
 
     joinGame = () => {
-        // display an error if room is invalid 
-        var rc = this.state.roomCode;
-        this.setState({error:"Invalid Room ID: " + rc, roomCode:''});
-        this.setState({roomCode:''});
+        socket.emit('playerJoin', this.props.data.playerTag, this.state.roomCode);
     }
 
     createGame = () => {
@@ -58,6 +61,26 @@ class Dashboard extends Component {
 
     componentDidMount() {
         this.setState(this.props.data);
+
+        socket.on("joinResult", (result) => {
+            if (result.status === "error") {
+                var rc = this.state.roomCode;
+                this.setState({error:result.message});
+            } else {
+                if (result.status === "success") {
+                    console.log("redirect to game lobby: " + result.data)
+                } else {
+                    this.setState({
+                        error: true
+                    });
+                }
+            }
+            console.log("yeeaa buddy")
+            this.setState({
+                joining: false
+            });
+        });
+
     }
     
 
@@ -160,7 +183,7 @@ class Dashboard extends Component {
                 <Box width="100%" height={{"min":"120px"}} direction="row" align="center" justify="between">
                     <TextInput
                         placeholder="Room ID"
-                        value={this.state}
+                        value={this.state.roomCode}
                         name="roomCode"
                         style={{"fontSize":"68px"}}
                         onChange={event => this.handleInputChange(event)}

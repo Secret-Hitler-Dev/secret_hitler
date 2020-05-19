@@ -32,7 +32,7 @@ class Game extends Component {
         this.state = {
             msg: '',
             gameInProgress: true,
-            players: [1,2,3,4,5,6,7,8,9],
+            players: [1,2,3,4,5],
             code:''
         };
         
@@ -60,7 +60,6 @@ class Game extends Component {
             const values = queryString.parse(this.props.location.search)
             var code = values.room;
 
-            console.log(code);
             if (!code) {
                 // print error message
             }
