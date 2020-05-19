@@ -1,0 +1,46 @@
+*, ** {
+    transition-duration: 0.25s !important;
+}
+
+.fanCard{
+    position:relative;
+    transition: transform .2s;
+    border-radius: 10px;
+    border: 0px solid #4744429a;
+}
+
+.fanCard:nth-child(1) {
+    transform: translateY(0px) rotate(-16deg);
+    left: 7px;
+    top: 2px;
+}
+
+.fanCard:nth-child(2) {
+    transform: translateY(0px) rotate(1deg);
+    left: -24px;
+    top: 0px; 
+}
+
+.fanCard:nth-child(3) {
+    right: 54px;
+    top: 4px;
+    transform: translateY(0px) rotate(16deg);
+}
+
+.fanCard:nth-child(1):hover{
+    z-index:2;
+    transform: translate(1px , -20px) rotate(-16deg) ;
+}
+
+.fanCard:nth-child(2):hover{
+    z-index:2;
+    transform: translateY(-20px) rotate(1deg) ;
+}
+.fanCard:nth-child(3):hover{
+    z-index:2;
+    transform: translate(1px , -20px) rotate(16deg) ;
+}
+
+.fanCard:hover {
+    cursor: pointer;
+}

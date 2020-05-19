@@ -183,7 +183,7 @@ class Dashboard extends Component {
                 <Box width="100%" height={{"min":"120px"}} direction="row" align="center" justify="between">
                     <TextInput
                         placeholder="Room ID"
-                        value={this.state}
+                        value={this.state.roomCode}
                         name="roomCode"
                         style={{"fontSize":"68px"}}
                         onChange={event => this.handleInputChange(event)}
