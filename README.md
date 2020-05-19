@@ -21,6 +21,7 @@
 .
 ├── .github
 ├── services/
+├── ├── __mocks__/ (any file type to mock)
 │   ├── apis/
 │   │   └── <all server apis>
 │   ├── application/ (reactjs)
@@ -30,6 +31,12 @@
 │   │   └── src/
 │   ├── models/
 │   │   └── <db schemas>
+│   ├── tests/
+│   │   ├── controllers/
+│   │   │   └── <all test controllers>  
+│   │   ├── data/
+│   │   │   └── <all test data> 
+│   │   └── <backend tests>.js
 │   ├── .babelrc
 │   ├── .env.template
 │   ├── package-lock.json
@@ -73,6 +80,12 @@ npm run build
 npm start 
 # start the react dev server
 npm run dev 
+# run both backend and frontend tests
+npm run test 
+# run frontend tests
+npm run test-frontend 
+# run backend tests
+npm run dev 
 ```
 
 ## Authors
@@ -102,6 +115,8 @@ npm run dev
 ## 🤝 Contributing
 
 Contributions, issues and feature requests are welcome!<br />Feel free to check [issues page](https://github.com/Secret-Hitler-Dev/secret_hitler/issues). 
+
+Note: All PRs must pass existing unit tests and if any new features are introduced, please add necessary unittests.
 
 ## Show your support
 
