@@ -1,4 +1,6 @@
 //Require the dev-dependencies
+let setup = require('./config/setup');
+
 let chai = require('chai');
 let chaiHttp = require('chai-http');
 let should = chai.should();

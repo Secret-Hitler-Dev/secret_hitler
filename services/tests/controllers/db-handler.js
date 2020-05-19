@@ -16,6 +16,7 @@ module.exports.connect = async () => {
         reconnectInterval: 1000
     };
 
+    process.env.DB_HOST_TEST = uri;
     await mongoose.connect(uri, mongooseOpts);
 }
 

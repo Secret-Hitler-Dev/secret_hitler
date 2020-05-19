@@ -1,0 +1,18 @@
+language: node_js
+node_js: 
+  - "stable"
+services:
+  - mongodb
+cache:
+  directories:
+    - "node_modules"
+before_script: 
+  - cd services
+  - npm install
+branches:
+  only:
+  - intergration
+  - develop
+script:
+  - npm run test
+
