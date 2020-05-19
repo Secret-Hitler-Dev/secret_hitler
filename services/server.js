@@ -7,7 +7,6 @@ var app = express();
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var socket = require('socket.io');
-var requests = require('./server-utils')
 const cookieParser = require('cookie-parser');
 var Game = require("./models/Game")
 var shortid = require('shortid');
@@ -127,5 +126,4 @@ server.listen(process.env.PORT || port, function () {
     console.log(`Server running at http://${hostname}:${port}/`);
 });
 
-// Export our app for testing purposes
-export default app;
+module.exports = app;

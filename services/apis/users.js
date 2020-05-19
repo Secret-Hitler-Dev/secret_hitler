@@ -4,7 +4,6 @@ var Users = require("../models/User");
 var Player = require("../models/Player");
 var General = require("../models/User");
 const withAuth = require('./middleware');
-const utils = require("../server-utils");
 const bcrypt = require('bcryptjs');
 const Cryptr = require('cryptr');
 const cryptr = new Cryptr(process.env.SECRET);
@@ -14,14 +13,6 @@ const nodemailer = require("nodemailer");
 function encode(email) {
     if (!email) return "";
     return cryptr.encrypt(email);
-}
-
-function getAll(callback) {
-    Users.find({}, callback);
-}
-
-function collectStats(callback) {
-    getAll(callback);
 }
 
 function decode(email) {

@@ -1,37 +1,53 @@
-var sinon = require('sinon');
-var chai = require('chai');
-var expect = chai.expect;
+//Require the dev-dependencies
+let chai = require('chai');
+let chaiHttp = require('chai-http');
+let should = chai.should();
+let app = require('../server');
 
 var mongoose = require('mongoose');
-require('sinon-mongoose');
+const dbHandler = require('./controllers/db-handler.js');
 
 //Importing our todo model for our unit testing.
 var User = require('../models/User.js');
+var userData = require('./data/Users.js');
 
-describe("Get all Users", function(){
-    // Test will pass if we get all Users
-    it("should return all Users", function(done){
-        var UserMock = sinon.mock(User);
-        var expectedResult = {status: true, user: []};
-        UserMock.expects('find').yields(null, expectedResult);
-        User.find(function (err, result) {
-            UserMock.verify();
-            UserMock.restore();
-            expect(result.status).to.be.true;
+before(async () => {  
+    await dbHandler.connect();
+});
+
+beforeEach(async () => {  
+    userData.forEach(user => {
+        User.create(user, (err) => {
             done();
         });
     });
+});
 
-    // Test will pass if we fail to get a todo
-    it("should return error", function(done){
-        var UserMock = sinon.mock(User);
-        var expectedResult = {status: false, error: "Something went wrong"};
-        UserMock.expects('find').yields(expectedResult, null);
-        User.find(function (err, result) {
-            UserMock.verify();
-            UserMock.restore();
-            expect(err.status).to.not.be.true;
-            done();
-        });
-    });
+afterEach(async () => {  
+    await dbHandler.clearDatabase();
+});
+
+after(async () => {  
+    await dbHandler.closeDatabase();
+});
+
+
+describe("GET /", () => {
+    // Test fail sign up a new User
+    it("should sign up a new User", (done) => {
+        chai.request(app)
+            .post('/signup')
+            .send({
+                'password': '1234',
+                'playerTag': 'rob'
+            })
+            .end((err, res) => {
+                res.should.have.status(200);
+                res.body.should.be.a('object');
+                res.body.should.have.property('errors');
+                res.body.errors.should.have.property('email');
+                res.body.errors.pages.should.have.property('kind').eql('required');
+                done();
+            });
+    });        
 });
