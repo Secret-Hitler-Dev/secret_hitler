@@ -7,6 +7,7 @@
         "test": "cross-env NODE_ENV=test mocha --timeout 10000 --require @babel/register tests/*.js --exit && jest --detectOpenHandles",
         "test-backend": "mocha --timeout 10000 --require @babel/register tests/*.js --exit",
         "test-frontend": "jest --detectOpenHandles",
+        "travis": "echo \"travis build push!\" && exit 0",
         "start": "node server.js",
         "pre": "npm install && cd application && npm install && npm run build",
         "dev": "webpack-dev-server --mode development --open --port 3000",
