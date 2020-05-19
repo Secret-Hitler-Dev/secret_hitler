@@ -9,6 +9,7 @@ const Cryptr = require('cryptr');
 const cryptr = new Cryptr(process.env.SECRET);
 const jwt = require('jsonwebtoken');
 const nodemailer = require("nodemailer");
+var cookie = require('cookie');
 
 function encode(email) {
     if (!email) return "";
@@ -25,6 +26,7 @@ function createSession(req, res, data) {
         // hashedID: encode(identifier),
         isGuest: encode(data.isGuest),
         hashedID: encode(data.playerTag),
+        emailHash: encode(data.email),
         // hashedPlayerNickName: encode(data.playerNickName),
         // hashedVerified: encode(data.verified),
         // hashedPassword: data.isGuest ? encode(data.password) : null
@@ -47,6 +49,7 @@ function login(err, data, password, req, res) {
         var user = {
             playerTag: data.playerTag,
             isGuest: false,
+            email: data.email
             // playerNickName: data.playerNickName,
             // verified: data.verified
         };
@@ -113,7 +116,7 @@ function verificationTokenValid(email, token) {
     }
 }
 
-function sendEmail(email, token, req) {
+function sendEmail(email, token, req, res) {
     var transporter = nodemailer.createTransport({ 
         service: 'gmail', 
         auth: { 
@@ -130,8 +133,7 @@ function sendEmail(email, token, req) {
     };
 
     transporter.sendMail(mailOptions, function (err) {
-        if (err) { return res.status(500).send({ msg: err.message }); }
-        res.status(200).send('A verification email has been sent to ' + email + '.');
+        if (err) { console.log(err); }
     });
 }
 
@@ -182,6 +184,7 @@ module.exports = function(app) {
                                     var userData = {
                                         playerTag: data.playerTag,
                                         isGuest: false,
+                                        email: data.email
                                         // playerNickName: data.playerNickName,
                                         // verified: data.verified
                                     }
@@ -242,7 +245,8 @@ module.exports = function(app) {
     });
 
     app.get('/api/checkToken', withAuth, function(req, res) {
-        var token = req.headers.cookie.split("=")[1];
+        var cookies = cookie.parse(req.headers.cookie);
+        var token = cookies.token;
         var decoded = jwt.verify(token, process.env.SECRET);
 
         var payload = {
@@ -302,9 +306,10 @@ module.exports = function(app) {
     });
 
     app.post('/api/users/update', withAuth, function(req, res) {
-        var token = req.headers.cookie.split("=")[1];
+        var cookies = cookie.parse(req.headers.cookie);
+        var token = cookies.token;
         var decoded = jwt.verify(token, process.env.SECRET);
-        var email = decode(decoded.emailhash);
+        var email = decode(decoded.emailHash);
 
         var formData = req.body;
 
@@ -319,11 +324,12 @@ module.exports = function(app) {
     });
 
     app.post('/api/sendVerification', (req, res) => {
-        var token = req.headers.cookie.split("=")[1];
+        var cookies = cookie.parse(req.headers.cookie);
+        var token = cookies.token;
         var decoded = jwt.verify(token, process.env.SECRET);
-        var email = decode(decoded.emailhash);
+        var email = decode(decoded.emailHash);
 
-        sendEmail(email, generateVerificationToken(email), req);
+        sendEmail(email, generateVerificationToken(email), req, res);
 
         return res.status(200).json({ msg: 'success' });
     });
