@@ -228,7 +228,7 @@ module.exports = function(app) {
         const {email, password} = req.body;
 
         findByEmail(email, (err, data) => {
-            return login(err, data, email, password, req, res);
+            return login(err, data, password, req, res);
         });
     });
 
