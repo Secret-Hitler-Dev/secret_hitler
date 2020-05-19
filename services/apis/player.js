@@ -1,12 +1,11 @@
 require('dotenv').config()
 
 var Player = require("../models/Player");
-const bcrypt = require('bcryptjs');
-const Cryptr = require('cryptr');
-const cryptr = new Cryptr(process.env.SECRET);
-const salt = bcrypt.genSaltSync(15);
+
+
 
 module.exports = function(app) {
+
     app.get('/api/getPlayerList', function(req, res) {
         Player.find({}, function(err, players) {
             if (err) {
@@ -33,12 +32,12 @@ module.exports = function(app) {
             newPlayer = new Player({
                 userId: req.body.userId,
                 playerName: req.body.playerName,
-                password: bcrypt.hashSync(req.body.password, salt)
+                // password: bcrypt.hashSync(req.body.password, salt)
             });
         } else {
             newPlayer = new Player({
                 playerName: req.body.playerName,
-                password: bcrypt.hashSync(req.body.password, salt)
+                // password: bcrypt.hashSync(req.body.password, salt)
             });
         }
         newPlayer.save(function(err, player) {

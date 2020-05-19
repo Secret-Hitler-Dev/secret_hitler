@@ -4,91 +4,86 @@ var Player = require("../models/Player");
 var Game = require("../models/Game");
 var shortid = require('shortid');
 
-module.exports = function(app) {
-    app.post('/api/createGame', function(req, res) {
-        var gameCode = shortid.generate();
-        var players = [new mongoose.mongo.ObjectId(req.body.playerId)];
+module.exports = {
 
-        var newGame = new Game({
-            code: gameCode,
-            players: players,
-            numPlayers: 1
-        });
-        newGame.save(function(err, game) {
-            if (err) {
-                res.status(400)
-                .json({
-                    status: 'error',
-                    data: {},
-                    message: err
-                });
-            } else {
-                res.status(202)
-                .json({
-                    status: 'success',
-                    data: game._id,
-                    message: "Game code is " + game.code
-                });
-            }
-        });
-        console.log("created")
-    });
-
-    app.post('/api/joinGame', function(req, res) {        
-        var gameCode = req.body.gameCode;
+    joinGameAPI: (gameCode, joiningPlayerTag, socket, io) => {      
+        var payload = null;
         var game = null;
         Game.findOne({code: gameCode}, function(err, retrievedGame) {
             if (err) {
-                console.log("hellow")
-                res.status(400)
-                .json({
+                payload = {
                     status: 'error',
                     data: {},
                     message: err
-                });
+                };
+                socket.emit("joinResult", payload);
+
             } else {
                 game = retrievedGame;
                 // game must have space for the player
-                console.log(game.players);
-                console.log(req.body._id);
-                if (game.players.includes(req.body._id)) {
-                    res.status(202)
-                    .json({
+                if (retrievedGame.players.includes(joiningPlayerTag)) {
+                    payload = {
                         status: 'success',
                         data: game.code,
                         message: "Player already in, rejoined game: " + game.code
+                    };
+
+                    socket.join(gameCode, () => {
+                        io.in(gameCode).emit("joinResult", payload);
                     });
                 } else {
                     if (game.numPlayers < 10) {
-                        game.players.push(req.body._id);
-                        game.numPlayers += 1;
-                        game.save(function(err, update) {
-                            if (err) {
-                                res.status(400)
-                                .json({
+                        // create a player
+
+                        var newPlayer = new Player({
+                            playerTag: joiningPlayerTag,
+                            playerNickName: joiningPlayerTag,
+                            playerRoom: gameCode,
+                        });
+                        
+                        newPlayer.save((err, player) => {
+                            if (err || !player) {
+                                payload = {
                                     status: 'error',
-                                    data: {},
-                                    message: err
-                                });
+                                    data: err,
+                                    message: "Error occured"
+                                };
+                                socket.emit("joinResult", payload);
                             } else {
-                                res.status(200)
-                                .json({
-                                    status: 'success',
-                                    data: update._id,
-                                    message: "Player joined" + update.code
+
+                                game.players.push(joiningPlayerTag);
+                                game.numPlayers += 1;
+                                game.save(function(err, update) {
+                                    if (err) {
+                                        payload = {
+                                            status: 'error',
+                                            data: {},
+                                            message: err
+                                        };
+                                    } else {
+                                        payload = {
+                                            status: 'success',
+                                            data: update.code,
+                                            message: "Player joined " + update.code
+                                        };
+                                        
+                                        socket.join(update.code, () => {
+                                            io.in(update.code).emit("joinResult", payload);
+                                        });
+                                    }                            
                                 });
-                            }                            
+                            }
                         });
                     } else {
-                        res.status(400)
-                        .json({
+                        payload = {
                             status: 'error',
                             data: {},
-                            message: "this party is full"
-                        });
+                            message: "This party is full"
+                        };
+                        socket.emit("joinResult", payload);
                     }
                 }
             }
         });
-    });
+    }
 };

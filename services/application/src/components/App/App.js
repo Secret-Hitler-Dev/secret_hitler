@@ -4,7 +4,8 @@ import './App.css';
 import { Link, Route, Switch, BrowserRouter } from 'react-router-dom';
 import { Box, Heading, Grommet } from 'grommet';
 
-import {Home, Login, Logout, Register, Loading, Verify, Profile, Game} from 'Pages';
+import { Home, Login, Logout, Guest, Register, Loading, Verify, Profile, Game } from 'Pages';
+
 
 class App extends Component {
     _isMounted = false;
@@ -21,7 +22,8 @@ class App extends Component {
             currentGames: 0,
             totalLiberalWins: 0,
             totalFascistWins: 0,
-            guest: false
+            guest: false,
+            playerNickName: ""
         };
 
         this.logout = this.logout.bind(this);
@@ -30,7 +32,7 @@ class App extends Component {
     }
 
     login(data) {
-        this.setState({isLoggedIn: true, playerTag:data.playerTag, verified:data.verified, totalUsers: data.totalUsers, guest:data.guest});
+        this.setState({isLoggedIn: true, playerTag:data.playerTag, verified:data.verified, totalUsers: data.totalUsers, guest:data.guest, playerNickName: data.playerNickName});
     }
 
     logout() {
@@ -59,7 +61,6 @@ class App extends Component {
     componentDidMount() {
         this._isMounted = true;
 
-
         fetch('/api/checkToken', {
             headers: {
                 'Accept': 'application/json, text/plain, */*',  // It can be used to overcome cors errors
@@ -67,7 +68,6 @@ class App extends Component {
             }
         })
         .then(res => {
-            console.log(res.status);
             if (res.status === 200) {
                 return res.json();
             } else {
@@ -82,10 +82,10 @@ class App extends Component {
         })
         .then(data => {
             if (data) {
-                console.log(data);
                 if (this._isMounted) {
                     this.setState({
                         playerTag: data.playerTag,
+                        playerNickName: data.playerNickName,
                         msg: "USER LOGGED IN!",
                         isLoggedIn:true,
                         loading:false,
@@ -116,7 +116,8 @@ class App extends Component {
             currentGames:this.state.currentGames,
             totalLiberalWins:this.state.totalLiberalWins,
             totalFascistWins:this.state.totalFascistWins,
-            guest:this.state.guest
+            guest:this.state.guest,
+            playerNickName: this.state.playerNickName
         };
 
         var content = this.state.loading ? <Loading /> :
@@ -149,6 +150,11 @@ class App extends Component {
                         <Game data={propsData}/>
 
                     }/>
+                    <Route exact path="/guest" component={() =>
+                        <Guest data={propsData}/>
+
+                    }/>
+
                     
                 </Switch>
             </BrowserRouter>
