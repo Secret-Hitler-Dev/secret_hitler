@@ -6,6 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
+    "travis": "echo \"travis build!\" && exit 0",
     "pre": "npm install && cd application && npm install && npm run build",
     "dev": "webpack-dev-server --mode development --open --port 3000",
     "build": "webpack --mode production --history-api-fallback"
