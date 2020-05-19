@@ -68,7 +68,6 @@ class App extends Component {
             }
         })
         .then(res => {
-            console.log(res.status);
             if (res.status === 200) {
                 return res.json();
             } else {
@@ -83,8 +82,6 @@ class App extends Component {
         })
         .then(data => {
             if (data) {
-                console.log("data from cookies:");
-                console.log(data);
                 if (this._isMounted) {
                     this.setState({
                         playerTag: data.playerTag,

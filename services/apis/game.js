@@ -21,8 +21,6 @@ module.exports = {
             } else {
                 game = retrievedGame;
                 // game must have space for the player
-
-                // console.log(req.body._id);
                 if (retrievedGame.players.includes(joiningPlayerTag)) {
                     payload = {
                         status: 'success',
@@ -45,7 +43,6 @@ module.exports = {
                         
                         newPlayer.save((err, player) => {
                             if (err || !player) {
-                                console.log(err);
                                 payload = {
                                     status: 'error',
                                     data: err,
@@ -71,7 +68,6 @@ module.exports = {
                                         };
                                         
                                         socket.join(update.code, () => {
-                                            console.log(update.code)
                                             io.in(update.code).emit("joinResult", payload);
                                         });
                                     }                            

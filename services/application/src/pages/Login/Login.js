@@ -87,8 +87,6 @@ class Login extends Component {
                 this.setState({error: data.msg});
             }
             else {
-                console.log("from inside login")
-                console.log(data)
                 this.props.data.login(data);
                 this.props.history.push('/');
             }

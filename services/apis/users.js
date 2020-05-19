@@ -182,7 +182,6 @@ module.exports = function(app) {
                         // tag doesn't exist we are good
                         createUser(formData, (err, data) => {
                             if (err) {
-                                console.log(err)
                                 return res.status(400).json({error: err, msg:"Failed to create user."});
                             } else {
                                 var userData = {

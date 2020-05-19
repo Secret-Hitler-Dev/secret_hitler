@@ -52,12 +52,6 @@ class Dashboard extends Component {
     }
 
     joinGame = () => {
-        console.log("___________________________")
-        console.log(this.props.data);
-        console.log(this.state.roomCode);
-        console.log(this.props.data.playerTag);
-        console.log("___________________________")
-
         socket.emit('playerJoin', this.props.data.playerTag, this.state.roomCode);
     }
 
@@ -68,17 +62,11 @@ class Dashboard extends Component {
     componentDidMount() {
         this.setState(this.props.data);
 
-        console.log("data from inside dashboard:");
-        console.log(this.props.data);
-
         socket.on("joinResult", (result) => {
-            console.log("result of JOIN");
             if (result.status === "error") {
-                console.log(result);
                 var rc = this.state.roomCode;
                 this.setState({error:result.message});
             } else {
-                console.log(result)
                 if (result.status === "success") {
                     console.log("redirect to game lobby: " + result.data)
                 } else {

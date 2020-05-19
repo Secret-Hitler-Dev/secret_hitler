@@ -58,7 +58,6 @@ class Guest extends Component {
     }
     
     setInvalid = (val) => {
-        console.log(val);
         this.setState({invalid: val});
     }
 
@@ -67,10 +66,6 @@ class Guest extends Component {
     }
 
     submit = () => {
-        console.log(this.state);
-        console.log(this.state.playerTag);
-        console.log(this.state.password);
-
         this.setState({
             error:''
         });
@@ -89,7 +84,6 @@ class Guest extends Component {
             }
         })
         .then(res => {
-            console.log("jsonify");
             this.setWorking(false);
             return res.json();
         })
@@ -98,16 +92,12 @@ class Guest extends Component {
                 this.setState({error: data.msg});
             }
             else {
-                console.log("data");
-                console.log(data)
-
                 // set the states
                 this.props.data.login(data);
                 this.props.history.push('/');
             }
         }) 
         .catch(err => {
-            console.log(err);
             alert('Error joining as guest, please try again');
         });
 
@@ -119,20 +109,20 @@ class Guest extends Component {
     }
 
     componentDidMount() {
-    //     fetch('/api/checkToken', {
-    //         headers: {
-    //             'Accept': 'application/json, text/plain, */*',  // It can be used to overcome cors errors
-    //             'Content-Type': 'application/json'
-    //         }
-    //     })
-    //     .then(res => {
-    //         if (res.status === 200) {
-    //             this.props.history.push('/');
-    //         } 
-    //     }) 
-    //     .catch(err => {
-    //         console.error(err);
-    //     });
+        fetch('/api/checkToken', {
+            headers: {
+                'Accept': 'application/json, text/plain, */*',  // It can be used to overcome cors errors
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(res => {
+            if (res.status === 200) {
+                this.props.history.push('/');
+            } 
+        }) 
+        .catch(err => {
+            console.error(err);
+        });
     }
 
     render() {

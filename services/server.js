@@ -28,15 +28,15 @@ var server = require('http').Server(app);
 var io = socket(server);
 
 app.use(express.static(path.join(__dirname, '/application/public')));
-app.use(webpackDevMiddleware(compiler, {
-    hot: true,
-    filename: 'bundle.js',
-    publicPath: '/',
-    stats: {
-        colors: true,
-    },
-    historyApiFallback: true,
-}));
+// app.use(webpackDevMiddleware(compiler, {
+//     hot: true,
+//     filename: 'bundle.js',
+//     publicPath: '/',
+//     stats: {
+//         colors: true,
+//     },
+//     historyApiFallback: true,
+// }));
 
 // Added for exposing our server instance to the test suite
 module.exports = server;
@@ -61,10 +61,6 @@ const withAuth = require('./apis/middleware');
 // Listeners
 io.on('connection', socket => {
     socket.on('playerJoin', (playerTag, gameCode) => {
-        console.log("inside listener")
-        console.log(playerTag)
-        console.log(gameCode)
-
         // the listeners for these will be in the client code
         try{
             game.joinGameAPI(gameCode, playerTag, socket, io);

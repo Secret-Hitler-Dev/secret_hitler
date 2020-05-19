@@ -60,7 +60,6 @@ class Game extends Component {
             const values = queryString.parse(this.props.location.search)
             var code = values.room;
 
-            console.log(code);
             if (!code) {
                 // print error message
             }
