@@ -18,8 +18,8 @@ import { StatusInfoSmall } from "grommet-icons";
 
 import { AiFillEye } from "react-icons/ai";
 import { FaHandPaper, FaSkull } from "react-icons/fa";
-import { BsXCircleFill, BsCircle } from "react-icons/bs";
-import { GiCardDraw, GiCardDiscard, GiEagleEmblem } from "react-icons/gi";
+import { BsXCircleFill, BsCircle, BsPlayFill } from "react-icons/bs";
+import { GiCardDraw, GiCardDiscard, GiEagleEmblem, GiExitDoor } from "react-icons/gi";
 import { GrPowerCycle } from "react-icons/gr";
 
 import { deepMerge } from 'grommet/utils';
@@ -38,7 +38,8 @@ import {
     PolicyLiberal,
     RoleFascist,
     RoleHitler,
-    RoleLiberal
+    RoleLiberal,
+    Policy
 } from 'GameAssets';
 
 const customFocus = deepMerge(grommet, {
@@ -49,6 +50,36 @@ const customFocus = deepMerge(grommet, {
     }
 });
 
+const GAMEPHASE = {
+    CHANCELLOR_NOMINATION : 'CHANCELLOR_NOMINATION',
+    ELECTION : 'ELECTION',
+    LEGISLATIVE_SESSION_PRESIDENT : 'LEGISLATIVE_SESSION_PRESIDENT',
+    LEGISLATIVE_SESSION_CHANCELLOR : 'LEGISLATIVE_SESSION_CHANCELLOR',
+    WAITING: 'WAITING'
+}
+
+const GAMEPHASE_MSG = {
+    CHANCELLOR_NOMINATION : 'PICK YOUR CHANCELOR',
+    ELECTION : 'VOTE ON THIS GOVERNMENT',
+    LEGISLATIVE_SESSION_PRESIDENT : 'PICK A POLICY TO DISCARD',
+    LEGISLATIVE_SESSION_CHANCELLOR : 'PICK A POLICY TO ENACT',
+    WAITING: 'WAITING FOR THE NEXT PHASE'
+}
+
+const GAMEPHASE_STATUS = {
+    CHANCELLOR_NOMINATION : 'PRESIDENT IS PICKING A CHANCELLOR!',
+    ELECTION : 'VOTING ON GOVERNMENT!',
+    LEGISLATIVE_SESSION_PRESIDENT : 'CHANCELLOR IS DISCARDING A POLICY!',
+    LEGISLATIVE_SESSION_CHANCELLOR : 'CHANCELLOR IS SELECTING A POLICY!',
+    WAITING: 'WAITING FOR THE NEXT PHASE'
+}
+
+const VOTE = {
+    JA: "JA",
+    NEIN: "NEIN",
+    NONE: "NONE"
+}
+
 class GameDash extends Component {
     
 
@@ -58,8 +89,6 @@ class GameDash extends Component {
             msg: '',
             reveal: 0,
             envWidth: 80,
-            role:null, 
-            member:null, 
             fascist:false,
             hitler:false,
             intel: '',
@@ -68,7 +97,13 @@ class GameDash extends Component {
             electionTracker: 0,
             numberOfFascists:0,
             numberOfLiberals:0,
-            host:false
+            host:false,
+            gamePhase: GAMEPHASE.CHANCELLOR_NOMINATION,
+            electionPolicies: [Policy, Policy, Policy],
+            votePicked: false,
+            vote:VOTE.NONE,
+            gameStarted: false,
+            status: ''
         };
         
     }
@@ -86,12 +121,43 @@ class GameDash extends Component {
 
     resetGame = () => {
         console.log("RESET GAME!");
+        this.setStatus("RESET GAME");
+    }
+
+    startGame = () => {
+        console.log("RESET GAME!");
+        this.setStatus("START GAME");
     }
 
     leaveGame = () => {
         console.log("LEAVE GAME!");
+        this.setStatus("LEAVE GAME");
     }
 
+    pickFirst = () => {
+        this.setState({gamePhase: GAMEPHASE.WAITING});
+        
+    }
+
+    pickSecond = () => {
+        this.setState({gamePhase: GAMEPHASE.WAITING});
+    }
+
+    pickThird = () => {
+        this.setState({gamePhase: GAMEPHASE.WAITING});
+    }
+
+    setStatus = (status) => {
+        this.setState({status: status});
+    }
+
+    voteJa = () => {
+        this.setState({votePicked: true, vote:VOTE.JA});
+    }
+
+    voteNein = () => {
+        this.setState({votePicked: true, vote:VOTE.NEIN});
+    }
     
     reveal = (event) => {
         if (this.state.reveal > 0) {
@@ -114,17 +180,20 @@ class GameDash extends Component {
             var playerNum = this.props.data.players.length;
 
             var testData = {
-                role:RoleHitler, 
                 host: true,
-                member:MemberFascist, 
-                fascist:true,
+                fascist:false,
                 hitler:false,
                 intel:'',
                 drawPile: 8,
                 discardPile: 3,
                 electionTracker: 2,
                 numberOfFascists: playerNum >= 9 ? 4 : playerNum >= 7 ? 3 : 2,
-                numberOfLiberals: playerNum >= 9 ? playerNum - 4 : playerNum >= 7 ? playerNum - 3 : playerNum - 2
+                numberOfLiberals: playerNum >= 9 ? playerNum - 4 : playerNum >= 7 ? playerNum - 3 : playerNum - 2,
+                electionPolicies: [PolicyFascist, PolicyLiberal, PolicyLiberal],
+                votePicked: false,
+                gamePhase: GAMEPHASE.LEGISLATIVE_SESSION_PRESIDENT,
+                gameStarted: true,
+                status:"CHANCELLOR IS SELECTING A POLICY!"
             }
 
             if (testData.fascist) {
@@ -196,8 +265,6 @@ class GameDash extends Component {
                             <GameEnvelope 
                                 data={{
                                     envWidth:90, 
-                                    role:this.state.role, 
-                                    member:this.state.member, 
                                     fascist:this.state.fascist,
                                     hitler:this.state.hitler
                                 }}
@@ -219,6 +286,7 @@ class GameDash extends Component {
                         round="xsmall"
                         pad="medium"
                         gap="small"
+                        overflow="none"
                     >
                         <Box 
                             width="60%" 
@@ -241,7 +309,7 @@ class GameDash extends Component {
                             >
                                 <GiCardDraw color={offWhite}/>
                                 <Text color={offWhite}>{this.state.drawPile}</Text>
-                                <ReactTooltip id="drawPile" type='info' backgroundColor={offWhite} textColor={grey}>
+                                <ReactTooltip className="tooltop-round policy-tool-tip" id="drawPile" type='info' backgroundColor={offWhite} textColor={grey}>
                                     DRAW PILE
                                 </ReactTooltip>
                             </Box>
@@ -255,7 +323,7 @@ class GameDash extends Component {
                             >
                                 <FaSkull color={orange}/>
                                 <Text color={orange}>{this.state.numberOfFascists}</Text>
-                                <ReactTooltip id="numFas" type='info' backgroundColor={orange} >
+                                <ReactTooltip className="tooltop-round policy-tool-tip" id="numFas" type='info' backgroundColor={orange} >
                                     NUMBER OF FASCISTS
                                 </ReactTooltip>
                             </Box>
@@ -283,7 +351,7 @@ class GameDash extends Component {
                                     <BsCircle color={offWhite}/>
                                 }
 
-                                <ReactTooltip id="eTracker" type='info' backgroundColor={offWhite} textColor={grey}>
+                                <ReactTooltip className="tooltop-round policy-tool-tip" id="eTracker" type='info' backgroundColor={offWhite} textColor={grey}>
                                     ELECTION TRACKER
                                 </ReactTooltip>
                             </Box>
@@ -297,7 +365,7 @@ class GameDash extends Component {
                             >
                                 <GiEagleEmblem color={blue}/>
                                 <Text color={blue}>{this.state.numberOfLiberals}</Text>
-                                <ReactTooltip id="numLib" type='info' backgroundColor={blue}>
+                                <ReactTooltip className="tooltop-round policy-tool-tip" id="numLib" type='info' backgroundColor={blue}>
                                     NUMBER OF LIBERALS
                                 </ReactTooltip>
                             </Box>
@@ -311,7 +379,7 @@ class GameDash extends Component {
                             >
                                 <GiCardDiscard color={offWhite}/>
                                 <Text color={offWhite}>{this.state.discardPile}</Text>
-                                <ReactTooltip id="discardPile" type='info' backgroundColor={offWhite} textColor={grey}>
+                                <ReactTooltip className="tooltop-round policy-tool-tip" id="discardPile" type='info' backgroundColor={offWhite} textColor={grey}>
                                     DISCARD PILE
                                 </ReactTooltip>
                             </Box>
@@ -361,7 +429,9 @@ class GameDash extends Component {
                                 align="center"
                                 justify="start"
                             >
-                                {this.state.host && 
+                                {// add start game too
+                                }
+                                {this.state.host && this.state.gameStarted && 
                                     <Box
                                         direction="row"
                                         gap="3px"
@@ -376,6 +446,21 @@ class GameDash extends Component {
                                         <Text color={grey}>RESET</Text>
                                     </Box>
                                 }
+                                {this.state.host && !this.state.gameStarted && 
+                                    <Box
+                                        direction="row"
+                                        gap="3px"
+                                        align="center"
+                                        justify="start"
+                                        onClick={()=>this.startGame()}
+                                        pad="10px"   
+                                        background={offWhite}
+                                        round="20px"                                     
+                                    >
+                                        <BsPlayFill color={grey2} />
+                                        <Text color={grey}>START GAME</Text>
+                                    </Box>
+                                }
                                 <Box
                                     direction="row"
                                     gap="3px"
@@ -386,29 +471,108 @@ class GameDash extends Component {
                                     background={offWhite}
                                     round="20px"                                     
                                 >
-                                    <GrPowerCycle color={grey2} />
+                                    <GiExitDoor color={grey2} />
                                     <Text color={grey}>LEAVE GAME</Text>
                                 </Box>   
                             </Box>
-                            <Box
-                                height="100%" 
-                                direction="row"
-                                gap="small"
-                                align="center"
-                                justify="start"
-                            >
-                                
-                            </Box>
+                            {(this.state.gamePhase === GAMEPHASE.LEGISLATIVE_SESSION_CHANCELLOR ||
+                                this.state.gamePhase === GAMEPHASE.LEGISLATIVE_SESSION_PRESIDENT) ?
+                                <Box
+                                    width="30%"
+                                    height="100%" 
+                                    direction="row"
+                                    align="end"
+                                    justify="center"
+                                >
 
-                            <Box
-                                height="100%" 
-                                direction="row"
-                                gap="small"
-                                align="center"
-                                justify="start"
-                            >
-                                
-                            </Box>
+                                    <Image 
+                                        src={this.state.electionPolicies[0]} 
+                                        width="30%"
+                                        className="policy fanCard"
+                                        onClick={() => this.pickFirst()}
+                                        data-tip data-for="policySelectInstructions"
+                                    />
+
+                                    <Image 
+                                        src={this.state.electionPolicies[1]} 
+                                        width="30%"
+                                        className="policy fanCard"
+                                        onClick={() => this.pickSecond()}
+                                        data-tip data-for="policySelectInstructions"
+                                    />
+
+                                    <Image 
+                                        src={this.state.electionPolicies[2]} 
+                                        width="30%"
+                                        className="policy fanCard"
+                                        onClick={() => this.pickThird()}
+                                        data-tip data-for="policySelectInstructions"
+                                    />
+                                    
+                                    <ReactTooltip 
+                                        id="policySelectInstructions" 
+                                        type='info' 
+                                        backgroundColor={grey}
+                                        textColor={offWhite}
+                                        overridePosition={ ({ left, top },currentEvent, currentTarget, node) => {
+                                            top = top - 10;
+                                            return { top, left }
+                                        }}
+                                        effect="solid"
+                                        className="policy-tool-tip"
+                                    >
+                                        {GAMEPHASE_MSG[this.state.gamePhase]}
+                                    </ReactTooltip>
+                                </Box>
+                            :
+                                <Box
+                                    width="50%"
+                                    direction="row"
+                                    align="center"
+                                    justify="center"
+                                >
+                                    <Text color={offWhite}>{GAMEPHASE_STATUS[this.state.gamePhase]}</Text>
+                                </Box>
+                            }
+
+                            {this.state.gamePhase === GAMEPHASE.ELECTION ? 
+                                <Box
+                                    width="25%"
+                                    height="100%" 
+                                    direction="row"
+                                    align="end"
+                                    justify="between"
+                                >
+                                    <Image 
+                                        src={VoteJa} 
+                                        width="50%"
+                                        className="policy fanCard"
+                                        onClick={() => this.voteJa()}
+                                    />
+
+                                    <Image 
+                                        src={VoteNein} 
+                                        width="50%"
+                                        className="policy fanCard"
+                                        onClick={() => this.voteNein()}
+                                    />
+                                    
+                                    <Box
+                                        width={{"min":"25%"}}
+                                        direction="row"
+                                        align="center"
+                                        justify="center"
+                                    >
+                                        <Text data-tip data-for="curentVote" color={offWhite}>{this.state.vote}</Text>
+                                        <ReactTooltip id="curentVote" type='info' backgroundColor={offWhite} textColor={grey} >
+                                            CURRENT VOTE
+                                        </ReactTooltip>
+                                    </Box>
+                                    
+                                </Box>
+                            :
+                                <Box width="25%"></Box>
+                            }
 
                         </Box>
                         
