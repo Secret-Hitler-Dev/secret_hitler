@@ -11,102 +11,46 @@ body {
 }
 
 .game-card {
-    -webkit-box-shadow: 5px 5px 9px -7px rgba(0,0,0,0.29);
-    -moz-box-shadow: 5px 5px 9px -7px rgba(0,0,0,0.29);
-    box-shadow: 5px 5px 9px -7px rgba(0,0,0,0.29);
+
 }
 
 .game-card-border {
-    -webkit-box-shadow: 5px 5px 9px -7px rgba(0,0,0,0.29);
-    -moz-box-shadow: 5px 5px 9px -7px rgba(0,0,0,0.29);
-    box-shadow: 5px 5px 9px -7px rgba(0,0,0,0.29);
-    border: 1px solid rgba(100, 100, 100, 0.24);
+
 }
 
-.tile-effect-fas {
-    box-shadow: 1px 1px 0px #fde0bc,
-                2px 2px 0px #fde0bc,
-                3px 3px 0px #fde0bc,
-                4px 4px 0px #fde0bc,
-                5px 5px 0px #fde0bc,
-                6px 6px 0px #f2664a;
-    -webkit-box-shadow: 1px 1px 0px #fde0bc,
-                        2px 2px 0px #fde0bc,
-                        3px 3px 0px #fde0bc,
-                        4px 4px 0px #fde0bc,
-                        5px 5px 0px #fde0bc,
-                        6px 6px 0px #f2664a;
-    -moz-box-shadow: 1px 1px 0px #fde0bc,
-                    2px 2px 0px #fde0bc,
-                    3px 3px 0px #fde0bc,
-                    4px 4px 0px #fde0bc,
-                    5px 5px 0px #fde0bc,
-                    6px 6px 0px #f2664a;
-        
+.game-card:hover, .game-card-border:hover, .game-card-no-shadow:hover{
+    z-index:2;
+    transform: translate(1px , -15px);
 }
 
-.tile-effect {
-    box-shadow: 1px 1px 0px #fde0bc,
-                2px 2px 0px #fde0bc,
-                3px 3px 0px #fde0bc,
-                4px 4px 0px #fde0bc,
-                5px 5px 0px #fde0bc,
-                6px 6px 0px #474442;
-    -webkit-box-shadow: 1px 1px 0px #fde0bc,
-                        2px 2px 0px #fde0bc,
-                        3px 3px 0px #fde0bc,
-                        4px 4px 0px #fde0bc,
-                        5px 5px 0px #fde0bc,
-                        6px 6px 0px #474442;
-    -moz-box-shadow: 1px 1px 0px #fde0bc,
-                    2px 2px 0px #fde0bc,
-                    3px 3px 0px #fde0bc,
-                    4px 4px 0px #fde0bc,
-                    5px 5px 0px #fde0bc,
-                    6px 6px 0px #474442;
-        
+
+.policy, .lightDropShadow, .policy-tool-tip {
+    -webkit-box-shadow: 4px 4px 11px -3px rgba(0,0,0,0.41);
+    -moz-box-shadow: 4px 4px 11px -3px rgba(0,0,0,0.41);
+    box-shadow: 4px 4px 11px -3px rgba(0,0,0,0.41);
 }
 
-.tile-effect-rev {
-    box-shadow:         -1px -1px 0px #fde0bc,
-                        -2px -2px 0px #fde0bc,
-                        -3px -3px 0px #fde0bc,
-                        -4px -4px 0px #fde0bc,
-                        -5px -5px 0px #fde0bc,
-                        -6px -6px 0px #474442;
-    -webkit-box-shadow: -1px -1px 0px #fde0bc,
-                        -2px -2px 0px #fde0bc,
-                        -3px -3px 0px #fde0bc,
-                        -4px -4px 0px #fde0bc,
-                        -5px -5px 0px #fde0bc,
-                        -6px -6px 0px #474442;
-    -moz-box-shadow:    -1px -1px 0px #fde0bc,
-                        -2px -2px 0px #fde0bc,
-                        -3px -3px 0px #fde0bc,
-                        -4px -4px 0px #fde0bc,
-                        -5px -5px 0px #fde0bc,
-                        -6px -6px 0px #474442;
-        
+.policy-tool-tip {
+    font-size: 11px !important;
+    padding: 5px !important;
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+    font-weight: bold !important;
+    transition-duration: 0.25s !important;
 }
 
-.tile-effect-lib {
-    box-shadow: 1px 1px 0px #fde0bc,
-                2px 2px 0px #fde0bc,
-                3px 3px 0px #fde0bc,
-                4px 4px 0px #fde0bc,
-                5px 5px 0px #fde0bc,
-                6px 6px 0px #6d97b9;
-    -webkit-box-shadow: 1px 1px 0px #fde0bc,
-                        2px 2px 0px #fde0bc,
-                        3px 3px 0px #fde0bc,
-                        4px 4px 0px #fde0bc,
-                        5px 5px 0px #fde0bc,
-                        6px 6px 0px #6d97b9;
-    -moz-box-shadow: 1px 1px 0px #fde0bc,
-                    2px 2px 0px #fde0bc,
-                    3px 3px 0px #fde0bc,
-                    4px 4px 0px #fde0bc,
-                    5px 5px 0px #fde0bc,
-                    6px 6px 0px #6d97b9;
-        
+.center-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.center-row > *
+{
+    margin-left: 5px;
+}
+
+.tooltop-round {
+    border-radius: 20px;
+    transition-duration: 0.25s !important;
 }
