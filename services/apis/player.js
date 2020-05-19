@@ -1,12 +1,47 @@
 require('dotenv').config()
 
 var Player = require("../models/Player");
-const bcrypt = require('bcryptjs');
-const Cryptr = require('cryptr');
-const cryptr = new Cryptr(process.env.SECRET);
-const salt = bcrypt.genSaltSync(15);
+var User = require("../models/User");
+const utils = require("../server-utils");
+// const salt = bcrypt.genSaltSync(15);
+const jwt = require('jsonwebtoken');
+const withAuth = require('./middleware');
+
+
+function encode(email) {
+    if (!email) return "";
+    return utils.cryptr.encrypt(email);
+}
+
+function getAll(callback) {
+    User.find({}, callback);
+}
+
+function collectStats(callback) {
+    getAll(callback);
+}
+
+function createSession(identifier, req, res, data) {
+    var payload = {
+        hashedID: encode(identifier),
+        isGuest: encode(data.isGuest),
+        hashedPlayerName: encode(data.playerTag),
+        hashedPlayerNickName: encode(data.playerNickName),
+        hashedVerified: encode(data.verified),
+        hashedPassword: data.isGuest ? encode(data.password) : null
+    }
+    const token = jwt.sign(payload, process.env.SECRET, {
+        expiresIn: 60*60*100
+    });
+    collectStats((err, d) => {
+        data.totalUsers = d.length;
+        return res.cookie('token', token, { httpOnly: true }).status(200).json(data);
+    });
+}
+
 
 module.exports = function(app) {
+
     app.get('/api/getPlayerList', function(req, res) {
         Player.find({}, function(err, players) {
             if (err) {
@@ -33,12 +68,12 @@ module.exports = function(app) {
             newPlayer = new Player({
                 userId: req.body.userId,
                 playerName: req.body.playerName,
-                password: bcrypt.hashSync(req.body.password, salt)
+                // password: bcrypt.hashSync(req.body.password, salt)
             });
         } else {
             newPlayer = new Player({
                 playerName: req.body.playerName,
-                password: bcrypt.hashSync(req.body.password, salt)
+                // password: bcrypt.hashSync(req.body.password, salt)
             });
         }
         newPlayer.save(function(err, player) {

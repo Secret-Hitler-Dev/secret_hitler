@@ -56,11 +56,9 @@ class Dashboard extends Component {
         console.log(this.props.data);
         console.log(this.state.roomCode);
         console.log(this.props.data.playerTag);
-        console.log(this.props.data.playerId)
         console.log("___________________________")
 
-        socket.emit('playerJoin', this.props.data.playerId, this.state.roomCode);
-        // // display an error if room is invalid 
+        socket.emit('playerJoin', this.props.data.playerTag, this.state.roomCode);
     }
 
     createGame = () => {

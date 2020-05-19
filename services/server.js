@@ -9,6 +9,8 @@ var mongoose = require('mongoose');
 var socket = require('socket.io');
 var requests = require('./server-utils')
 const cookieParser = require('cookie-parser');
+var Game = require("./models/Game")
+var shortid = require('shortid');
 
 // bundler
 const webpackDevMiddleware = require('webpack-dev-middleware');
@@ -58,12 +60,14 @@ const withAuth = require('./apis/middleware');
 
 // Listeners
 io.on('connection', socket => {
-    socket.on('playerJoin', (player_id, gameCode) => {
+    socket.on('playerJoin', (playerTag, gameCode) => {
         console.log("inside listener")
-        var res;
+        console.log(playerTag)
+        console.log(gameCode)
+
         // the listeners for these will be in the client code
         try{
-            res = game.joinGameAPI(gameCode, player_id, socket, io);
+            game.joinGameAPI(gameCode, playerTag, socket, io);
             // socket.emit
         } catch (err) {
             socket.emit('joinResult', 'error');
@@ -85,7 +89,34 @@ io.on('connection', socket => {
 
 // helpers
 
+app.post('/api/createGame', function(req, res) {
+    var gameCode = shortid.generate();
+    var players = [new mongoose.mongo.ObjectId(req.body.playerId)];
 
+    var newGame = new Game({
+        code: gameCode,
+        players: players,
+        numPlayers: 1
+    });
+    newGame.save(function(err, game) {
+        if (err) {
+            res.status(400)
+            .json({
+                status: 'error',
+                data: {},
+                message: err
+            });
+        } else {
+            res.status(202)
+            .json({
+                status: 'success',
+                data: game._id,
+                message: "Game code is " + game.code
+            });
+        }
+    });
+    console.log("created")
+});
 app.get('/*', (req, res) => {
     res.sendFile(path.resolve(__dirname, 'application/public', 'index.html'), (err) => {
         if (err) res.status(500).send(err);

@@ -19,8 +19,8 @@ var gameSchema = new Schema({
         required: true
     },
     players:  [{
-        type: Schema.Types.ObjectId,
-        ref: 'Player'}],
+        type: String,
+    }],
     numPlayers: {
         type: Number,
         min: 1,

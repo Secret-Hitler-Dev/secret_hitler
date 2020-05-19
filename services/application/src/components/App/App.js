@@ -23,21 +23,16 @@ class App extends Component {
             totalLiberalWins: 0,
             totalFascistWins: 0,
             guest: false,
-            playerId: ''
+            playerNickName: ""
         };
 
         this.logout = this.logout.bind(this);
         this.login = this.login.bind(this);
-        this.loginAsGuest = this.loginAsGuest.bind(this);
         this.setPlayerTag = this.setPlayerTag.bind(this);
     }
 
     login(data) {
-        this.setState({isLoggedIn: true, playerTag:data.playerTag, verified:data.verified, totalUsers: data.totalUsers, guest:data.guest, playerId: data.playerId});
-    }
-
-    loginAsGuest(data) {
-        this.setState({isLoggedIn: true, playerTag:data.playerTag, verified:data.verified, totalUsers: data.totalUsers, guest:data.guest, playerId: data.playerId});
+        this.setState({isLoggedIn: true, playerTag:data.playerTag, verified:data.verified, totalUsers: data.totalUsers, guest:data.guest, playerNickName: data.playerNickName});
     }
 
     logout() {
@@ -93,11 +88,11 @@ class App extends Component {
                 if (this._isMounted) {
                     this.setState({
                         playerTag: data.playerTag,
+                        playerNickName: data.playerNickName,
                         msg: "USER LOGGED IN!",
                         isLoggedIn:true,
                         loading:false,
                         verified: data.verified,
-                        playerId: data.playerId,
                         totalUsers: data.totalUsers
                     });
                 }
@@ -116,7 +111,6 @@ class App extends Component {
         var propsData = {
             login: this.login,
             logout:this.logout,
-            loginAsGuest:this.loginAsGuest,
             setPlayerTag: this.setPlayerTag,
             playerTag:this.state.playerTag,
             verified:this.state.verified,
@@ -126,7 +120,7 @@ class App extends Component {
             totalLiberalWins:this.state.totalLiberalWins,
             totalFascistWins:this.state.totalFascistWins,
             guest:this.state.guest,
-            playerId: this.state.playerId
+            playerNickName: this.state.playerNickName
         };
 
         var content = this.state.loading ? <Loading /> :

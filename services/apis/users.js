@@ -4,16 +4,24 @@ var Users = require("../models/User");
 var Player = require("../models/Player");
 var General = require("../models/User");
 const withAuth = require('./middleware');
+const utils = require("../server-utils");
 const bcrypt = require('bcryptjs');
 const Cryptr = require('cryptr');
 const cryptr = new Cryptr(process.env.SECRET);
 const jwt = require('jsonwebtoken');
 const nodemailer = require("nodemailer");
 
-
 function encode(email) {
     if (!email) return "";
     return cryptr.encrypt(email);
+}
+
+function getAll(callback) {
+    Users.find({}, callback);
+}
+
+function collectStats(callback) {
+    getAll(callback);
 }
 
 function decode(email) {
@@ -21,66 +29,38 @@ function decode(email) {
     return cryptr.decrypt(email);
 }
 
-function createSession(identifier, isGuest, req, res, data) {
+function createSession(req, res, data) {
     var payload = {
-        hashedID: encode(identifier),
-        isGuest: encode(isGuest),
-        hashedPlayerId: encode(data.playerId),
-        hashedPlayerName: encode(data.playerTag)
+        // hashedID: encode(identifier),
+        isGuest: encode(data.isGuest),
+        hashedID: encode(data.playerTag),
+        // hashedPlayerNickName: encode(data.playerNickName),
+        // hashedVerified: encode(data.verified),
+        // hashedPassword: data.isGuest ? encode(data.password) : null
     }
     const token = jwt.sign(payload, process.env.SECRET, {
         expiresIn: 60*60*100
     });
-
     collectStats((err, d) => {
         data.totalUsers = d.length;
         return res.cookie('token', token, { httpOnly: true }).status(200).json(data);
     });
-    
 }
 
 function killSession(req, res) {
-    // kill session
-    
-    // const token = jwt.sign('invalid', process.env.SECRET, {
-    //     expiresIn: 0*60*60*100
-    // });
     return res.clearCookie("token").sendStatus(200);
 }
 
-function login(err, data, email, password, req, res) {
+function login(err, data, password, req, res) {
     if (!err && data) {
-        if (verifyPass(data, password))  {
-            findPlayerByTag(data.playerTag, (err, player) => {
-                if (err || !player) {
-                    // create a player for this users first
-                    var userPlayer = new Player({
-                        playerName: data.playerTag,
-                        password: "doesntmatter"
-                    })
-                    // users first time playing a game
-                    userPlayer.save(function(err, newPlayer) {
-                        if (err) {
-                            res.status(400)
-                                .json({
-                                    status: 'error',
-                                    data: {},
-                                    message: " your player tag is probably taken"
-                                }); 
-                        } else { 
-                            return createSession(email, false, req, res, {playerId: newPlayer._id, playerTag: newPlayer.playerName, verified: data.verified});
-                        }
-                    });
-                } else if (player) {
-                    // not the first time playing a game
-                    return createSession(email, false, req, res, {playerId: player._id, playerTag: player.playerName, verified: data.verified});
-
-                }
-            });
-
-        } else {
-            res.status(401).json({ error: 0, msg: "Incorrect Password" });
-        } 
+        var user = {
+            playerTag: data.playerTag,
+            isGuest: false,
+            // playerNickName: data.playerNickName,
+            // verified: data.verified
+        };
+        if (verifyPass(data, password)) return createSession(req, res, user);
+        else res.status(401).json({ error: 0, msg: "Incorrect Password" });
     } 
     else return res.status(401).json({ error: 1, msg: "Email does not exists" });
 }
@@ -170,6 +150,7 @@ function createUser(data, callback) {
     var user = {
         email: data.email,
         playerTag: data.playerTag,
+        playerNickName: data.playerTag,
         password: pass
     };
     Users.create(user, callback);
@@ -191,38 +172,6 @@ function updateUserInfo(email, data, callback) {
 }
 
 module.exports = function(app) {
-
-    // Authentication
-    // app.post('/api/playAsGuest', (req, res) => {
-    //     var formData = req.body;
-    //     return createSession("guest."+formData.playerTag, req, res, {playerTag: formData.playerTag});
-    // });
-
-    app.post('/api/playAsGuest', function(req, res) {
-        console.log(req.body);
-        var salt = bcrypt.genSaltSync(15);
-        var newPlayer = new Player({
-            playerName: req.body.playerName,
-            password: bcrypt.hashSync(req.body.password, salt)
-        });
-
-        newPlayer.save(function(err, player) {
-            if (err) {
-                console.log("player");
-                console.log(player._id);
-                res.status(400)
-                    .json({
-                        status: 'error',
-                        data: {},
-                        message: " your player tag is probably taken, lol"
-                    }); 
-            } else { 
-                console.log("newplayer");
-                return createSession(player.playerName, true, req, res, {playerId: player._id, playerTag: player.playerName});
-            }
-        });
-    });
-
     app.post('/api/signup', (req, res) => {
         var formData = req.body;
         findByEmail(formData.email, (err, data) => {
@@ -233,18 +182,18 @@ module.exports = function(app) {
                         // tag doesn't exist we are good
                         createUser(formData, (err, data) => {
                             if (err) {
+                                console.log(err)
                                 return res.status(400).json({error: err, msg:"Failed to create user."});
                             } else {
-                                // create a player for this user
-                                var userPlayer = new Player({
-                                    playerName: data.playerTag,
-                                    password: "doesntmatter"
-                                });
-                                userPlayer.save((err, player) => {
-                                    return createSession(formData.email, false, req, res, {playerId: player._id, playerTag: player.playerName});
-                                });                           
+                                var userData = {
+                                    playerTag: data.playerTag,
+                                    isGuest: false,
+                                    // playerNickName: data.playerNickName,
+                                    // verified: data.verified
+                                }
+                                return createSession(req, res, userData);
                             }
-                            });
+                        });
                     } 
                     else {
                         return res.status(401).json({ error: 1, msg: "Player Tag exists" });
@@ -256,6 +205,27 @@ module.exports = function(app) {
             }
             
         });
+    });
+
+    app.post('/api/playAsGuest', function(req, res) {
+        // var salt = bcrypt.genSaltSync(15);
+        var newPlayer = {
+            playerTag: req.body.playerName,
+            isGuest: true,
+        };
+
+        Users.findOne({playerTag: newPlayer.playerTag}, (err, player) => {
+            if (player) {
+                res.status(400)
+                .json({
+                    status: 'error',
+                    data: {},
+                    message: "Player Tag " + newPlayer.playerTag + " exists, try another name"
+                })
+            } else {
+                return createSession(req, res, newPlayer);
+            }
+        }) 
     });
 
     app.post('/api/signout', (req, res) => {
@@ -272,40 +242,38 @@ module.exports = function(app) {
     });
 
     app.get('/api/checkToken', withAuth, function(req, res) {
-        // console.log("cookie");
-        // console.log(req.headers.cookie);
         var token = req.headers.cookie.split("=")[1];
         var decoded = jwt.verify(token, process.env.SECRET);
-        // console.log("decoded");
-        // console.log(decoded);
+
         var payload = {
             identifier: decode(decoded.hashedID), // not used in guest case
             isGuest: decode(decoded.isGuest),
-            playerId: decode(decoded.hashedPlayerId),
-            playerName: decode(decoded.hashedPlayerName)
+            // playerName: decode(decoded.hashedPlayerName),
+            // playerNickName: decode(decoded.hashedPlayerNickName),
+            // verified: decode(decoded.hashedVerfied),
         }        
-        // console.log("payload");
-        // console.log(payload);
         if (payload.isGuest) {
             collectStats((err, data) => {
                 return res.status(200).json({
-                    playerTag: payload.playerName,
+                    playerTag: payload.identifier,
+                    playerNickName: payload.identifier,
                     verified: true,
                     totalUsers: data.length,
-                    playerId: payload.playerId
+                    guest: payload.isGuest
                 });
             });
         } 
         else {
-        
-            findByEmail(payload.identifier, function(err, data) {
-                var verified = data.verified;
-                collectStats((err, data) => {
+
+            findByTag(payload.identifier, function(err, data) {
+
+                collectStats((err, stats) => {
                     return res.status(200).json({
-                        playerTag: payload.playerName,
-                        verified: verified,
-                        totalUsers: data.length,
-                        playerId: payload.playerId
+                        playerTag: data.playerTag,
+                        playerNickName: data.playerNickName,
+                        verified: data.verified,
+                        totalUsers: stats.length,
+                        guest: false
                     });
                 });
             });

@@ -12,19 +12,19 @@ const Schema = mongoose.Schema;
  * Player Schema
  */
 var playerSchema = new Schema({
-    userId: {
-        type: Schema.Types.ObjectId,
-        ref: 'User',
-        required: false,
-        unique: false
-    },
-    playerName: {
+    playerTag: {
         type: String,
-        unique: true,
+        required: true,
+        unique: true
+    },
+    playerNickName: {
+        type: String,
+        unique: false,
         required: true
     },
-    password: {
+    playerRoom: {
         type: String,
+        unique:false,
         required: true
     },
     isActive: {
