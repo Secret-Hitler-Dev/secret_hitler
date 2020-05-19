@@ -10,7 +10,7 @@
     "dev": "webpack-dev-server --mode development --open --port 3000",
     "build": "webpack --mode production --history-api-fallback"
   },
-  "author": "JM, KDC",
+  "author": "JM, KK, KDC, MB, MF",
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
