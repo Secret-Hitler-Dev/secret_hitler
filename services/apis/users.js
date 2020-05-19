@@ -39,7 +39,7 @@ function createSession(req, res, data) {
 }
 
 function killSession(req, res) {
-    return res.clearCookie("token").sendStatus(200);
+    return res.clearCookie("token").status(200).json({success:true});;
 }
 
 function login(err, data, password, req, res) {

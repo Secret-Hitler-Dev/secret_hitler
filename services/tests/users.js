@@ -9,7 +9,7 @@ const dbHandler = require('./controllers/db-handler.js');
 
 //Importing our todo model for our unit testing.
 var User = require('../models/User.js');
-var userData = require('./data/Users.js');
+var userData = require('./data/UsersData.js');
 
 chai.use(chaiHttp);
 
@@ -148,7 +148,6 @@ describe("POST /api/signin", () => {
                 'password': '1234'
             })
             .end((err, res) => {
-                console.log("RES", res);
                 res.should.have.status(400);
                 res.body.should.be.a('object');
                 res.body.should.have.property('error');
@@ -185,7 +184,7 @@ describe("POST /api/signin", () => {
                 
                 res.should.have.status(200);
                 res.body.should.be.a('object');
-                res.body.should.have.property('playerTag').eql('rob');
+                res.body.should.have.property('playerTag').eql('bob');
                 res.body.should.have.property('isGuest').eql(false);
                 
                 // check cookie
@@ -195,4 +194,18 @@ describe("POST /api/signin", () => {
                 done();
             });
     });        
+});
+
+describe("POST /api/signout", () => {
+
+    it("should sign out a User", (done) => {
+        chai.request(app)
+            .post('/api/signout')
+            .end((err, res) => {
+                res.should.have.status(200);
+                res.body.should.be.a('object');
+                res.body.should.have.property('success').eql(true);
+                done();
+            });
+    });                    
 });
