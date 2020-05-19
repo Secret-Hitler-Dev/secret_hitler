@@ -1,10 +1,6 @@
 language: node_js
 node_js: 
   - "stable"
-env:
-  - SECRET: SUPERCOOLSECRETTRAVIS
-  - MAIL_USER: secrethitler.gang@gmail.com
-  - MAIL_PASS: shgang@1234
 services:
   - mongodb
 cache:
@@ -19,6 +15,4 @@ branches:
   - develop
 script:
   - npm run test
-  - npm run test-backend
-  - npm run test-frontend
 
