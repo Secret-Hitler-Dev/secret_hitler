@@ -4,9 +4,9 @@
     "description": "backend services for the secret hitler game",
     "main": "index.js",
     "scripts": {
-        "test": "mocha --timeout 10000 --require @babel/register tests/*.js --exit && jest --detectOpenHandles",
-        "test-backend": "mocha --timeout 10000 --require @babel/register tests/*.js --exit",
-        "test-frontend": "jest --detectOpenHandles",
+        "test": "env NODE_ENV=test mocha --timeout 10000 --require @babel/register tests/*.js --exit && jest --detectOpenHandles",
+        "test-backend": "env NODE_ENV=test mocha --timeout 10000 --require @babel/register tests/*.js --exit",
+        "test-frontend": "env NODE_ENV=test jest --detectOpenHandles",
         "start": "node server.js",
         "pre": "npm install && cd application && npm install && npm run build",
         "dev": "webpack-dev-server --mode development --open --port 3000",

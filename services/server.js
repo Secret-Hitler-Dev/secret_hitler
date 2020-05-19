@@ -43,7 +43,7 @@ app.use(express.static(path.join(__dirname, '/application/public')));
 module.exports = server;
 
 // this is our MongoDB database
-const dbRoute = process.env.DB_HOST;
+const dbRoute = process.env.NODE_ENV === 'test' ? process.env.DB_HOST_TEST : process.env.DB_HOST;
 
 // connects our back end code with the database
 mongoose.connect(dbRoute, { useNewUrlParser: true, useUnifiedTopology: true}).catch(function (reason) {

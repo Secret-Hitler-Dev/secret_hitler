@@ -11,8 +11,7 @@ const htmlWebpackPlugin = new HtmlWebPackPlugin({
 module.exports = {
     context: path.join(__dirname, '/application/src'),
     entry: [
-        '@babel/polyfill',
-        './index.js',
+        './index.js'
     ],
     output: {
         path: path.join(__dirname, '/application/public'),
