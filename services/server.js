@@ -11,6 +11,7 @@ var requests = require('./server-utils')
 const cookieParser = require('cookie-parser');
 var Game = require("./models/Game")
 var shortid = require('shortid');
+var morgan = require('morgan');
 
 // bundler
 const webpackDevMiddleware = require('webpack-dev-middleware');
@@ -18,6 +19,7 @@ const webpack = require('webpack');
 const webpackConfig = require('./webpack.config.js');
 const compiler = webpack(webpackConfig);
 
+app.use(morgan('dev'));
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded( {extended: true} ));
@@ -124,3 +126,6 @@ app.get('/*', (req, res) => {
 server.listen(process.env.PORT || port, function () {
     console.log(`Server running at http://${hostname}:${port}/`);
 });
+
+// Export our app for testing purposes
+export default app;

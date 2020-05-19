@@ -7,9 +7,8 @@
   </a>
 
   <a href="https://github.com/Secret-Hitler-Dev/secret_hitler/blob/master/LICENSE.md" target="_blank">
-    <img alt="License: Creative Commons Attribution--NonCommercial--ShareAlike 4.0 International" src="https://img.shields.io/badge/License-Creative Commons Attribution--NonCommercial--ShareAlike 4.0 International-yellow.svg" />
+    <img alt="License: Creative Commons Attribution--NonCommercial--ShareAlike 4.0 International" src="https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg" />
   </a>
-  
 </p>
 
 > A full-stack web application for the board game Secret Hitler.
