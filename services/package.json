@@ -4,7 +4,7 @@
     "description": "backend services for the secret hitler game",
     "main": "index.js",
     "scripts": {
-        "test": "mocha --require @babel/register tests/*.js --exit",
+        "test": "mocha --timeout 10000 --require @babel/register tests/*.js --exit",
         "start": "node server.js",
         "pre": "npm install && cd application && npm install && npm run build",
         "dev": "webpack-dev-server --mode development --open --port 3000",

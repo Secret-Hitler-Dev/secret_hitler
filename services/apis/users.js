@@ -51,9 +51,9 @@ function login(err, data, password, req, res) {
             // verified: data.verified
         };
         if (verifyPass(data, password)) return createSession(req, res, user);
-        else res.status(401).json({ error: 0, msg: "Incorrect Password" });
+        else res.status(400).json({ error: 0, msg: "Incorrect Password" });
     } 
-    else return res.status(401).json({ error: 1, msg: "Email does not exists" });
+    else return res.status(400).json({ error: 1, msg: "Email does not exists" });
 }
 
 
@@ -165,36 +165,42 @@ function updateUserInfo(email, data, callback) {
 module.exports = function(app) {
     app.post('/api/signup', (req, res) => {
         var formData = req.body;
-        findByEmail(formData.email, (err, data) => {
-            if (err || !data) {
-                // email doesn't exist we are good
-                findByTag(formData.playerTag, (err, data) => {
-                    if (err || !data) {
-                        // tag doesn't exist we are good
-                        createUser(formData, (err, data) => {
-                            if (err) {
-                                return res.status(400).json({error: err, msg:"Failed to create user."});
-                            } else {
-                                var userData = {
-                                    playerTag: data.playerTag,
-                                    isGuest: false,
-                                    // playerNickName: data.playerNickName,
-                                    // verified: data.verified
+        if (!formData.email || !formData.playerTag || !formData.password) {
+            return res.status(400).json({ error: 1, msg: "Missing fields." });
+        }
+        else {
+            findByEmail(formData.email, (err, data) => {
+                if (err || !data) {
+                    // email doesn't exist we are good
+                    findByTag(formData.playerTag, (err, data) => {
+                        if (err || !data) {
+                            // tag doesn't exist we are good
+                            createUser(formData, (err, data) => {
+                                if (err) {
+                                    return res.status(400).json({error: err, msg:"Failed to create user."});
+                                } else {
+                                    var userData = {
+                                        playerTag: data.playerTag,
+                                        isGuest: false,
+                                        // playerNickName: data.playerNickName,
+                                        // verified: data.verified
+                                    }
+                                    return createSession(req, res, userData);
                                 }
-                                return createSession(req, res, userData);
-                            }
-                        });
-                    } 
-                    else {
-                        return res.status(401).json({ error: 1, msg: "Player Tag exists" });
-                    }
-                });
-            } 
-            else {
-                return res.status(401).json({ error: 1, msg: "Email exists" });
-            }
-            
-        });
+                            });
+                        } 
+                        else {
+                            return res.status(400).json({ error: 1, msg: "Player Tag exists" });
+                        }
+                    });
+                } 
+                else {
+                    return res.status(400).json({ error: 1, msg: "Email exists" });
+                }
+                
+            });
+        }
+        
     });
 
     app.post('/api/playAsGuest', function(req, res) {
@@ -224,11 +230,15 @@ module.exports = function(app) {
     });
 
     app.post('/api/signin', (req, res) => {
-        const {email, password} = req.body;
-
-        findByEmail(email, (err, data) => {
-            return login(err, data, email, password, req, res);
-        });
+        const formData = req.body;
+        if (!formData.email || !formData.password) {
+            return res.status(400).json({ error: 1, msg: "Missing fields." });
+        }
+        else {
+            findByEmail(formData.email, (err, data) => {
+                return login(err, data, formData.password, req, res);
+            });
+        }
     });
 
     app.get('/api/checkToken', withAuth, function(req, res) {
@@ -300,7 +310,7 @@ module.exports = function(app) {
 
         updateUserInfo(email, formData, (err, data) => {
             if (err || !data) {
-                return res.status(401).json({ error: 1, msg: "Could not update user!" });
+                return res.status(500).json({ error: 1, msg: "Could not update user!" });
             }
             else {
                 return res.status(200).json({  playerTag: formData.playerTag });
@@ -320,14 +330,14 @@ module.exports = function(app) {
 
     app.post('/api/verifyEmail/:token', (req, res) => {
 
-        if (!req.params.token) return res.status(401).json({ error: 1, msg: "Token expired or Invalid token!" });
+        if (!req.params.token) return res.status(400).json({ error: 1, msg: "Token expired or Invalid token!" });
 
         var data = Buffer(req.params.token, 'base64').toString('ascii').split("/");
 
         if (verificationTokenValid(data[1], req.params.token)) {
             verifyEmail(data[1], (err, data) => {
                 if (err) {
-                    return res.status(401).json({ error: 1, msg: "Could not verify email!" });
+                    return res.status(500).json({ error: 1, msg: "Could not verify email!" });
                 }
                 else {
                     return res.status(200).json({ msg: data.msg }); 
@@ -336,7 +346,7 @@ module.exports = function(app) {
         }
         else {
 
-            return res.status(401).json({ error: 1, msg: "Token expired or Invalid token!" });
+            return res.status(400).json({ error: 1, msg: "Token expired or Invalid token!" });
         }
     });
 

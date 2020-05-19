@@ -22,4 +22,4 @@ const Users = [
     newUser("alice@dummy.com", "alice", "1357")
 ];
  
-export default Users;
+module.exports = Users;
