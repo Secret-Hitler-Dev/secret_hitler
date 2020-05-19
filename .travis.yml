@@ -6,6 +6,7 @@ services:
 cache:
   directories:
     - "node_modules"
+before_script: cd services
 script:
   - npm run travis
 
