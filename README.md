@@ -124,7 +124,7 @@ Give a ⭐️ if this project helped you!
 
 ## 📝 License
 
-Copyright © 2020 [Kalindu De Costa](https://github.com/kalindudc).<br />
+Copyright © 2020 [Janarthanan Manoharan](https://github.com/janamano), [Kathryn Kodama](https://github.com/kathrynkodama), [Kalindu De Costa](https://github.com/kalindudc), [Mahima Bhayana](https://github.com/mahimabhayana), [Mohammed Faizan](https://github.com/gears961).<br />
 This project is [Creative Commons Attribution--NonCommercial--ShareAlike 4.0 International](https://github.com/Secret-Hitler-Dev/secret_hitler/blob/master/LICENSE.md) licensed.
 
 ***
