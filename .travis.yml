@@ -6,7 +6,13 @@ services:
 cache:
   directories:
     - "node_modules"
-before_script: cd services
+before_script: 
+  - cd services
+  - npm install
+branches:
+  only:
+  - intergration
+  - develop
 script:
-  - npm run travis
+  - npm run test
 
