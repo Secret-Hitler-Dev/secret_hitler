@@ -1,6 +1,10 @@
 language: node_js
 node_js: 
   - "stable"
+env:
+  - SECRET: SUPERCOOLSECRETTRAVIS
+  - MAIL_USER: secrethitler.gang@gmail.com
+  - MAIL_PASS: shgang@1234
 services:
   - mongodb
 cache:
