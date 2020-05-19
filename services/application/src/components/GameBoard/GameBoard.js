@@ -51,7 +51,7 @@ const FASCIST_CARDS = {
     R2P7: {icon: CardFasR2P7, ability: "INVESTIGATE LOYALTY"},
     R2P9: {icon: CardFasR2P9, ability: "INVESTIGATE LOYALTY"},
     R3P5: {icon: CardFasR3P5, ability: "POLICY PEEK"},
-    R3P7: {icon: CardFasR3P7, ability: "SPECIAL ELEVTION"},
+    R3P7: {icon: CardFasR3P7, ability: "SPECIAL ELECTION"},
     R3P9: {icon: CardFasR3P9, ability: "SPECIAL ELECTION"},
     R4: {icon: CardFasR4, ability: "EXECUTION"},
     R5: {icon: CardFasR5, ability: "EXECUTION"},
