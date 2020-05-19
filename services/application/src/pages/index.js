@@ -6,3 +6,4 @@ export {default as Loading} from './Loading/Loading';
 export {default as Verify} from './Verify/Verify';
 export {default as Profile} from './Profile/Profile';
 export {default as Game} from './Game/Game';
+export {default as Guest} from './Guest/Guest';

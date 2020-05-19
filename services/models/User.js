@@ -14,7 +14,13 @@ const Schema = mongoose.Schema;
 var userSchema = new Schema({
     playerTag: {
         type: String,
-        required: true
+        required: true,
+        unique: true
+    },
+    playerNickName: {
+        type: String,
+        required: true,
+        unique: false
     },
     password: {
         type: String,
@@ -22,7 +28,8 @@ var userSchema = new Schema({
     },
     email: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     verified: {
         type: Boolean,
