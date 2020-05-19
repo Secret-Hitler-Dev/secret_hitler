@@ -7,10 +7,10 @@ var app = express();
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var socket = require('socket.io');
-var requests = require('./server-utils')
 const cookieParser = require('cookie-parser');
 var Game = require("./models/Game")
 var shortid = require('shortid');
+var morgan = require('morgan');
 
 // bundler
 const webpackDevMiddleware = require('webpack-dev-middleware');
@@ -18,6 +18,7 @@ const webpack = require('webpack');
 const webpackConfig = require('./webpack.config.js');
 const compiler = webpack(webpackConfig);
 
+app.use(morgan('dev'));
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded( {extended: true} ));
@@ -124,3 +125,5 @@ app.get('/*', (req, res) => {
 server.listen(process.env.PORT || port, function () {
     console.log(`Server running at http://${hostname}:${port}/`);
 });
+
+module.exports = app;

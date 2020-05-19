@@ -7,9 +7,8 @@
   </a>
 
   <a href="https://github.com/Secret-Hitler-Dev/secret_hitler/blob/master/LICENSE.md" target="_blank">
-    <img alt="License: Creative Commons Attribution--NonCommercial--ShareAlike 4.0 International" src="https://img.shields.io/badge/License-Creative Commons Attribution--NonCommercial--ShareAlike 4.0 International-yellow.svg" />
+    <img alt="License: Creative Commons Attribution--NonCommercial--ShareAlike 4.0 International" src="https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg" />
   </a>
-  
 </p>
 
 > A full-stack web application for the board game Secret Hitler.
@@ -22,6 +21,7 @@
 .
 ├── .github
 ├── services/
+├── ├── __mocks__/ (any file type to mock)
 │   ├── apis/
 │   │   └── <all server apis>
 │   ├── application/ (reactjs)
@@ -31,6 +31,12 @@
 │   │   └── src/
 │   ├── models/
 │   │   └── <db schemas>
+│   ├── tests/
+│   │   ├── controllers/
+│   │   │   └── <all test controllers>  
+│   │   ├── data/
+│   │   │   └── <all test data> 
+│   │   └── <backend tests>.js
 │   ├── .babelrc
 │   ├── .env.template
 │   ├── package-lock.json
@@ -74,6 +80,12 @@ npm run build
 npm start 
 # start the react dev server
 npm run dev 
+# run both backend and frontend tests
+npm run test 
+# run frontend tests
+npm run test-frontend 
+# run backend tests
+npm run dev 
 ```
 
 ## Authors
@@ -104,13 +116,15 @@ npm run dev
 
 Contributions, issues and feature requests are welcome!<br />Feel free to check [issues page](https://github.com/Secret-Hitler-Dev/secret_hitler/issues). 
 
+Note: All PRs must pass existing unit tests and if any new features are introduced, please add necessary unittests.
+
 ## Show your support
 
 Give a ⭐️ if this project helped you!
 
 ## 📝 License
 
-Copyright © 2020 [Kalindu De Costa](https://github.com/kalindudc).<br />
+Copyright © 2020 [Janarthanan Manoharan](https://github.com/janamano), [Kathryn Kodama](https://github.com/kathrynkodama), [Kalindu De Costa](https://github.com/kalindudc), [Mahima Bhayana](https://github.com/mahimabhayana), [Mohammed Faizan](https://github.com/gears961).<br />
 This project is [Creative Commons Attribution--NonCommercial--ShareAlike 4.0 International](https://github.com/Secret-Hitler-Dev/secret_hitler/blob/master/LICENSE.md) licensed.
 
 ***
