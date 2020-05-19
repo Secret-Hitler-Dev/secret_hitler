@@ -253,7 +253,7 @@ class GameDash extends Component {
                     >
                         <Box
                             width="100%"
-                            height="70%"
+                            height="60%"
                             direction="column"
                             align="center"
                             justify="start"
@@ -270,7 +270,11 @@ class GameDash extends Component {
                                 }}
                             />
                         </Box>
-                        <Box>
+                        <Box
+                            width="100%"
+                            height={{"max":"35%"}}
+                            background={orange}
+                        >
                             {// LOBBY INFORMATION
                             }
                         </Box>
