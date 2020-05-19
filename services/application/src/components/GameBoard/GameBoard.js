@@ -31,7 +31,9 @@ import {
     CardFasR3P7,
     CardFasR3P9,
     CardFasR4,
-    CardFasR5
+    CardFasR5,
+    CardFas,
+    CardLib
 } from 'GameAssets';
 
 import {GameCard} from 'Components';
@@ -43,6 +45,18 @@ const customFocus = deepMerge(grommet, {
       }
     }
 });
+
+const FASCIST_CARDS = {
+    R1P9: {icon: CardFasR1P9, ability: "INVESTIGATE LOYALTY"},
+    R2P7: {icon: CardFasR2P7, ability: "INVESTIGATE LOYALTY"},
+    R2P9: {icon: CardFasR2P9, ability: "INVESTIGATE LOYALTY"},
+    R3P5: {icon: CardFasR3P5, ability: "POLICY PEEK"},
+    R3P7: {icon: CardFasR3P7, ability: "SPECIAL ELECTION"},
+    R3P9: {icon: CardFasR3P9, ability: "SPECIAL ELECTION"},
+    R4: {icon: CardFasR4, ability: "EXECUTION"},
+    R5: {icon: CardFasR5, ability: "EXECUTION"},
+    R: {icon: CardFas, ability: "NO SPECIAL POWER"},
+}
 
 class GameBoard extends Component {
     
@@ -88,21 +102,30 @@ class GameBoard extends Component {
                 msg = this.props.data.playerNum >= 9 ? "9 OR 10 PLAYERS: PLAYING WITH 3 FASCISTS AND HITLER, HITLER DOESN'T KNOW WHO THE FASCISTS ARE." : 
                 this.props.data.playerNum >= 7 ? "7 OR 8 PLAYERS: PLAYING WITH 2 FASCISTS AND HITLER, HITLER DOESN'T KNOW WHO THE FASCISTS ARE." : "5 OR 6 PLAYERS: PLAYING WITH 1 FASCISTS AND HITLER, HITLER KNOWS WHO THE FASCIST IS."; 
 
-                var icon1 = this.props.data.playerNum >= 9 ? CardFasR1P9 : null;
-                var icon2 = this.props.data.playerNum >= 9 ? CardFasR2P9 : 
-                            this.props.data.playerNum >= 7 ? CardFasR2P7 : null;
-                var icon3 = this.props.data.playerNum >= 9 ? CardFasR3P9 : 
-                            this.props.data.playerNum >= 7 ? CardFasR3P7 : CardFasR3P5;
-                var icon4 = CardFasR4;
-                var icon5 = CardFasR5;
+                var icon1 = this.props.data.playerNum >= 9 ? FASCIST_CARDS.R1P9.icon : FASCIST_CARDS.R.icon;
+                var icon2 = this.props.data.playerNum >= 9 ? FASCIST_CARDS.R2P9.icon : 
+                            this.props.data.playerNum >= 7 ? FASCIST_CARDS.R2P7.icon : FASCIST_CARDS.R.icon;
+                var icon3 = this.props.data.playerNum >= 9 ? FASCIST_CARDS.R3P9.icon : 
+                            this.props.data.playerNum >= 7 ? FASCIST_CARDS.R3P7.icon  : FASCIST_CARDS.R3P5.icon ;
+                var icon4 = FASCIST_CARDS.R4.icon ;
+                var icon5 = FASCIST_CARDS.R5.icon ;
                 var icon6 = CardFasWin;
+
+                var ability1 = this.props.data.playerNum >= 9 ? FASCIST_CARDS.R1P9.ability : FASCIST_CARDS.R.ability;
+                var ability2 = this.props.data.playerNum >= 9 ? FASCIST_CARDS.R2P9.ability : 
+                            this.props.data.playerNum >= 7 ? FASCIST_CARDS.R2P7.ability : FASCIST_CARDS.R.ability;
+                var ability3 = this.props.data.playerNum >= 9 ? FASCIST_CARDS.R3P9.ability : 
+                            this.props.data.playerNum >= 7 ? FASCIST_CARDS.R3P7.ability  : FASCIST_CARDS.R3P5.ability ;
+                var ability4 = FASCIST_CARDS.R4.ability ;
+                var ability5 = FASCIST_CARDS.R5.ability ;
+                var ability6 = "FASCISTS WIN";
 
                 cards = [
                     {
                         id:"fas",
                         fascist:true,
-                        ability:null,
-                        factor:6,
+                        ability:ability1,
+                        factor:1,
                         width:w,
                         special:false,
                         icon:icon1,
@@ -111,8 +134,8 @@ class GameBoard extends Component {
                     {
                         id:"fas",
                         fascist:true,
-                        ability:null,
-                        factor:6,
+                        ability:ability2,
+                        factor:2,
                         width:w,
                         special:false,
                         icon:icon2,
@@ -121,8 +144,8 @@ class GameBoard extends Component {
                     {
                         id:"fas",
                         fascist:true,
-                        ability:null,
-                        factor:6,
+                        ability:ability3,
+                        factor:3,
                         width:w,
                         special:false,
                         icon:icon3,
@@ -131,8 +154,8 @@ class GameBoard extends Component {
                     {
                         id:"fas",
                         fascist:true,
-                        ability:null,
-                        factor:6,
+                        ability:ability4,
+                        factor:4,
                         width:w,
                         special:true,
                         icon:icon4,
@@ -141,8 +164,8 @@ class GameBoard extends Component {
                     {
                         id:"fas",
                         fascist:true,
-                        ability:null,
-                        factor:6,
+                        ability:ability5,
+                        factor:5,
                         width:w,
                         special:true,
                         icon:icon5,
@@ -151,7 +174,7 @@ class GameBoard extends Component {
                     {
                         id:"fas",
                         fascist:true,
-                        ability:null,
+                        ability:ability6,
                         factor:6,
                         width:w,
                         special:true,
@@ -167,46 +190,46 @@ class GameBoard extends Component {
                         id:"lib",
                         fascist:false,
                         ability:null,
-                        factor:5,
+                        factor:1,
                         width:w,
                         special:false,
-                        icon:null,
+                        icon:CardLib,
                         msg:[]
                     },
                     {
                         id:"lib",
                         fascist:false,
                         ability:null,
-                        factor:5,
+                        factor:2,
                         width:w,
                         special:false,
-                        icon:null,
+                        icon:CardLib,
                         msg:[]
                     },
                     {
                         id:"lib",
                         fascist:false,
                         ability:null,
-                        factor:5,
+                        factor:3,
                         width:w,
                         special:false,
-                        icon:null,
+                        icon:CardLib,
                         msg:[]
                     },
                     {
                         id:"lib",
                         fascist:false,
                         ability:null,
-                        factor:5,
+                        factor:4,
                         width:w,
                         special:false,
-                        icon:null,
+                        icon:CardLib,
                         msg:[]
                     },
                     {
                         id:"lib",
                         fascist:false,
-                        ability:null,
+                        ability:"LIBERALS WIN",
                         factor:5,
                         width:w,
                         special:true,
@@ -233,6 +256,9 @@ class GameBoard extends Component {
         const width = this.state.width*0.97;
         const height = width * 0.3135;
 
+        const widthText = (1279 / 2000) * 100;
+        const heightText = (67 / 624) * 100;
+
         return (
             <Grommet theme={customFocus}>
                 <Box 
@@ -247,8 +273,9 @@ class GameBoard extends Component {
                     direction="column"
                     align="center"
                     justify="end"
-                    pad="medium"
-                    gap="xsmall"
+                    pad={{"bottom": "40px"}}
+                    gap="medium"
+                    className="lightDropShadow"
                 >
                     <Box
                         width="100%"
@@ -262,7 +289,7 @@ class GameBoard extends Component {
                             <GameCard id={"card" + item.id + i} data={item} />
                         ))}
                     </Box>
-                    <Text size="small" color={this.props.data.fascist ? orange : blue} > {this.state.msg}</Text>
+                    <Text width={widthText + "px"} height={heightText + "px"} size="11px" color={this.props.data.fascist ? orange : blue} > {this.state.msg}</Text>
 
                 </Box>
             </Grommet>
