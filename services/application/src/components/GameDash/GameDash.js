@@ -191,7 +191,6 @@ class GameDash extends Component {
             var dead = this.getRandomArbitrary(0, playerNum - 1);
             
             this.props.data.players.forEach((item, i) => {
-                console.log(pres, i);
                 pIcons[item] = i == pres ? <GiEagleEmblem color="#fdde4e" />: i == dead ? <FaSkull color="#ddd" /> : null;
             });
 
