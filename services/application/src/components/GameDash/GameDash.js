@@ -339,11 +339,11 @@ class GameDash extends Component {
                             pad="10px"
                             overflow="show"
                         >
-                            <Text color={offWhite} style={{"textAlign": "center"}}>Party Membership &amp; Secret Role</Text>
+                            {/* <Text color={offWhite} style={{"textAlign": "center"}}>Party Membership &amp; Secret Role</Text> */}
                             <Box height="60px"/>
                             <GameEnvelope 
                                 data={{
-                                    envWidth:90, 
+                                    envWidth:120, 
                                     fascist:this.state.fascist,
                                     hitler:this.state.hitler
                                 }}

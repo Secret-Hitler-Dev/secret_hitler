@@ -11,6 +11,7 @@ body {
 }
 
 .game-card {
+    
 
 }
 
@@ -18,8 +19,12 @@ body {
 
 }
 
-.game-card:hover, .game-card-border:hover, .game-card-no-shadow:hover{
-    transform: translate(1px , -80px);
+.game-card:hover, .game-card-border:hover{
+    transform: translate(1px , -100px);
+}
+
+.game-card-no-shadow:hover{
+    transform: translate(1px , -15px);
 }
 
 .game-card-glow {

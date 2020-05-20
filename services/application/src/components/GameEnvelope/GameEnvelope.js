@@ -150,6 +150,7 @@ class GameEnvelope extends Component {
                             }}
                             effect="solid"
                             className="center-row tooltop-round policy-tool-tip"
+                            place="right"
                         >
                             <FaUserSecret color={offWhite}/> <span>{roleText}</span>
                         </ReactTooltip>
@@ -175,6 +176,7 @@ class GameEnvelope extends Component {
                             }}
                             effect="solid"
                             className="center-row tooltop-round policy-tool-tip"
+                            place="right"
                         >
                             <AiFillIdcard color={offWhite} /> <span>{memberText}</span>
                         </ReactTooltip>
@@ -186,8 +188,23 @@ class GameEnvelope extends Component {
                         align="center"
                         justify="center"
                         margin={{"top":(-1 * offsetE) + "px"}}
+                        data-tip data-for={'party' + this.state.id}
                     >
                         <Image src={Envelope} className="game-card-glow" width="100%" />
+                        <ReactTooltip
+                            id={'party' + this.state.id}
+                            type='info' 
+                            backgroundColor={offWhite}
+                            overridePosition={ ({ left, top },currentEvent, currentTarget, node) => {
+                                top = top - 10;
+                                return { top, left }
+                            }}
+                            effect="solid"
+                            className="center-row tooltop-round policy-tool-tip"
+                            place="right"
+                        >
+                            <AiFillIdcard color={grey} /> <Text size="11px" color={grey}>PARTY &amp; ROLE</Text>
+                        </ReactTooltip>
                     </Box>
                 </Box>
             </Grommet>
