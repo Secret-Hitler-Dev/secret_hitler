@@ -253,6 +253,60 @@ class GameDash extends Component {
                     >
                         <Box
                             width="100%"
+                            height={{"min":"35%","max":"35%"}}
+                            direction="column"
+                            align="center"
+                            justify="start"
+                            pad="5px"
+                            gap="small"
+                        >
+                            <Text color={offWhite} style={{"textAlign": "center"}}>Lobby</Text>
+                            <Box
+                                width="100%"
+                                height={{"max":"95%"}}
+                                direction="column"
+                                align="center"
+                                justify="start"
+                                gap="small"
+                            >
+                                <Box
+                                    width="100%"
+                                    height="35px"
+                                    background={grey2}
+                                    round="5px"
+                                    direction="row"
+                                    align="center"
+                                    justify="between"
+                                    pad="5px"
+                                >
+                                    <Box
+                                        width={{"max": "95%"}}
+                                        height="100%"
+                                        overflow="hidden"
+                                    >
+                                        {// player name
+                                        }
+                                        <Text color={back}>Roomba64</Text>
+                                    </Box>
+                                    <Box
+                                        width="35px"
+                                        height="100%"
+                                        direction="row"
+                                        align="center"
+                                        justify="end"
+                                    >
+                                        {// game role (president / chancellor // executed) 
+                                        }
+
+                                        {// secret role at the end of the game
+                                        }
+                                        <GiEagleEmblem color={brightYellow} />
+                                    </Box>
+                                </Box>
+                            </Box>
+                        </Box>
+                        <Box
+                            width="100%"
                             height="60%"
                             direction="column"
                             align="center"
@@ -270,15 +324,7 @@ class GameDash extends Component {
                                 }}
                             />
                         </Box>
-                        <Box
-                            width="100%"
-                            height={{"max":"35%"}}
-                            background={orange}
-                        >
-                            {// LOBBY INFORMATION test 2
-
-                            }
-                        </Box>
+                        
                         
                     </Box>
                     <Box
