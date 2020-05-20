@@ -276,6 +276,7 @@ class GameDash extends Component {
                             background={orange}
                         >
                             {// LOBBY INFORMATION
+                            
                             }
                         </Box>
                         
