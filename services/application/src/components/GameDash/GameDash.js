@@ -103,7 +103,8 @@ class GameDash extends Component {
             votePicked: false,
             vote:VOTE.NONE,
             gameStarted: false,
-            status: ''
+            status: '',
+            playerStatusIcons:{}
         };
         
     }
@@ -168,6 +169,13 @@ class GameDash extends Component {
         }
     }
 
+
+    getRandomArbitrary = (min, max) => {
+        min = Math.ceil(min);
+        max = Math.floor(max);
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
     componentWillUnmount() {
         this._isMounted = false;
     }
@@ -178,6 +186,14 @@ class GameDash extends Component {
             this.setState(this.props.data);
 
             var playerNum = this.props.data.players.length;
+            var pIcons = {};
+            var pres = this.getRandomArbitrary(0, playerNum - 1);
+            var dead = this.getRandomArbitrary(0, playerNum - 1);
+            
+            this.props.data.players.forEach((item, i) => {
+                console.log(pres, i);
+                pIcons[item] = i == pres ? <GiEagleEmblem color="#fdde4e" />: i == dead ? <FaSkull color="#ddd" /> : null;
+            });
 
             var testData = {
                 host: true,
@@ -193,7 +209,8 @@ class GameDash extends Component {
                 votePicked: false,
                 gamePhase: GAMEPHASE.LEGISLATIVE_SESSION_PRESIDENT,
                 gameStarted: true,
-                status:"CHANCELLOR IS SELECTING A POLICY!"
+                status:"CHANCELLOR IS SELECTING A POLICY!",
+                playerStatusIcons:pIcons
             }
 
             if (testData.fascist) {
@@ -253,11 +270,11 @@ class GameDash extends Component {
                     >
                         <Box
                             width="100%"
-                            height={{"min":"35%","max":"35%"}}
+                            height={{"min":"50%","max":"50%"}}
                             direction="column"
                             align="center"
                             justify="start"
-                            pad="5px"
+                            pad="0px"
                             gap="small"
                         >
                             <Text color={offWhite} style={{"textAlign": "center"}}>Lobby</Text>
@@ -267,52 +284,61 @@ class GameDash extends Component {
                                 direction="column"
                                 align="center"
                                 justify="start"
-                                gap="small"
+                                gap="8px"
+                                overflow = "auto"
+                                pad={{"left":"5px","right":"5px"}}
                             >
-                                <Box
-                                    width="100%"
-                                    height="35px"
-                                    background={grey2}
-                                    round="5px"
-                                    direction="row"
-                                    align="center"
-                                    justify="between"
-                                    pad="5px"
-                                >
+                                {this.props.data.players.map((item, i) => (
                                     <Box
-                                        width={{"max": "95%"}}
-                                        height="100%"
-                                        overflow="hidden"
-                                    >
-                                        {// player name
-                                        }
-                                        <Text color={back}>Roomba64</Text>
-                                    </Box>
-                                    <Box
-                                        width="35px"
-                                        height="100%"
+                                        width="100%"
+                                        height={{"min":"30px","max":"30px"}}
+                                        background={grey2}
+                                        round="5px"
                                         direction="row"
                                         align="center"
-                                        justify="end"
+                                        justify="between"
+                                        pad={{"top":"2px","bottom":"2px", "left":"5px","right":"5px"}}
+                                        id={"player-" + i}
                                     >
-                                        {// game role (president / chancellor // executed) 
-                                        }
+                                        <Box
+                                            width={{"max": "95%"}}
+                                            height="100%"
+                                            overflow="hidden"
+                                            direction="row"
+                                            align="center"
+                                            justify="start"
+                                        >
+                                            {// player name
+                                            }
+                                            <Text color={back} size="15px">{item}</Text>
+                                        </Box>
+                                        <Box
+                                            width="35px"
+                                            height="100%"
+                                            direction="row"
+                                            align="center"
+                                            justify="end"
+                                        >
+                                            {// game role (president / chancellor // executed) 
+                                            }
 
-                                        {// secret role at the end of the game
-                                        }
-                                        <GiEagleEmblem color={brightYellow} />
+                                            {// secret role at the end of the game
+                                            }
+                                            {this.state.playerStatusIcons[item]}
+                                        </Box>
                                     </Box>
-                                </Box>
+                                ))}
+                                
                             </Box>
                         </Box>
                         <Box
                             width="100%"
-                            height="60%"
+                            height="40%"
                             direction="column"
                             align="center"
                             justify="start"
                             pad="10px"
-                            overflow="auto"
+                            overflow="show"
                         >
                             <Text color={offWhite} style={{"textAlign": "center"}}>Party Membership &amp; Secret Role</Text>
                             <Box height="60px"/>

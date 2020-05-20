@@ -32,7 +32,18 @@ class Game extends Component {
         this.state = {
             msg: '',
             gameInProgress: true,
-            players: [1,2,3,4,5],
+            players: [
+                "mb",
+                "Roomba64",
+                "mvfizan",
+                "angela",
+                "GucciKage",
+                "soda",
+                "venky",
+                "radsouza",
+                "cheena",
+                "laddoo"
+            ],
             code:''
         };
         

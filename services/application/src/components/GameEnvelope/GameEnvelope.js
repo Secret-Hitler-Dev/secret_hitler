@@ -74,11 +74,11 @@ class GameEnvelope extends Component {
 
     
     reveal = (event) => {
-        if (this.state.reveal > 0) {
+        if (this.state.reveal != 0) {
             this.setState({reveal: 0});
         }
         else {
-            this.setState({reveal: this.state.envWidth});
+            this.setState({reveal: 1});
         }
     }
 
@@ -109,9 +109,9 @@ class GameEnvelope extends Component {
         const R = {w: 738, h:1080}
         const E = {w: 637, h:1080}
 
-        const offsetR = ((envWidth / R.w) * R.h) - (this.state.reveal * 1.5);
-        const offsetM = ((envWidth / M.w) * M.h) - (this.state.reveal * 1.1);
-        const offsetE = (((envWidth / M.w) * M.h) + (envWidth * 0.15))  - (this.state.reveal * 0.9);
+        const offsetR = ((envWidth / R.w) * R.h) - (this.state.reveal * ((envWidth / R.w) * R.h) * 0.5);
+        const offsetM = ((envWidth / M.w) * M.h) - (this.state.reveal * ((envWidth / M.w) * M.h) * 0.7);
+        const offsetE = ((envWidth / E.w) * E.h) - (this.state.reveal * ((envWidth / E.w) * E.h) * 0.9);
 
         const role = this.props.data.fascist ? this.props.data.hitler ? RoleHitler : RoleFascist : RoleLiberal;
         const member = this.props.data.fascist ? MemberFascist : MemberLiberal;
@@ -136,7 +136,7 @@ class GameEnvelope extends Component {
                         direction="row"
                         align="center"
                         justify="start"
-                        className="game-card"
+                        className="game-card game-card-1"
                         data-tip data-for={'role' + this.state.id}
                     >
                         <Image src={role} width="100%"/>
@@ -160,7 +160,7 @@ class GameEnvelope extends Component {
                         direction="row"
                         align="center"
                         justify="start"
-                        className="game-card"
+                        className="game-card game-card-2"
                         margin={{"top":(-1 * offsetM) + "px"}}
                         data-tip data-for={'member' + this.state.id}
                     >
@@ -185,10 +185,9 @@ class GameEnvelope extends Component {
                         direction="row"
                         align="center"
                         justify="center"
-                        className="game-card-no-shadow"
                         margin={{"top":(-1 * offsetE) + "px"}}
                     >
-                        <Image src={Envelope} width="100%" />
+                        <Image src={Envelope} className="game-card-glow" width="100%" />
                     </Box>
                 </Box>
             </Grommet>
