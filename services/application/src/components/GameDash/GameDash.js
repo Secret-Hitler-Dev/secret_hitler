@@ -292,7 +292,7 @@ class GameDash extends Component {
                                         width="100%"
                                         height={{"min":"30px","max":"30px"}}
                                         background={grey2}
-                                        round="5px"
+                                        round="3px"
                                         direction="row"
                                         align="center"
                                         justify="between"
