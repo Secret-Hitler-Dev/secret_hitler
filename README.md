@@ -1,43 +1,131 @@
-# secret_hitler
+<h1 align="center">Welcome to Secret Hitler 👋</h1>
+<p>
+  <img alt="GitHub release (latest by date including pre-releases)" src="https://img.shields.io/github/v/release/Secret-Hitler-Dev/secret_hitler?include_prereleases" >
 
-## Instructions
+  <a href="https://github.com/Secret-Hitler-Dev/secret_hitler/wiki" target="_blank">
+    <img alt="Documentation" src="https://img.shields.io/badge/documentation-yes-brightgreen.svg" />
+  </a>
 
-### Forking
-create a fork <br>
-clone the fork locally  <br>
-pull from this repo to your local  <br>
-push to your fork  <br>
-send PR to this repo  <br>
+  <a href="https://github.com/Secret-Hitler-Dev/secret_hitler/blob/master/LICENSE.md" target="_blank">
+    <img alt="License: Creative Commons Attribution--NonCommercial--ShareAlike 4.0 International" src="https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg" />
+  </a>
+</p>
 
-### Setup
-Navigate to https://cloud.mongodb.com/v2/5e87d324b78f040b48d030bb#clusters and login<br>
-Go to Database Access -> Add new database user<br>
-Remember credentials for the new user<br>
-Navigate to services <br>
-copy .env.template -> .env <br>
-Replace <user> and <pass> with database user credentials <br>
-save .env file
+> A full-stack web application for the board game Secret Hitler.
 
-### Server
-cd server<br>
-npm install<br>
+### 🏠 [Homepage](https://github.com/Secret-Hitler-Dev/secret_hitler)
 
-### Application
-cd server/application<br>
-npm install<br>
+## Directory Structure
 
-### Development
-cd server<br>
-npm start<br>
+```
+.
+├── .github
+├── services/
+├── ├── __mocks__/ (any file type to mock)
+│   ├── apis/
+│   │   └── <all server apis>
+│   ├── application/ (reactjs)
+│   │   ├── media/
+│   │   │   └── <all game assets>
+│   │   ├── public/
+│   │   └── src/
+│   ├── models/
+│   │   └── <db schemas>
+│   ├── tests/
+│   │   ├── controllers/
+│   │   │   └── <all test controllers>  
+│   │   ├── data/
+│   │   │   └── <all test data> 
+│   │   └── <backend tests>.js
+│   ├── .babelrc
+│   ├── .env.template
+│   ├── package-lock.json
+│   ├── package.json
+│   ├── server-utils.js
+│   ├── server.js
+│   └── webpack.config.js
+├── .gitignore
+├── Code_OF_CONDUCT.md
+├── LICENSE.md
+└── README.md
+```
 
-cd server/application<br>
-npm start<br>
+## MongoDB Setup 
 
+1. This project is created with MongoDb Cloud. Create your own project/cluster [here](https://www.mongodb.com/cloud) for testing purposes.
+2. Make acopy and rename `secret_hitler/services/.env.template` to  `secret_hitler/services/.env`
+3. Edit the all fields in `< ... >` with your mongo cluster information.
 
-### production
-cd server<br>
-npm run build<br>
-npm start<br>
-go to localhost:port to view app<br>
+## .env Setup
+> Make acopy and rename `secret_hitler/services/.env.template` to  `secret_hitler/services/.env` and Edit the all fields in `< ... >`.
 
-Add your initials to the package.json file<br>
+```sh
+# MongoDB connection URL
+DB_HOST=mongodb+srv://<user>:<password>@<cluster url>/<DB name>?retryWrites=true
+# Application secret for token generation and verification
+SECRET=<secret>
+# Gmail user and pass for sending verification emails for new users
+MAIL_USER=<email username>
+MAIL_PASS=<email password>
+```
+
+## Available commands
+
+```sh
+# install all prerequisites
+npm install 
+# compile and bundle all source code
+npm run build
+# start the main backend server with build files
+npm start 
+# start the react dev server
+npm run dev 
+# run both backend and frontend tests
+npm run test 
+# run frontend tests
+npm run test-frontend 
+# run backend tests
+npm run dev 
+```
+
+## Authors
+
+👤 **Janarthanan Manoharan**
+
+* Github: [@janamano](https://github.com/janamano)
+
+👤 **Kathryn Kodama**
+
+* Github: [@kathrynkodama](https://github.com/kathrynkodama)
+
+👤 **Kalindu De Costa**
+
+* Website: http://kdecosta.com/
+* Github: [@kalindudc](https://github.com/kalindudc)
+
+👤 **Mahima Bhayana**
+
+* Website: http://mahima.io/
+* Github: [@mahimabhayana](https://github.com/mahimabhayana)
+
+👤 **Mohammed Faizan**
+
+* Github: [@gears961](https://github.com/gears961)
+
+## 🤝 Contributing
+
+Contributions, issues and feature requests are welcome!<br />Feel free to check [issues page](https://github.com/Secret-Hitler-Dev/secret_hitler/issues). 
+
+Note: All PRs must pass existing unit tests and if any new features are introduced, please add necessary unittests.
+
+## Show your support
+
+Give a ⭐️ if this project helped you!
+
+## 📝 License
+
+Copyright © 2020 [Janarthanan Manoharan](https://github.com/janamano), [Kathryn Kodama](https://github.com/kathrynkodama), [Kalindu De Costa](https://github.com/kalindudc), [Mahima Bhayana](https://github.com/mahimabhayana), [Mohammed Faizan](https://github.com/gears961).<br />
+This project is [Creative Commons Attribution--NonCommercial--ShareAlike 4.0 International](https://github.com/Secret-Hitler-Dev/secret_hitler/blob/master/LICENSE.md) licensed.
+
+***
+_This README was generated with ❤️ by [readme-md-generator](https://github.com/kefranabg/readme-md-generator)_

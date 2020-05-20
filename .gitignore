@@ -111,4 +111,6 @@ applicationBak\*
 .env
 
 # ASSETS
-public/*.png
+services/application/public/*.png
+services/application/public/bundle.js
+services/application/public/bundle.js

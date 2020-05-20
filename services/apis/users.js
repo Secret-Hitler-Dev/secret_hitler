@@ -10,6 +10,10 @@ const Cryptr = require('cryptr');
 const cryptr = new Cryptr(process.env.SECRET);
 const jwt = require('jsonwebtoken');
 const nodemailer = require("nodemailer");
+<<<<<<< HEAD
+=======
+var cookie = require('cookie');
+>>>>>>> 3914be2cf183a543b66f3fca11e3855019801828
 
 function encode(email) {
     if (!email) return "";
@@ -34,6 +38,10 @@ function createSession(req, res, data) {
         // hashedID: encode(identifier),
         isGuest: encode(data.isGuest),
         hashedID: encode(data.playerTag),
+<<<<<<< HEAD
+=======
+        emailHash: encode(data.email),
+>>>>>>> 3914be2cf183a543b66f3fca11e3855019801828
         // hashedPlayerNickName: encode(data.playerNickName),
         // hashedVerified: encode(data.verified),
         // hashedPassword: data.isGuest ? encode(data.password) : null
@@ -48,7 +56,11 @@ function createSession(req, res, data) {
 }
 
 function killSession(req, res) {
+<<<<<<< HEAD
     return res.clearCookie("token").sendStatus(200);
+=======
+    return res.clearCookie("token").status(200).json({success:true});;
+>>>>>>> 3914be2cf183a543b66f3fca11e3855019801828
 }
 
 function login(err, data, password, req, res) {
@@ -56,13 +68,21 @@ function login(err, data, password, req, res) {
         var user = {
             playerTag: data.playerTag,
             isGuest: false,
+<<<<<<< HEAD
+=======
+            email: data.email
+>>>>>>> 3914be2cf183a543b66f3fca11e3855019801828
             // playerNickName: data.playerNickName,
             // verified: data.verified
         };
         if (verifyPass(data, password)) return createSession(req, res, user);
+<<<<<<< HEAD
         else res.status(401).json({ error: 0, msg: "Incorrect Password" });
+=======
+        else res.status(400).json({ error: 0, msg: "Incorrect Password" });
+>>>>>>> 3914be2cf183a543b66f3fca11e3855019801828
     } 
-    else return res.status(401).json({ error: 1, msg: "Email does not exists" });
+    else return res.status(400).json({ error: 1, msg: "Email does not exists" });
 }
 
 
@@ -122,7 +142,7 @@ function verificationTokenValid(email, token) {
     }
 }
 
-function sendEmail(email, token, req) {
+function sendEmail(email, token, req, res) {
     var transporter = nodemailer.createTransport({ 
         service: 'gmail', 
         auth: { 
@@ -139,8 +159,7 @@ function sendEmail(email, token, req) {
     };
 
     transporter.sendMail(mailOptions, function (err) {
-        if (err) { return res.status(500).send({ msg: err.message }); }
-        res.status(200).send('A verification email has been sent to ' + email + '.');
+        if (err) { console.log(err); }
     });
 }
 
@@ -174,6 +193,7 @@ function updateUserInfo(email, data, callback) {
 module.exports = function(app) {
     app.post('/api/signup', (req, res) => {
         var formData = req.body;
+<<<<<<< HEAD
         findByEmail(formData.email, (err, data) => {
             if (err || !data) {
                 // email doesn't exist we are good
@@ -201,9 +221,66 @@ module.exports = function(app) {
             } 
             else {
                 return res.status(401).json({ error: 1, msg: "Email exists" });
+=======
+        if (!formData.email || !formData.playerTag || !formData.password) {
+            return res.status(400).json({ error: 1, msg: "Missing fields." });
+        }
+        else {
+            findByEmail(formData.email, (err, data) => {
+                if (err || !data) {
+                    // email doesn't exist we are good
+                    findByTag(formData.playerTag, (err, data) => {
+                        if (err || !data) {
+                            // tag doesn't exist we are good
+                            createUser(formData, (err, data) => {
+                                if (err) {
+                                    return res.status(400).json({error: err, msg:"Failed to create user."});
+                                } else {
+                                    var userData = {
+                                        playerTag: data.playerTag,
+                                        isGuest: false,
+                                        email: data.email
+                                        // playerNickName: data.playerNickName,
+                                        // verified: data.verified
+                                    }
+                                    return createSession(req, res, userData);
+                                }
+                            });
+                        } 
+                        else {
+                            return res.status(400).json({ error: 1, msg: "Player Tag exists" });
+                        }
+                    });
+                } 
+                else {
+                    return res.status(400).json({ error: 1, msg: "Email exists" });
+                }
+                
+            });
+        }
+        
+    });
+
+    app.post('/api/playAsGuest', function(req, res) {
+        // var salt = bcrypt.genSaltSync(15);
+        var newPlayer = {
+            playerTag: req.body.playerName,
+            isGuest: true,
+        };
+
+        Users.findOne({playerTag: newPlayer.playerTag}, (err, player) => {
+            if (player) {
+                res.status(400)
+                .json({
+                    status: 'error',
+                    data: {},
+                    message: "Player Tag " + newPlayer.playerTag + " exists, try another name"
+                })
+            } else {
+                return createSession(req, res, newPlayer);
+>>>>>>> 3914be2cf183a543b66f3fca11e3855019801828
             }
-            
-        });
+        }) 
     });
 
     app.post('/api/playAsGuest', function(req, res) {
@@ -233,15 +310,28 @@ module.exports = function(app) {
     });
 
     app.post('/api/signin', (req, res) => {
+<<<<<<< HEAD
         const {email, password} = req.body;
 
         findByEmail(email, (err, data) => {
             return login(err, data, email, password, req, res);
         });
+=======
+        const formData = req.body;
+        if (!formData.email || !formData.password) {
+            return res.status(400).json({ error: 1, msg: "Missing fields." });
+        }
+        else {
+            findByEmail(formData.email, (err, data) => {
+                return login(err, data, formData.password, req, res);
+            });
+        }
+>>>>>>> 3914be2cf183a543b66f3fca11e3855019801828
     });
 
     app.get('/api/checkToken', withAuth, function(req, res) {
-        var token = req.headers.cookie.split("=")[1];
+        var cookies = cookie.parse(req.headers.cookie);
+        var token = cookies.token;
         var decoded = jwt.verify(token, process.env.SECRET);
 
         var payload = {
@@ -301,15 +391,16 @@ module.exports = function(app) {
     });
 
     app.post('/api/users/update', withAuth, function(req, res) {
-        var token = req.headers.cookie.split("=")[1];
+        var cookies = cookie.parse(req.headers.cookie);
+        var token = cookies.token;
         var decoded = jwt.verify(token, process.env.SECRET);
-        var email = decode(decoded.emailhash);
+        var email = decode(decoded.emailHash);
 
         var formData = req.body;
 
         updateUserInfo(email, formData, (err, data) => {
             if (err || !data) {
-                return res.status(401).json({ error: 1, msg: "Could not update user!" });
+                return res.status(500).json({ error: 1, msg: "Could not update user!" });
             }
             else {
                 return res.status(200).json({  playerTag: formData.playerTag });
@@ -318,25 +409,26 @@ module.exports = function(app) {
     });
 
     app.post('/api/sendVerification', (req, res) => {
-        var token = req.headers.cookie.split("=")[1];
+        var cookies = cookie.parse(req.headers.cookie);
+        var token = cookies.token;
         var decoded = jwt.verify(token, process.env.SECRET);
-        var email = decode(decoded.emailhash);
+        var email = decode(decoded.emailHash);
 
-        sendEmail(email, generateVerificationToken(email), req);
+        sendEmail(email, generateVerificationToken(email), req, res);
 
         return res.status(200).json({ msg: 'success' });
     });
 
     app.post('/api/verifyEmail/:token', (req, res) => {
 
-        if (!req.params.token) return res.status(401).json({ error: 1, msg: "Token expired or Invalid token!" });
+        if (!req.params.token) return res.status(400).json({ error: 1, msg: "Token expired or Invalid token!" });
 
         var data = Buffer(req.params.token, 'base64').toString('ascii').split("/");
 
         if (verificationTokenValid(data[1], req.params.token)) {
             verifyEmail(data[1], (err, data) => {
                 if (err) {
-                    return res.status(401).json({ error: 1, msg: "Could not verify email!" });
+                    return res.status(500).json({ error: 1, msg: "Could not verify email!" });
                 }
                 else {
                     return res.status(200).json({ msg: data.msg }); 
@@ -345,7 +437,7 @@ module.exports = function(app) {
         }
         else {
 
-            return res.status(401).json({ error: 1, msg: "Token expired or Invalid token!" });
+            return res.status(400).json({ error: 1, msg: "Token expired or Invalid token!" });
         }
     });
 

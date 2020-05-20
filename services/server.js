@@ -7,10 +7,10 @@ var app = express();
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var socket = require('socket.io');
-var requests = require('./server-utils')
 const cookieParser = require('cookie-parser');
 var Game = require("./models/Game")
 var shortid = require('shortid');
+var morgan = require('morgan');
 
 // bundler
 const webpackDevMiddleware = require('webpack-dev-middleware');
@@ -18,6 +18,7 @@ const webpack = require('webpack');
 const webpackConfig = require('./webpack.config.js');
 const compiler = webpack(webpackConfig);
 
+app.use(morgan('dev'));
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded( {extended: true} ));
@@ -42,12 +43,14 @@ app.use(express.static(path.join(__dirname, '/application/public')));
 module.exports = server;
 
 // this is our MongoDB database
-const dbRoute = process.env.DB_HOST;
+const dbRoute = process.env.NODE_ENV === 'test' ? process.env.DB_HOST_TEST : process.env.DB_HOST;
 
-// connects our back end code with the database
-mongoose.connect(dbRoute, { useNewUrlParser: true, useUnifiedTopology: true}).catch(function (reason) {
-    console.log('Unable to connect to the mongodb instance. Error: ', reason);
-});
+if (process.env.NODE_ENV !== 'test') {
+    // connects our back end code with the database
+    mongoose.connect(dbRoute, { useNewUrlParser: true, useUnifiedTopology: true}).catch(function (reason) {
+        console.log('Unable to connect to the mongodb instance. Error: ', reason);
+    });
+}
 
 var hostname = 'localhost';
 var port = 8080;
@@ -124,3 +127,5 @@ app.get('/*', (req, res) => {
 server.listen(process.env.PORT || port, function () {
     console.log(`Server running at http://${hostname}:${port}/`);
 });
+
+module.exports = app;

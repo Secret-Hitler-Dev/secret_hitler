@@ -103,17 +103,22 @@ class GameCard extends Component {
         const offWhite = "#fde0bc";
         const blue = "#6d97b9";
 
-        const width = (this.props.data.width * 0.134);
+        const width = (this.props.data.width * 0.12);
         const height = 1.3576 * width;
         
-        const fasColours = ["#e1dbd0","#db5a3e"];
-        const libColours = ["#bfe0e0","#378895"];
+        const fasColours = ["#ffc5bb","#be240b"];
+        const libColours = ["#bfe0e0","#3e89ae"];
         const special = !this.props.data.special ? 0 : 1;
 
         const backColour = this.props.data.fascist ? fasColours[special]: libColours[special]; 
         const borderColour = this.props.data.fascist ? fasColours[1]: libColours[1];
+        const borderColourLight = this.props.data.fascist ? fasColours[0]: libColours[0];
         
         const policyImage = this.props.data.fascist ? PolicyFascist : PolicyLiberal;
+
+        const ability = this.props.data.ability || "NO SPECIAL POWER";
+        const tooltipId = "ability-" + (this.props.data.fascist ? "fas-": "lib-") + this.props.data.factor;
+        console.log(tooltipId);
 
         return (
             <Grommet theme={customFocus} background="none">
@@ -147,10 +152,25 @@ class GameCard extends Component {
                             src={policyImage} 
                             width="80%"
                             margin={{"top":(-2.1 * this.state.reveal * width) + "px"}}
-                            className={"tile-effect-"  + (this.props.data.fascist ? "fas" : "lib")}
-                            style={{"borderRadius": "10px"}}
+                            className={"policy game-card-no-shadow tile-effect-"  + (this.props.data.fascist ? "fas" : "lib")}
+                            style={{"borderRadius": "10px", "border": "0px solid #4744429a"}}
+                            data-tip data-for={tooltipId}
                         />
                     }
+                    <ReactTooltip 
+                        id={tooltipId} 
+                        type='info' 
+                        backgroundColor={borderColourLight}
+                        textColor={borderColour}
+                        overridePosition={ ({ left, top },currentEvent, currentTarget, node) => {
+                            top = top - 10;
+                            return { top, left }
+                        }}
+                        className='policy-tool-tip'
+                        effect="solid"
+                    >
+                        {ability}
+                    </ReactTooltip>
                 </Box>
             </Grommet>
              
