@@ -275,8 +275,8 @@ class GameDash extends Component {
                             height={{"max":"35%"}}
                             background={orange}
                         >
-                            {// LOBBY INFORMATION
-                            
+                            {// LOBBY INFORMATION test 2
+
                             }
                         </Box>
                         
