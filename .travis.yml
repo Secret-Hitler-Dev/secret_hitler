@@ -13,6 +13,7 @@ branches:
   only:
   - intergration
   - develop
+  - dependencies
 script:
   - npm run test
 
