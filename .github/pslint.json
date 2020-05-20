@@ -1,7 +1,7 @@
 {
     "title": [
         {
-            "pattern": "^(build|ci|docs|frontend|backend|fix|perf|refactor|style|test):\\s",
+            "pattern": "^(build|ci|docs|frontend|backend|fix|perf|refactor|style|test|workflow):\\s|^(Bump)\\s",
             "message": "Your title needs to be prefixed with a topic (label) followed by a summary. Ex. frontend: Controll bar for the game."
         }
     ],
