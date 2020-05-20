@@ -35,7 +35,6 @@ after(async () => {
     await dbHandler.closeDatabase();
 });
 
-
 describe("POST /api/signup", () => {
 
     it("should not sign up a new User without email", (done) => {
