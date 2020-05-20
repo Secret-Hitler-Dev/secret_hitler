@@ -104,7 +104,8 @@ class GameDash extends Component {
             vote:VOTE.NONE,
             gameStarted: false,
             status: '',
-            playerStatusIcons:{}
+            playerStatusIcons:{},
+            selectedPlayer:{}
         };
         
     }
@@ -187,11 +188,14 @@ class GameDash extends Component {
 
             var playerNum = this.props.data.players.length;
             var pIcons = {};
+            var selectedPlayer = {};
             var pres = this.getRandomArbitrary(0, playerNum - 1);
             var dead = this.getRandomArbitrary(0, playerNum - 1);
+            var select = this.getRandomArbitrary(0, playerNum - 1);
             
             this.props.data.players.forEach((item, i) => {
                 pIcons[item] = i == pres ? <GiEagleEmblem color="#fdde4e" />: i == dead ? <FaSkull color="#ddd" /> : null;
+                selectedPlayer[item] = i == select;
             });
 
             var testData = {
@@ -209,7 +213,8 @@ class GameDash extends Component {
                 gamePhase: GAMEPHASE.LEGISLATIVE_SESSION_PRESIDENT,
                 gameStarted: true,
                 status:"CHANCELLOR IS SELECTING A POLICY!",
-                playerStatusIcons:pIcons
+                playerStatusIcons:pIcons,
+                selectedPlayer:selectedPlayer
             }
 
             if (testData.fascist) {
@@ -239,6 +244,7 @@ class GameDash extends Component {
         const yellow = "#fbb867";
         const brightYellow = "#fdde4e";
         const orange = "#f2664a";
+        const orangeLighter = "#e4886b";
         const back = "	#fbb867";
         const offWhite = "#fde0bc";
         const blue = "#6d97b9";
@@ -284,20 +290,22 @@ class GameDash extends Component {
                                 align="center"
                                 justify="start"
                                 gap="8px"
-                                overflow = "auto"
+                                overflow = "show"
                                 pad={{"left":"5px","right":"5px"}}
                             >
                                 {this.props.data.players.map((item, i) => (
+                                    
                                     <Box
                                         width="100%"
                                         height={{"min":"30px","max":"30px"}}
-                                        background={grey2}
+                                        background={this.state.selectedPlayer[item] ? orange: grey2}
                                         round="3px"
                                         direction="row"
                                         align="center"
                                         justify="between"
                                         pad={{"top":"2px","bottom":"2px", "left":"5px","right":"5px"}}
                                         id={"player-" + i}
+                                        className="lobby-player"
                                     >
                                         <Box
                                             width={{"max": "95%"}}
