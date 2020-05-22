@@ -211,3 +211,41 @@ describe("POST /api/signout", () => {
             });
     });                    
 });
+
+describe("POST /api/playAsGuest", () => {
+    
+    it('should deny taken playerTag', (done) => {
+        chai.request(app)
+            .post('/api/playAsGuest')
+            .send({
+                'playerName' : 'bobo' 
+            })
+            .end((err, res) => {
+                res.should.have.status(406);
+                res.body.should.have.a('object');
+                res.body.should.have.property('status');
+                res.body.should.have.property('message').eql('Player Tag bobo exists, try another name')
+                done();
+            });
+    });
+
+    it('should create create session', (done) => {
+        chai.request(app)
+        .post('/api/playAsGuest')
+        .send({
+            'playerName': 'totallyUnique'
+        })
+        .end((err, res) => {
+            res.should.have.status(200);
+            res.body.should.have.a('object');
+            res.body.should.have.property('playerTag').eql('totallyUnique');
+            res.body.should.have.property('isGuest').eql(true);
+
+            // check cookie
+            res.should.have.property('header');
+            res.header.should.have.property("set-cookie");
+            res.header['set-cookie'].length.should.be.above(0);
+            done();
+        });
+    });
+});

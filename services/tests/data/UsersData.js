@@ -15,8 +15,8 @@ function newUser(email, playerTag, password) {
 }
 
 const Users = [
-    newUser("bob@dummy.com", "bob", "1234"),
-    newUser("tom@dummy.com", "tom", "4567"),
+    newUser("bob@dummy.com", "bobo", "1234"),
+    newUser("tom@dummy.com", "tomo", "4567"),
     newUser("jane@dummy.com", "jane", "2345"),
     newUser("mary@dummy.com", "mary", "6789"),
     newUser("alice@dummy.com", "alice", "1357")

@@ -6,6 +6,37 @@ var shortid = require('shortid');
 
 module.exports = {
 
+    createGameAPI: (host, socket, io) => {
+        var payload = null;
+        var gameCode = shortid.generate();
+        var players = [host];
+        var newGame = new Game({
+            code: gameCode,
+            players: players,
+            numPlayers: 1
+        });
+
+        newGame.save((err, game) => {
+            if (err || !game) {
+                payload = {
+                    status: 'error',
+                    data: {},
+                    message: err
+                }
+                socket.emit("createResult", payload);
+            } else {
+                payload = {
+                    status: 'success',
+                    data: game.code,
+                    message: 'Created game, game code is ' + game.code
+                }
+                socket.join(game.code, () => {
+                    io.in(game.code).emit('createResult', payload);
+                });
+            }
+        });
+    },
+
     joinGameAPI: (gameCode, joiningPlayerTag, socket, io) => {      
         var payload = null;
         var game = null;

@@ -67,12 +67,19 @@ io.on('connection', socket => {
         // the listeners for these will be in the client code
         try{
             game.joinGameAPI(gameCode, playerTag, socket, io);
-            // socket.emit
         } catch (err) {
             socket.emit('joinResult', 'error');
         }
     });
-    
+
+    socket.on("createGame", (playerTag) => {
+        try {
+            game.createGameAPI(playerTag, socket, io);
+        } catch (err) {
+            socket.emit("createResult", "error");
+        }
+    });
+
 });
 
 // Common Routes
@@ -88,34 +95,6 @@ io.on('connection', socket => {
 
 // helpers
 
-app.post('/api/createGame', function(req, res) {
-    var gameCode = shortid.generate();
-    var players = [new mongoose.mongo.ObjectId(req.body.playerId)];
-
-    var newGame = new Game({
-        code: gameCode,
-        players: players,
-        numPlayers: 1
-    });
-    newGame.save(function(err, game) {
-        if (err) {
-            res.status(400)
-            .json({
-                status: 'error',
-                data: {},
-                message: err
-            });
-        } else {
-            res.status(202)
-            .json({
-                status: 'success',
-                data: game._id,
-                message: "Game code is " + game.code
-            });
-        }
-    });
-    console.log("created")
-});
 app.get('/*', (req, res) => {
     res.sendFile(path.resolve(__dirname, 'application/public', 'index.html'), (err) => {
         if (err) res.status(500).send(err);

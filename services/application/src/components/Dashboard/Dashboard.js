@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
-import { Link, Route, Switch, BrowserRouter } from 'react-router-dom';
+import { Link, Route, Switch, Redirect, BrowserRouter } from 'react-router-dom';
 import io from "socket.io-client";
 
 
@@ -56,7 +56,8 @@ class Dashboard extends Component {
     }
 
     createGame = () => {
-        console.log("CREATE GAME!!!");
+        socket.emit('createGame', this.props.data.playerTag);
+
     }
 
     componentDidMount() {
@@ -67,13 +68,23 @@ class Dashboard extends Component {
                 var rc = this.state.roomCode;
                 this.setState({error:result.message});
             } else {
-                if (result.status === "success") {
                     console.log("redirect to game lobby: " + result.data)
-                } else {
-                    this.setState({
-                        error: true
-                    });
-                }
+                    this.props.history.push('/game');
+            }
+            console.log("yeeaa buddy")
+            this.setState({
+                joining: false
+            });
+        });
+
+        socket.on("createResult", (result) => {
+            if (result.status === 'error') {
+                this.setState({error:result.message});
+            } else {
+                console.log("redirect to game lobby: " + result.data)
+                // return <Redirect to='/game' />
+                this.props.history.push('/game');
+
             }
             console.log("yeeaa buddy")
             this.setState({
@@ -277,4 +288,4 @@ class Dashboard extends Component {
     
 }
 
-export default Dashboard;
+export default withRouter(Dashboard);

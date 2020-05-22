@@ -10,10 +10,7 @@ const Cryptr = require('cryptr');
 const cryptr = new Cryptr(process.env.SECRET);
 const jwt = require('jsonwebtoken');
 const nodemailer = require("nodemailer");
-<<<<<<< HEAD
-=======
 var cookie = require('cookie');
->>>>>>> 3914be2cf183a543b66f3fca11e3855019801828
 
 function encode(email) {
     if (!email) return "";
@@ -38,10 +35,7 @@ function createSession(req, res, data) {
         // hashedID: encode(identifier),
         isGuest: encode(data.isGuest),
         hashedID: encode(data.playerTag),
-<<<<<<< HEAD
-=======
         emailHash: encode(data.email),
->>>>>>> 3914be2cf183a543b66f3fca11e3855019801828
         // hashedPlayerNickName: encode(data.playerNickName),
         // hashedVerified: encode(data.verified),
         // hashedPassword: data.isGuest ? encode(data.password) : null
@@ -56,11 +50,7 @@ function createSession(req, res, data) {
 }
 
 function killSession(req, res) {
-<<<<<<< HEAD
-    return res.clearCookie("token").sendStatus(200);
-=======
     return res.clearCookie("token").status(200).json({success:true});;
->>>>>>> 3914be2cf183a543b66f3fca11e3855019801828
 }
 
 function login(err, data, password, req, res) {
@@ -68,19 +58,12 @@ function login(err, data, password, req, res) {
         var user = {
             playerTag: data.playerTag,
             isGuest: false,
-<<<<<<< HEAD
-=======
             email: data.email
->>>>>>> 3914be2cf183a543b66f3fca11e3855019801828
             // playerNickName: data.playerNickName,
             // verified: data.verified
         };
         if (verifyPass(data, password)) return createSession(req, res, user);
-<<<<<<< HEAD
-        else res.status(401).json({ error: 0, msg: "Incorrect Password" });
-=======
         else res.status(400).json({ error: 0, msg: "Incorrect Password" });
->>>>>>> 3914be2cf183a543b66f3fca11e3855019801828
     } 
     else return res.status(400).json({ error: 1, msg: "Email does not exists" });
 }
@@ -101,10 +84,6 @@ function findByTag(tag, callback) {
 
 function findPlayerByTag(tag, callback) {
     Player.findOne({playerName: tag}, callback);
-}
-
-function getAll(callback) {
-    Users.find({}, callback);
 }
 
 function verifyEmail(email, callback) {
@@ -175,10 +154,6 @@ function createUser(data, callback) {
     Users.create(user, callback);
 }
 
-function collectStats(callback) {
-    getAll(callback);
-}
-
 function updateUserInfo(email, data, callback) {
     var user = {playerTag: data.playerTag};
     if (data.password){
@@ -193,35 +168,6 @@ function updateUserInfo(email, data, callback) {
 module.exports = function(app) {
     app.post('/api/signup', (req, res) => {
         var formData = req.body;
-<<<<<<< HEAD
-        findByEmail(formData.email, (err, data) => {
-            if (err || !data) {
-                // email doesn't exist we are good
-                findByTag(formData.playerTag, (err, data) => {
-                    if (err || !data) {
-                        // tag doesn't exist we are good
-                        createUser(formData, (err, data) => {
-                            if (err) {
-                                return res.status(400).json({error: err, msg:"Failed to create user."});
-                            } else {
-                                var userData = {
-                                    playerTag: data.playerTag,
-                                    isGuest: false,
-                                    // playerNickName: data.playerNickName,
-                                    // verified: data.verified
-                                }
-                                return createSession(req, res, userData);
-                            }
-                        });
-                    } 
-                    else {
-                        return res.status(401).json({ error: 1, msg: "Player Tag exists" });
-                    }
-                });
-            } 
-            else {
-                return res.status(401).json({ error: 1, msg: "Email exists" });
-=======
         if (!formData.email || !formData.playerTag || !formData.password) {
             return res.status(400).json({ error: 1, msg: "Missing fields." });
         }
@@ -270,7 +216,7 @@ module.exports = function(app) {
 
         Users.findOne({playerTag: newPlayer.playerTag}, (err, player) => {
             if (player) {
-                res.status(400)
+                res.status(406)
                 .json({
                     status: 'error',
                     data: {},
@@ -278,7 +224,6 @@ module.exports = function(app) {
                 })
             } else {
                 return createSession(req, res, newPlayer);
->>>>>>> 3914be2cf183a543b66f3fca11e3855019801828
             }
         }) 
     });
@@ -310,13 +255,6 @@ module.exports = function(app) {
     });
 
     app.post('/api/signin', (req, res) => {
-<<<<<<< HEAD
-        const {email, password} = req.body;
-
-        findByEmail(email, (err, data) => {
-            return login(err, data, email, password, req, res);
-        });
-=======
         const formData = req.body;
         if (!formData.email || !formData.password) {
             return res.status(400).json({ error: 1, msg: "Missing fields." });
@@ -326,7 +264,6 @@ module.exports = function(app) {
                 return login(err, data, formData.password, req, res);
             });
         }
->>>>>>> 3914be2cf183a543b66f3fca11e3855019801828
     });
 
     app.get('/api/checkToken', withAuth, function(req, res) {
