@@ -212,6 +212,20 @@ describe("POST /api/signout", () => {
     });                    
 });
 
+describe("POST /api/signouttt", () => {
+
+    it("should sign out a User", (done) => {
+        chai.request(app)
+            .post('/api/signout')
+            .end((err, res) => {
+                res.should.have.status(200);
+                res.body.should.be.a('object');
+                res.body.should.have.property('success').eql(true);
+                done();
+            });
+    });                    
+});
+
 describe("POST /api/playAsGuest", () => {
     
     it('should deny taken playerTag', (done) => {
