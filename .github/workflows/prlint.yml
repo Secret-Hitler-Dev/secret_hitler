@@ -10,4 +10,4 @@ jobs:
     steps:
     - uses: seferov/pr-lint-action@master
       with:
-        title-regex: '^(workflow|basckend|frontend|build|ci|docs|fix|perf|refactor|style|test):(.{1,}(?=\w*))'
+        title-regex: '(^(workflow|basckend|frontend|build|ci|docs|fix|perf|refactor|style|test):(.{1,}(?=\w*))|^(Bump.*\/services))'
