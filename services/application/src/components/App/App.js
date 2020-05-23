@@ -154,7 +154,6 @@ class App extends Component {
                         <Guest data={propsData}/>
 
                     }/>
-
                     
                 </Switch>
             </BrowserRouter>
