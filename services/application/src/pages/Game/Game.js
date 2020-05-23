@@ -32,6 +32,7 @@ class Game extends Component {
         this.state = {
             msg: '',
             gameInProgress: true,
+
             players: [
                 "mb",
                 "Roomba64",
@@ -44,7 +45,7 @@ class Game extends Component {
                 "cheena",
                 "laddoo"
             ],
-            code:''
+            code:'XYSA2'
         };
         
     }
@@ -98,6 +99,10 @@ class Game extends Component {
         const offWhite = "#f7e1c3";
         const blue = "#6d97b9";
 
+        const data = this.props.data;
+        data.code = this.state.code;
+        data.players = this.state.players;
+
         return (
             <Grommet 
                 theme={customFocus}
@@ -111,11 +116,8 @@ class Game extends Component {
                     justify="center" 
                     style={{"padding": "none", "margin":"none"}}
                 >
-                    {!this.state.gameInProgress ? 
-                        <Lobby data={{players:this.state.players}} />
-                    :
-                        <GameDash data={{players:this.state.players, code:this.state.code}} />
-                    }
+                    
+                    <GameDash data={data} />
                 </Box>
             </Grommet>
         );

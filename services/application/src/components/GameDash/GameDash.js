@@ -249,6 +249,8 @@ class GameDash extends Component {
         const offWhite = "#fde0bc";
         const blue = "#6d97b9";
 
+        console.log(this.props.data);
+
         return (
             <Grommet 
                 theme={customFocus} 
@@ -282,7 +284,23 @@ class GameDash extends Component {
                             pad="0px"
                             gap="small"
                         >
-                            <Text color={offWhite} style={{"textAlign": "center"}}>Lobby</Text>
+                            <Box 
+                                direction="row"
+                                align="center"
+                                justify="center"
+                                gap="small"
+                            >
+                                <Text style={{"textAlign": "center"}} color={offWhite}>Lobby</Text>
+                                <Box
+                                    pad={{"top":"2px","bottom":"2px", "left":"10px","right":"10px"}}
+                                    background='#49ad58'
+                                    round="3px"
+                                >
+                                    <Text color={offWhite} size="14px">
+                                        {this.props.data.code}
+                                    </Text>
+                                </Box>
+                            </Box>
                             <Box
                                 width="100%"
                                 height={{"max":"95%"}}
