@@ -881,7 +881,6 @@ class GameDash extends Component {
                                     <IoIosArrowDown color={offWhite} />
                                 </Button>
                             </Box>
-                            <Button onClick={() => this.addTestLog()}>Add test log</Button>                           
                             <Box
                                 width="100%"
                                 height="100%"
