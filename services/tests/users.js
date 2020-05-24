@@ -86,39 +86,39 @@ describe("POST /api/signup", () => {
             });
     });
     
-    it("should not sign up a User with too few characters in the playerTag", (done) => {
-        chai.request(app)
-            .post('/api/signup')
-            .send({
-                'email': 'rob@dummy.com',
-                'password': 'helloguy',
-                'playerTag': 'rob'
-            })
-            .end((err, res) => {
-                res.should.have.status(400);
-                res.body.should.be.a('object');
-                res.body.should.have.property('error');
-                res.body.should.have.property('msg').to.eql('Player tag needs to be atleast 4 characters long.');
-                done();
-            });
-    });
+    // it("should not sign up a User with too few characters in the playerTag", (done) => {
+    //     chai.request(app)
+    //         .post('/api/signup')
+    //         .send({
+    //             'email': 'rob@dummy.com',
+    //             'password': 'helloguy',
+    //             'playerTag': 'rob'
+    //         })
+    //         .end((err, res) => {
+    //             res.should.have.status(400);
+    //             res.body.should.be.a('object');
+    //             res.body.should.have.property('error');
+    //             res.body.should.have.property('msg').to.eql('Player tag needs to be atleast 4 characters long.');
+    //             done();
+    //         });
+    // });
 
-    it("should not sign up a User with special characters in player tag", (done) => {
-        chai.request(app)
-            .post('/api/signup')
-            .send({
-                'email': 'rob@dummy.com',
-                'password': 'helloguy',
-                'playerTag': 'rob*'
-            })
-            .end((err, res) => {
-                res.should.have.status(400);
-                res.body.should.be.a('object');
-                res.body.should.have.property('error');
-                res.body.should.have.property('msg').to.deep.equal('Player tag cannot contain any special symbols other than _ or -.');
-                done();
-            });
-    });
+    // it("should not sign up a User with special characters in player tag", (done) => {
+    //     chai.request(app)
+    //         .post('/api/signup')
+    //         .send({
+    //             'email': 'rob@dummy.com',
+    //             'password': 'helloguy',
+    //             'playerTag': 'rob*'
+    //         })
+    //         .end((err, res) => {
+    //             res.should.have.status(400);
+    //             res.body.should.be.a('object');
+    //             res.body.should.have.property('error');
+    //             res.body.should.have.property('msg').to.deep.equal('Player tag cannot contain any special symbols other than _ or -.');
+    //             done();
+    //         });
+    // });
 
     it("should sign up a new User", (done) => {
         chai.request(app)
