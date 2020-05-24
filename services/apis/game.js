@@ -54,10 +54,6 @@ module.exports = {
 
             } else {
                 game = retrievedGame;
-                console.log('---------------------')
-                console.log(game)
-                console.log(retrievedGame)
-                console.log('---------------------')
 
                 
                 // game must have space for the player
