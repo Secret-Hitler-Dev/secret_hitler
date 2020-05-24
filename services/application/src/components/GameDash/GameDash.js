@@ -1,6 +1,8 @@
-import React, { Component } from 'react';
+import React, { Component, useState, useEffect, useRef } from 'react';
 import { withRouter } from 'react-router-dom';
 import { Link, Route, Switch, BrowserRouter } from 'react-router-dom';
+
+import { Scrollbars, scrollToBottom } from 'react-custom-scrollbars';
 
 import "./GameDash.css";
 
@@ -18,10 +20,11 @@ import {
 import { StatusInfoSmall } from "grommet-icons";
 
 import { AiFillEye } from "react-icons/ai";
-import { FaHandPaper, FaSkull } from "react-icons/fa";
+import { FaHandPaper, FaSkull, FaCentercode } from "react-icons/fa";
 import { BsXCircleFill, BsCircle, BsPlayFill } from "react-icons/bs";
 import { GiCardDraw, GiCardDiscard, GiEagleEmblem, GiExitDoor } from "react-icons/gi";
 import { GrPowerCycle } from "react-icons/gr";
+import { IoIosArrowDown } from "react-icons/io";
 
 import { deepMerge } from 'grommet/utils';
 import ReactTooltip from "react-tooltip";
@@ -181,6 +184,19 @@ class GameDash extends Component {
         }
     }
 
+    addTestLog = () => {
+        var log = this.state.log;
+        log.push(
+            {
+                phase: GAME_EVENT.CHANCELLOR_NOMINATION,
+                president: 'Roomba64',
+                chancellor: 'El Momo'
+            }
+        );
+
+        this.setState({log:log});
+    }
+
     addToGameLog = () => {
         var log = this.state.log;
 
@@ -297,10 +313,10 @@ class GameDash extends Component {
             
         ];
 
-        this.setState({log:msgs}, () => {console.log(this.state)});
+        this.setState({log:msgs});
     }
 
-    processLog = (item) => {
+    processLog = (item, i) => {
 
         const grey = "#474442";
         const grey2 = "#79706d";
@@ -311,28 +327,37 @@ class GameDash extends Component {
         const offWhite = "#fde0bc";
         const blue = "#6d97b9";
 
-        console.log(item);
-        const style = {"wordWrap": "break-word", "borderBottom":"0px solid #9a928f", "margin":"0px", "padding":"5px 10px 5px 10px", "width":"94%", "fontSize":"12px", "backgroundColor":grey, "borderRadius":"3px"};
+        const style = {"wordWrap": "break-word", "borderBottom":"0px solid #9a928f", "margin":"0px", "padding":"5px 10px 5px 10px", "width":"auto", "fontSize":"12px", "backgroundColor":grey, "borderRadius":"3px"};
 
         const specialStyle = {"backgroundColor":offWhite, "fontSize":"12px", "marginLeft": "2px", "marginRight": "2px", "padding": "5px", "borderRadius":"3px"};
 
+        const styleSpacing = {"margin":"0px 10px 0px 0px", "fontSize":"12px"};
+
+        const key="log-" + i + Date.now();
+        const d = new Date();
+        const h = ("0" + d.getHours()).slice(-2);
+        const m = ("0" + d.getMinutes()).slice(-2);
+        const s = ("0" + d.getSeconds()).slice(-2);
+
+        const index = h+" : "+m+" : "+s;
+
         switch(item.phase) {
             case GAME_EVENT.CHANCELLOR_NOMINATION:
-                return <Paragraph border="all" width="100%" style={style} color={offWhite}>
+                return <Paragraph key={key} border="all" style={style} color={offWhite}>
 
-                    President <Text color={grey} style={specialStyle}>{item.president}</Text> picks <Text color={grey} style={specialStyle}>{item.chancellor}</Text> as chancellor.
+                    <Text style={styleSpacing}>{index}.</Text> President <Text color={grey} style={specialStyle}>{item.president}</Text> picks <Text color={grey} style={specialStyle}>{item.chancellor}</Text> as chancellor.
 
                 </Paragraph>;
             case GAME_EVENT.ELECTION:
-                return <Paragraph border="all" width="100%" style={style} color={offWhite}>
+                return <Paragraph key={key} border="all" style={style} color={offWhite}>
 
-                    Election <Text color={grey} style={specialStyle}>{item.approvals > item.rejections ? "passed" : "failed"}</Text> with <Text color={blue}>{item.approvals}</Text> approval(s) and <Text color={orange}>{item.rejections}</Text> rejection(s).
+                    <Text style={styleSpacing}>{index}.</Text> Election <Text color={grey} style={specialStyle}>{item.approvals > item.rejections ? "passed" : "failed"}</Text> with <Text color={blue}>{item.approvals}</Text> approval(s) and <Text color={orange}>{item.rejections}</Text> rejection(s).
 
                 </Paragraph>;
             case GAME_EVENT.EXECUTION:
-                return <Paragraph border="all" width="100%" style={style} color={offWhite}>
+                return <Paragraph key={key} border="all" style={style} color={offWhite}>
 
-                    President <Text color={grey} style={specialStyle}>{item.president}</Text> executed <Text color={"#000"} style={specialStyle}>{item.executed}</Text>.
+                    <Text style={styleSpacing}>{index}.</Text> President <Text color={grey} style={specialStyle}>{item.president}</Text> executed <Text color={"#000"} style={specialStyle}>{item.executed}</Text>.
 
                 </Paragraph>;
             case GAME_EVENT.INVESTIGATE_LOYALTY:
@@ -346,8 +371,8 @@ class GameDash extends Component {
             case GAME_EVENT.SPECIAL_ELECTION:
                 break;
             default:
-                return <Paragraph border="all" width="100%" style={style} color={offWhite}>
-                    {item.message}
+                return <Paragraph key={key} border="all" style={style} color={offWhite}>
+                    <Text style={styleSpacing}>{index}.</Text> {item.message}
                 </Paragraph>;
             
         }
@@ -360,6 +385,8 @@ class GameDash extends Component {
     componentDidMount() {
         this._isMounted = true;
         if (this._isMounted) {
+            const { scrollbars } = this.refs;
+            console.log("scrollbars --- ", scrollbars);
             this.addToGameLog();
             this.setState(this.props.data);
 
@@ -412,6 +439,8 @@ class GameDash extends Component {
         const back = "	#fbb867";
         const offWhite = "#fde0bc";
         const blue = "#6d97b9";
+
+        
 
         return (
             <Grommet 
@@ -793,19 +822,89 @@ class GameDash extends Component {
                             direction="column"
                             align="center"
                             justify="start"
-                            gap="xsmall"
+                            gap="0px"
                             style={{"border": "1px solid " + grey2}}
                         >
                             {// chat log
                             }
-                            <Text color={grey} style={{"backgroundColor":offWhite,"width":"100%", "padding":"10px 0px 10px 0px", "textAlign": "center", "borderBottom": "1px solid " + grey2}}>Game Log</Text>
-                            <Box width="2px" height="5px"></Box>
-                            
-                            {this.state.log.map((item, i) => (
-                                this.processLog(item)
-                            ))}
-                            <Box width="2px" height="15px"></Box>
+                            <Box
+                                width="100%"
+                                direction="row"
+                                align="center"
+                                justify="between"
+                                background={offWhite}
 
+                            >
+                                <Box 
+                                    width="50px" 
+                                    height={{"min":"1px"}} 
+                                    pad="5px" 
+                                    data-tip data-for="logCount"
+                                    style={{fontSize:"15px", textAlign:"center"}}
+                                >
+                                    {this.state.log.length}
+
+                                    <ReactTooltip 
+                                        id="logCount" 
+                                        type='info' 
+                                        backgroundColor={offWhite} 
+                                        textColor={grey} 
+                                        effect="solid" 
+                                        place="left" 
+                                        className="tooltop-round policy-tool-tip"
+                                    >
+                                            GAME LOG COUNT
+                                    </ReactTooltip>
+                                </Box>
+                                <Text color={grey} style={{"backgroundColor":offWhite,"width":"auto", "padding":"10px 0px 10px 0px", "textAlign": "center", "borderBottom": "1px solid " + grey2}}>Game Log</Text>
+                                <Button 
+                                    onClick={()=>{
+
+                                        const { scrollbars } = this.refs;
+                                        scrollbars.scrollToBottom();
+
+                                    }}
+
+                                    style={{
+                                        "width":"50px",
+                                        background:"#f76",
+                                        color:{offWhite},
+                                        display:"flex",
+                                        justifyContent:"center",
+                                        alignItems:"center",
+                                        margin:"5px",
+                                        padding:"5px",
+                                        border:"1px solid #999"
+                                    }}
+                                    primary
+                                >
+                                    <IoIosArrowDown color={offWhite} />
+                                </Button>
+                            </Box>
+                            <Button onClick={() => this.addTestLog()}>Add test log</Button>                           
+                            <Box
+                                width="100%"
+                                height="100%"
+                                overflow="auto"
+                                direction="column"
+                                align="center"
+                                justify="start"
+                                gap="xsmall"
+                            >
+                                <Scrollbars 
+                                    style={{ width: "100%", height: "100%" }}
+                                    onUpdate={(event) => {}}
+                                    ref="scrollbars"
+                                >
+                                    <Box width="2px" height="5px"></Box>
+                                    {this.state.log.map((item, i) => (
+                                        this.processLog(item, i)
+                                    ))}
+                                    <Box width="2px" height="5px"></Box>
+                                    
+                                </Scrollbars>
+                                
+                            </Box>
                         </Box>
                     </Box>
                 </Box>

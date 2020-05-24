@@ -118,7 +118,6 @@ class GameCard extends Component {
 
         const ability = this.props.data.ability || "NO SPECIAL POWER";
         const tooltipId = "ability-" + (this.props.data.fascist ? "fas-": "lib-") + this.props.data.factor;
-        console.log(tooltipId);
 
         return (
             <Grommet theme={customFocus} background="none">
