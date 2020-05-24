@@ -43,7 +43,7 @@ describe("POST /api/signup", () => {
             .post('/api/signup')
             .send({
                 'password': '1234',
-                'playerTag': 'rob'
+                'playerTag': 'robo'
             })
             .end((err, res) => {
                 res.should.have.status(400);
@@ -75,7 +75,7 @@ describe("POST /api/signup", () => {
             .post('/api/signup')
             .send({
                 'email': 'rob@dummy.com',
-                'playerTag': 'rob'
+                'playerTag': 'robo'
             })
             .end((err, res) => {
                 res.should.have.status(400);
@@ -84,7 +84,41 @@ describe("POST /api/signup", () => {
                 res.body.should.have.property('msg').eql('Missing fields.');
                 done();
             });
-    });     
+    });
+    
+    it("should not sign up a User with too few characters in the playerTag", (done) => {
+        chai.request(app)
+            .post('/api/signup')
+            .send({
+                'email': 'rob@dummy.com',
+                'password': 'helloguy',
+                'playerTag': 'rob'
+            })
+            .end((err, res) => {
+                res.should.have.status(400);
+                res.body.should.be.a('object');
+                res.body.should.have.property('error');
+                res.body.should.have.property('msg').eql('Player tag needs to be atleast 4 characters long');
+                done();
+            });
+    });
+
+    it("should not sign up a User with special characters in player tag", (done) => {
+        chai.request(app)
+            .post('/api/signup')
+            .send({
+                'email': 'rob@dummy.com',
+                'password': 'helloguy',
+                'playerTag': 'rob*'
+            })
+            .end((err, res) => {
+                res.should.have.status(400);
+                res.body.should.be.a('object');
+                res.body.should.have.property('error');
+                res.body.should.have.property('msg').eql('Player tag cannot contain any special symbols other than _ or -');
+                done();
+            });
+    });
 
     it("should sign up a new User", (done) => {
         chai.request(app)
@@ -92,7 +126,7 @@ describe("POST /api/signup", () => {
             .send({
                 'email': 'rob@dummy.com',
                 'password': '1234',
-                'playerTag': 'rob'
+                'playerTag': 'robo'
             })
             .end((err, res) => {
                 
@@ -107,7 +141,7 @@ describe("POST /api/signup", () => {
                 res.header['set-cookie'].length.should.be.above(0);
                 done();
             });
-    });        
+    });
 });
 
 describe("POST /api/signin", () => {
@@ -162,7 +196,7 @@ describe("POST /api/signin", () => {
         chai.request(app)
             .post('/api/signin')
             .send({
-                'email': 'bob@dummy.com',
+                'email': 'bobo@dummy.com',
                 'password': '12345678'
             })
             .end((err, res) => {
@@ -179,7 +213,7 @@ describe("POST /api/signin", () => {
         chai.request(app)
             .post('/api/signin')
             .send({
-                'email': 'bob@dummy.com',
+                'email': 'bobo@dummy.com',
                 'password': '1234'
             })
             .end((err, res) => {
@@ -210,4 +244,42 @@ describe("POST /api/signout", () => {
                 done();
             });
     });                    
+});
+
+describe("POST /api/playAsGuest", () => {
+
+    it('should deny taken playerTag', (done) => {
+        chai.request(app)
+            .post('/api/playAsGuest')
+            .send({
+                'playerName' : 'bobo' 
+            })
+            .end((err, res) => {
+                res.should.have.status(406);
+                res.body.should.have.a('object');
+                res.body.should.have.property('status');
+                res.body.should.have.property('message').eql('Player Tag bobo exists, try another name')
+                done();
+            });
+    });
+
+    it('should create create session', (done) => {
+        chai.request(app)
+        .post('/api/playAsGuest')
+        .send({
+            'playerName': 'totallyUnique'
+        })
+        .end((err, res) => {
+            res.should.have.status(200);
+            res.body.should.have.a('object');
+            res.body.should.have.property('playerTag').eql('totallyUnique');
+            res.body.should.have.property('isGuest').eql(true);
+
+            // check cookie
+            res.should.have.property('header');
+            res.header.should.have.property("set-cookie");
+            res.header['set-cookie'].length.should.be.above(0);
+            done();
+        });
+    });
 });

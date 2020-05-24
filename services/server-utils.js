@@ -23,7 +23,5 @@ module.exports = {
         });
         return res;
         
-    },
-
-    cryptr: new Cryptr(process.env.SECRET),
+    }
 };

@@ -15,7 +15,9 @@ var userSchema = new Schema({
     playerTag: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
+        minlength: 4,
+        validate: /^[a-z0-9_-]+$/i
     },
     playerNickName: {
         type: String,

@@ -60,16 +60,32 @@ const player = require('./apis/player.js')(app);
 const user = require('./apis/users.js')(app);
 const game = require('./apis/game.js');
 const withAuth = require('./apis/middleware');
-
+const UserAPI = require('./models/User.js')
 // Listeners
 io.on('connection', socket => {
-    socket.on('playerJoin', (playerTag, gameCode) => {
-        // the listeners for these will be in the client code
+    socket.on('playerJoin', (playerTag, nickName, gameCode) => {
         try{
-            game.joinGameAPI(gameCode, playerTag, socket, io);
+            socket.playerInfo = {
+                playerTag: playerTag,
+                playerNickName: nickName
+            }
+            game.joinGameAPI(gameCode, playerTag, nickName, socket, io);
             // socket.emit
         } catch (err) {
             socket.emit('joinResult', 'error');
+        }
+    });
+    
+    socket.on("createGame", (playerTag, playerNickName) => {
+
+        try {
+            socket.playerInfo = {
+                playerTag: playerTag,
+                playerNickName: playerNickName
+            }
+            game.createGameAPI(playerTag, socket, io);
+        } catch (err) {
+            socket.emit("createResult", "error");
         }
     });
     
@@ -88,39 +104,38 @@ io.on('connection', socket => {
 
 // helpers
 
-app.post('/api/createGame', function(req, res) {
-    var gameCode = shortid.generate();
-    var players = [new mongoose.mongo.ObjectId(req.body.playerId)];
-
-    var newGame = new Game({
-        code: gameCode,
-        players: players,
-        numPlayers: 1
-    });
-    newGame.save(function(err, game) {
-        if (err) {
-            res.status(400)
-            .json({
-                status: 'error',
-                data: {},
-                message: err
-            });
-        } else {
-            res.status(202)
-            .json({
-                status: 'success',
-                data: game._id,
-                message: "Game code is " + game.code
-            });
-        }
-    });
-    console.log("created")
-});
 app.get('/*', (req, res) => {
     res.sendFile(path.resolve(__dirname, 'application/public', 'index.html'), (err) => {
         if (err) res.status(500).send(err);
     });
 });
+
+app.post('/api/testingg', (req, res) => {
+    var user = new UserAPI({
+        playerTag: req.body.tag,
+        email: req.body.email,
+        password: req.body.pass,
+        playerNickName:req.body.tag
+    });
+
+    user.save((err, user) => {
+        if (err) {
+            res.status(400)
+                .json({
+                    status: 'error',
+                    data: {},
+                    message: err
+            });
+        } else {
+            res.status(200)
+            .json({
+                status: 'success',
+                data: user,
+                message: 'k'
+            });
+        }
+    })
+})
 
 
 // Start listening for requests
