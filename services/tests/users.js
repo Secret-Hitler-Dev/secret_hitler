@@ -98,7 +98,7 @@ describe("POST /api/signup", () => {
                 res.should.have.status(400);
                 res.body.should.be.a('object');
                 res.body.should.have.property('error');
-                res.body.should.have.property('msg').eql('Player tag needs to be atleast 4 characters long.');
+                res.body.should.have.property('msg').to.eql('Player tag needs to be atleast 4 characters long.');
                 done();
             });
     });
@@ -115,7 +115,7 @@ describe("POST /api/signup", () => {
                 res.should.have.status(400);
                 res.body.should.be.a('object');
                 res.body.should.have.property('error');
-                res.body.should.have.property('msg').eql('Player tag cannot contain any special symbols other than _ or -.');
+                res.body.should.have.property('msg').to.deep.equal('Player tag cannot contain any special symbols other than _ or -.');
                 done();
             });
     });
