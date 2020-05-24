@@ -220,7 +220,7 @@ class GameDash extends Component {
             },
             {
                 phase: GAME_EVENT.POLICY_PEEK,
-                peeking: 'GucciKage'
+                president: 'GucciKage'
             },
             
             {
@@ -241,7 +241,7 @@ class GameDash extends Component {
             },
             {
                 phase: GAME_EVENT.INVESTIGATE_LOYALTY,
-                investigator: 'GucciKage',
+                president: 'GucciKage',
                 investigated: 'Roomba64'
             },
 
@@ -329,7 +329,7 @@ class GameDash extends Component {
 
         const style = {"wordWrap": "break-word", "borderBottom":"0px solid #9a928f", "margin":"0px", "padding":"5px 10px 5px 10px", "width":"auto", "fontSize":"12px", "backgroundColor":grey, "borderRadius":"3px"};
 
-        const specialStyle = {"backgroundColor":offWhite, "fontSize":"12px", "marginLeft": "2px", "marginRight": "2px", "padding": "5px", "borderRadius":"3px"};
+        const specialStyle = {"backgroundColor":offWhite, "fontSize":"12px", "marginLeft": "2px", "marginRight": "2px", "padding": "2px 5px 2px 5px", "borderRadius":"3px"};
 
         const styleSpacing = {"margin":"0px 10px 0px 0px", "fontSize":"12px"};
 
@@ -341,41 +341,66 @@ class GameDash extends Component {
 
         const index = h+" : "+m+" : "+s;
 
+        var event = <span></span>;
+
         switch(item.phase) {
             case GAME_EVENT.CHANCELLOR_NOMINATION:
-                return <Paragraph key={key} border="all" style={style} color={offWhite}>
-
-                    <Text style={styleSpacing}>{index}.</Text> President <Text color={grey} style={specialStyle}>{item.president}</Text> picks <Text color={grey} style={specialStyle}>{item.chancellor}</Text> as chancellor.
-
+                event = <Paragraph key={key} border="all" style={style} color={offWhite}>
+                    President <Text color={grey} style={specialStyle}>{item.president}</Text> picks <Text color={grey} style={specialStyle}>{item.chancellor}</Text> as chancellor.
                 </Paragraph>;
+                break;
             case GAME_EVENT.ELECTION:
-                return <Paragraph key={key} border="all" style={style} color={offWhite}>
-
-                    <Text style={styleSpacing}>{index}.</Text> Election <Text color={grey} style={specialStyle}>{item.approvals > item.rejections ? "passed" : "failed"}</Text> with <Text color={blue}>{item.approvals}</Text> approval(s) and <Text color={orange}>{item.rejections}</Text> rejection(s).
-
+                event = <Paragraph key={key} border="all" style={style} color={offWhite}>
+                    Election <Text color={grey} style={specialStyle}>{item.approvals > item.rejections ? "passed" : "failed"}</Text> with <Text color={blue}>{item.approvals}</Text> approval(s) and <Text color={orange}>{item.rejections}</Text> rejection(s).
                 </Paragraph>;
+                break;
             case GAME_EVENT.EXECUTION:
-                return <Paragraph key={key} border="all" style={style} color={offWhite}>
-
-                    <Text style={styleSpacing}>{index}.</Text> President <Text color={grey} style={specialStyle}>{item.president}</Text> executed <Text color={"#000"} style={specialStyle}>{item.executed}</Text>.
-
+                event = <Paragraph key={key} border="all" style={style} color={offWhite}>
+                   President <Text color={grey} style={specialStyle}>{item.president}</Text> executed <Text color={"#000"} style={specialStyle}>{item.executed}</Text>.
                 </Paragraph>;
+                break;
             case GAME_EVENT.INVESTIGATE_LOYALTY:
+                event = <Paragraph key={key} border="all" style={style} color={offWhite}>
+                    President <Text color={grey} style={specialStyle}>{item.president}</Text> investigated <Text color={grey} style={specialStyle}>{item.investigated}</Text>.
+                </Paragraph>;
                 break;
             case GAME_EVENT.POLICY_ELECTED:
+                event = <Paragraph key={key} border="all" style={style} color={offWhite}>
+                    President <Text color={grey} style={specialStyle}>{item.president}</Text> and Chancellor <Text color={grey} style={specialStyle}>{item.chancellor}</Text> elected a <Text color={item.fascist ? orange: blue} size="15px">{item.fascist ? "FASCIST" : "LIBERAL"}</Text> policy.
+                </Paragraph>;
                 break;
             case GAME_EVENT.POLICY_PEEK:
+                event = <Paragraph key={key} border="all" style={style} color={offWhite}>
+                    President <Text color={grey} style={specialStyle}>{item.president}</Text> peeked at the next 3 policies.
+                </Paragraph>;
                 break;
             case GAME_EVENT.GAME_WON:
+                event = <Paragraph key={key} border="all" style={style} color={offWhite}>
+                   <Text color={item.fascist ? orange: blue} size="16px">{item.fascist ? "FASCISTS" : "LIBERALS"}</Text> win.
+                </Paragraph>;
                 break;
             case GAME_EVENT.SPECIAL_ELECTION:
+                event = <Paragraph key={key} border="all" style={style} color={offWhite}>
+                    President <Text color={grey} style={specialStyle}>{item.president}</Text> called a special election with <Text color={grey} style={specialStyle}>{item.newPresident}</Text> as the next President.
+                </Paragraph>;
                 break;
             default:
-                return <Paragraph key={key} border="all" style={style} color={offWhite}>
-                    <Text style={styleSpacing}>{index}.</Text> {item.message}
+                event = <Paragraph key={key} border="all" style={style} color={offWhite}>
+                    {item.message}
                 </Paragraph>;
+                break;
             
         }
+
+        return <Box direction="row" width="auto" height="auto">
+            <Box width={{"min":"90px"}} style={{"padding":"5px 0px 5px 10px"}}><Text color={offWhite} style={styleSpacing}>{index}.</Text></Box>
+            
+            <Box width="100%">
+                {event}
+            </Box>
+            
+
+        </Box>
     }
 
     componentWillUnmount() {
