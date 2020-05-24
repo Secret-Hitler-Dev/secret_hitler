@@ -11,7 +11,8 @@ import {
     Box, 
     Button, 
     Avatar, 
-    Image
+    Image,
+    Paragraph
 } from 'grommet';
 
 import { StatusInfoSmall } from "grommet-icons";
@@ -49,6 +50,17 @@ const customFocus = deepMerge(grommet, {
       }
     }
 });
+
+const GAME_EVENT = {
+    CHANCELLOR_NOMINATION : 'CHANCELLOR_NOMINATION',
+    ELECTION : 'ELECTION',
+    POLICY_ELECTED : 'POLICY_ELECTED',
+    POLICY_PEEK: 'POLICY_PEEK',
+    INVESTIGATE_LOYALTY: 'INVESTIGATE_LOYALTY',
+    SPECIAL_ELECTION: 'SPECIAL_ELECTION',
+    EXECUTION: 'EXECUTION',
+    GAME_WON: 'GAME_WON'
+}
 
 const GAMEPHASE = {
     CHANCELLOR_NOMINATION : 'CHANCELLOR_NOMINATION',
@@ -103,7 +115,8 @@ class GameDash extends Component {
             votePicked: false,
             vote:VOTE.NONE,
             gameStarted: false,
-            status: ''
+            status: '',
+            log: []
         };
         
     }
@@ -168,6 +181,178 @@ class GameDash extends Component {
         }
     }
 
+    addToGameLog = () => {
+        var log = this.state.log;
+
+        var msgs = [
+
+            {
+                phase: GAME_EVENT.CHANCELLOR_NOMINATION,
+                president: 'Roomba64',
+                chancellor: 'El Momo'
+            },
+            {
+                phase: GAME_EVENT.ELECTION,
+                approvals: 7,
+                rejections: 1
+            },
+            {
+                phase: GAME_EVENT.POLICY_ELECTED,
+                president: 'Roomba64',
+                chancellor: 'El Momo',
+                fascist: true
+            },
+            {
+                phase: GAME_EVENT.POLICY_PEEK,
+                peeking: 'GucciKage'
+            },
+            
+            {
+                phase: GAME_EVENT.CHANCELLOR_NOMINATION,
+                president: 'GucciKage',
+                chancellor: 'mb'
+            },
+            {
+                phase: GAME_EVENT.ELECTION,
+                approvals: 4,
+                rejections: 3
+            },
+            {
+                phase: GAME_EVENT.POLICY_ELECTED,
+                president: 'GucciKage',
+                chancellor: 'mb',
+                fascist: true
+            },
+            {
+                phase: GAME_EVENT.INVESTIGATE_LOYALTY,
+                investigator: 'GucciKage',
+                investigated: 'Roomba64'
+            },
+
+            {
+                phase: GAME_EVENT.CHANCELLOR_NOMINATION,
+                president: 'venkman',
+                chancellor: 'angela'
+            },
+            {
+                phase: GAME_EVENT.ELECTION,
+                approvals: 6,
+                rejections: 1
+            },
+            {
+                phase: GAME_EVENT.POLICY_ELECTED,
+                president: 'venkman',
+                chancellor: 'angela',
+                fascist: true
+            },
+            {
+                phase: GAME_EVENT.SPECIAL_ELECTION,
+                president: 'venkman',
+                newPresident: 'GucciKage'
+            },
+
+            {
+                phase: GAME_EVENT.CHANCELLOR_NOMINATION,
+                president: 'GucciKage',
+                chancellor: 'Roomba64'
+            },
+            {
+                phase: GAME_EVENT.ELECTION,
+                approvals: 5,
+                rejections: 2
+            },
+            {
+                phase: GAME_EVENT.POLICY_ELECTED,
+                president: 'GucciKage',
+                chancellor: 'Roomba64',
+                fascist: true
+            },
+            {
+                phase: GAME_EVENT.EXECUTION,
+                president: 'GucciKage',
+                executed: 'radsouza'
+            },
+
+            {
+                phase: GAME_EVENT.CHANCELLOR_NOMINATION,
+                president: 'angela',
+                chancellor: 'venkman'
+            },
+            {
+                phase: GAME_EVENT.ELECTION,
+                approvals: 4,
+                rejections: 3
+            },
+            {
+                phase: GAME_EVENT.POLICY_ELECTED,
+                president: 'angela',
+                chancellor: 'venkman',
+                fascist: false
+            },
+
+            {
+                phase: GAME_EVENT.GAME_WON,
+                fascists: false
+            }
+            
+        ];
+
+        this.setState({log:msgs}, () => {console.log(this.state)});
+    }
+
+    processLog = (item) => {
+
+        const grey = "#474442";
+        const grey2 = "#79706d";
+        const yellow = "#fbb867";
+        const brightYellow = "#fdde4e";
+        const orange = "#f2664a";
+        const back = "	#fbb867";
+        const offWhite = "#fde0bc";
+        const blue = "#6d97b9";
+
+        console.log(item);
+        const style = {"wordWrap": "break-word", "borderBottom":"0px solid #9a928f", "margin":"0px", "padding":"5px 10px 5px 10px", "width":"94%", "fontSize":"12px", "backgroundColor":grey, "borderRadius":"3px"};
+
+        const specialStyle = {"backgroundColor":offWhite, "fontSize":"12px", "marginLeft": "2px", "marginRight": "2px", "padding": "5px", "borderRadius":"3px"};
+
+        switch(item.phase) {
+            case GAME_EVENT.CHANCELLOR_NOMINATION:
+                return <Paragraph border="all" width="100%" style={style} color={offWhite}>
+
+                    President <Text color={grey} style={specialStyle}>{item.president}</Text> picks <Text color={grey} style={specialStyle}>{item.chancellor}</Text> as chancellor.
+
+                </Paragraph>;
+            case GAME_EVENT.ELECTION:
+                return <Paragraph border="all" width="100%" style={style} color={offWhite}>
+
+                    Election <Text color={grey} style={specialStyle}>{item.approvals > item.rejections ? "passed" : "failed"}</Text> with <Text color={blue}>{item.approvals}</Text> approval(s) and <Text color={orange}>{item.rejections}</Text> rejection(s).
+
+                </Paragraph>;
+            case GAME_EVENT.EXECUTION:
+                return <Paragraph border="all" width="100%" style={style} color={offWhite}>
+
+                    President <Text color={grey} style={specialStyle}>{item.president}</Text> executed <Text color={"#000"} style={specialStyle}>{item.executed}</Text>.
+
+                </Paragraph>;
+            case GAME_EVENT.INVESTIGATE_LOYALTY:
+                break;
+            case GAME_EVENT.POLICY_ELECTED:
+                break;
+            case GAME_EVENT.POLICY_PEEK:
+                break;
+            case GAME_EVENT.GAME_WON:
+                break;
+            case GAME_EVENT.SPECIAL_ELECTION:
+                break;
+            default:
+                return <Paragraph border="all" width="100%" style={style} color={offWhite}>
+                    {item.message}
+                </Paragraph>;
+            
+        }
+    }
+
     componentWillUnmount() {
         this._isMounted = false;
     }
@@ -175,6 +360,7 @@ class GameDash extends Component {
     componentDidMount() {
         this._isMounted = true;
         if (this._isMounted) {
+            this.addToGameLog();
             this.setState(this.props.data);
 
             var playerNum = this.props.data.players.length;
@@ -302,7 +488,7 @@ class GameDash extends Component {
                             justify="center"
                             round="10px"
                         >
-                            {// draw pile, number of faschists, election tracker, liberals, discard pile
+                            {// draw pile, number of fascists, election tracker, liberals, discard pile
                             }
                             <Box
                                 direction="row"
@@ -589,9 +775,38 @@ class GameDash extends Component {
                         justify="between"
                         background={grey}
                         round="xsmall"
+                        pad="small"
                     >
                         {// CHAT LOG AND ALLY INFORMATION
                         }
+                        <Box>
+                            {// ally info
+                            }
+                        </Box>
+                        
+                        <Box
+                            width="99%"
+                            height="65%"
+                            background={grey}
+                            round="5px"
+                            overflow="auto"
+                            direction="column"
+                            align="center"
+                            justify="start"
+                            gap="xsmall"
+                            style={{"border": "1px solid " + grey2}}
+                        >
+                            {// chat log
+                            }
+                            <Text color={grey} style={{"backgroundColor":offWhite,"width":"100%", "padding":"10px 0px 10px 0px", "textAlign": "center", "borderBottom": "1px solid " + grey2}}>Game Log</Text>
+                            <Box width="2px" height="5px"></Box>
+                            
+                            {this.state.log.map((item, i) => (
+                                this.processLog(item)
+                            ))}
+                            <Box width="2px" height="15px"></Box>
+
+                        </Box>
                     </Box>
                 </Box>
 
