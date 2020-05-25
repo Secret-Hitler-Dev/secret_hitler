@@ -59,7 +59,8 @@ module.exports = {
                 // game must have space for the player
                 if (retrievedGame.players.includes(joiningPlayerTag)) {
                     var players = [];
-                    Object.keys(io.sockets.adapter.rooms[update.code].sockets).forEach((key) => {
+                    // here we go
+                    Object.keys(io.sockets.adapter.rooms[retrievedGame.code].sockets).forEach((key) => {
                         players.push({
                             playerTag: io.sockets.connected[key].playerInfo.playerTag,
                             playerNickName: io.sockets.connected[key].playerInfo.playerNickName
