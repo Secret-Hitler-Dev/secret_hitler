@@ -6,11 +6,45 @@ var shortid = require('shortid');
 
 module.exports = {
 
-    joinGameAPI: (gameCode, joiningPlayerTag, socket, io) => {      
+    createGameAPI: (host, socket, io) => {
+        var payload = null;
+        var gameCode = shortid.generate();
+        var players = [host];
+        var newGame = new Game({
+            code: gameCode,
+            players: players,
+            numPlayers: 1
+        });
+        /*
+         [s1, s2, s3, ]
+        */
+        newGame.save((err, game) => {
+            if (err || !game) {
+                payload = {
+                    status: 'error',
+                    data: {},
+                    message: err
+                }
+                socket.emit("createResult", payload);
+            } else {
+                payload = {
+                    status: 'success',
+                    data: game.code,
+                    message: 'Created game, game code is ' + game.code
+                }
+                
+                socket.join(game.code, () => {
+                    io.in(game.code).emit('createResult', payload);
+                });
+            }
+        });
+    },
+
+    joinGameAPI: (gameCode, joiningPlayerTag, playerNickName, socket, io) => {      
         var payload = null;
         var game = null;
         Game.findOne({code: gameCode}, function(err, retrievedGame) {
-            if (err) {
+            if (err || !retrievedGame) {
                 payload = {
                     status: 'error',
                     data: {},
@@ -20,14 +54,28 @@ module.exports = {
 
             } else {
                 game = retrievedGame;
+
+                
                 // game must have space for the player
                 if (retrievedGame.players.includes(joiningPlayerTag)) {
+                    var players = [];
+                    Object.keys(io.sockets.adapter.rooms[update.code].sockets).forEach((key) => {
+                        players.push({
+                            playerTag: io.sockets.connected[key].playerInfo.playerTag,
+                            playerNickName: io.sockets.connected[key].playerInfo.playerNickName
+                        })
+                    });
                     payload = {
                         status: 'success',
-                        data: game.code,
+                        data: {
+                            joiningPlayerTag: joiningPlayerTag,
+                            playerNickName: playerNickName,
+                            code: game.code,
+                            players: players
+                        },
                         message: "Player already in, rejoined game: " + game.code
                     };
-
+                    
                     socket.join(gameCode, () => {
                         io.in(gameCode).emit("joinResult", payload);
                     });
@@ -61,9 +109,21 @@ module.exports = {
                                             message: err
                                         };
                                     } else {
+                                        var players = [];
+                                        Object.keys(io.sockets.adapter.rooms[update.code].sockets).forEach((key) => {
+                                            players.push({
+                                                playerTag: io.sockets.connected[key].playerInfo.playerTag,
+                                                playerNickName: io.sockets.connected[key].playerInfo.playerNickName
+                                            })
+                                        });
                                         payload = {
                                             status: 'success',
-                                            data: update.code,
+                                            data: {
+                                                joiningPlayerTag: joiningPlayerTag,
+                                                playerNickName: playerNickName,
+                                                code: update.code,
+                                                players: players
+                                            },
                                             message: "Player joined " + update.code
                                         };
                                         
