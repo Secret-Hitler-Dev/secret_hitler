@@ -6,6 +6,7 @@ import queryString from 'query-string'
 import "./Game.css";
 
 import { Grommet, Box, Text, Button, Layer, Image} from 'grommet';
+import io from "socket.io-client";
 
 import ReactTooltip from "react-tooltip";
 
@@ -24,6 +25,8 @@ const customFocus = deepMerge(grommet, {
     }
 });
 
+const socket = io("http://localhost:8080/")
+
 class Game extends Component {
     _isMounted = false;
 
@@ -32,20 +35,9 @@ class Game extends Component {
         this.state = {
             msg: '',
             gameInProgress: true,
-
-            players: [
-                "mb",
-                "Roomba64",
-                "mvfizan",
-                "angela",
-                "GucciKage",
-                "soda",
-                "venky",
-                "radsouza",
-                "cheena",
-                "laddoo"
-            ],
-            code:'XYSA2'
+            players: this.props.data.players,
+            code:this.props.data.code,
+            create:false
         };
         
     }
@@ -68,6 +60,51 @@ class Game extends Component {
 
     componentDidMount() {
         this._isMounted = true;
+        this.setState(this.props.data);
+        console.log("Heyyyyy");
+        if (this.props.data.create) {
+            socket.emit('createGame', this.props.data.playerTag, this.props.data.playerNickName);
+        } else {
+            socket.emit('playerJoin', this.props.data.playerTag, this.props.data.playerNickName, this.state.code);
+        }
+        socket.on("joinResult", (result) => {
+            if (result.status === "error") {
+                var rc = this.state.roomCode;
+                this.setState({error:result.message});
+            } else {
+                
+                console.log("New player: " + result.data.joiningPlayerTag);
+                var newListofPlayers = result.data.players; //this.state.players;
+                newListofPlayers.push({playerTag: result.data.joiningPlayerTag, playerNickName: result.data.playerNickName});
+
+                this.setState({
+                    players: newListofPlayers
+                })
+            }
+            console.log("yeeaa buddy")
+            this.setState({
+                joining: false
+            });
+        });
+
+        socket.on("createResult", (result) => {
+            if (result.status === 'error') {
+                this.setState({error:result.message});
+            } else {
+                var newListofPlayers = this.state.players;
+                newListofPlayers.push({playerTag: this.props.data.playerTag, playerNickName: this.props.data.playerNickName});
+
+                this.setState({
+                    players: newListofPlayers,
+                    code: result.data
+                })
+            }
+            console.log("yeeaa buddy")
+            this.setState({
+                joining: false
+            });
+        });
+
         if (this._isMounted) {
             const values = queryString.parse(this.props.location.search)
             var code = values.room;
