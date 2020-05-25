@@ -123,6 +123,8 @@ class GameDash extends Component {
             vote:VOTE.NONE,
             gameStarted: false,
             status: '',
+            playerStatusIcons:{},
+            selectedPlayer:{},
             log: [],
             hideLog: false,
             logHeight: "100%",
@@ -192,6 +194,12 @@ class GameDash extends Component {
         }
     }
 
+    getRandomArbitrary = (min, max) => {
+        min = Math.ceil(min);
+        max = Math.floor(max);
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+    
     addTestLog = () => {
         var log = this.state.log;
         log.push(
@@ -436,6 +444,16 @@ class GameDash extends Component {
             this.addToGameLog();
             this.setState(this.props.data);
             var playerNum = this.props.data.players.length;
+            var pIcons = {};
+            var selectedPlayer = {};
+            var pres = this.getRandomArbitrary(0, playerNum - 1);
+            var dead = this.getRandomArbitrary(0, playerNum - 1);
+            var select = this.getRandomArbitrary(0, playerNum - 1);
+            
+            this.props.data.players.forEach((item, i) => {
+                pIcons[item.playerTag] = i == pres ? <GiEagleEmblem color="#fdde4e" />: i == dead ? <FaSkull color="#ddd" /> : null;
+                selectedPlayer[item.playerTag] = i == select;
+            });
 
             var testData = {
                 host: true,
@@ -451,7 +469,9 @@ class GameDash extends Component {
                 votePicked: false,
                 gamePhase: GAMEPHASE.LEGISLATIVE_SESSION_PRESIDENT,
                 gameStarted: true,
-                status:"CHANCELLOR IS SELECTING A POLICY!"
+                status:"CHANCELLOR IS SELECTING A POLICY!",
+                playerStatusIcons:pIcons,
+                selectedPlayer:selectedPlayer
             }
 
             if (testData.fascist) {
@@ -481,11 +501,10 @@ class GameDash extends Component {
         const yellow = "#fbb867";
         const brightYellow = "#fdde4e";
         const orange = "#f2664a";
+        const orangeLighter = "#e4886b";
         const back = "	#fbb867";
         const offWhite = "#fde0bc";
         const blue = "#6d97b9";
-
-        
 
         return (
             <Grommet 
@@ -513,31 +532,105 @@ class GameDash extends Component {
                     >
                         <Box
                             width="100%"
-                            height="60%"
+                            height={{"min":"50%","max":"50%"}}
+                            direction="column"
+                            align="center"
+                            justify="start"
+                            pad="0px"
+                            gap="small"
+                        >
+                            <Box 
+                                direction="row"
+                                align="center"
+                                justify="center"
+                                gap="small"
+                            >
+                                <Text style={{"textAlign": "center"}} color={offWhite}>Lobby</Text>
+                                <Box
+                                    pad={{"top":"2px","bottom":"2px", "left":"10px","right":"10px"}}
+                                    background='#49ad58'
+                                    round="3px"
+                                >
+                                    <Text color={offWhite} size="14px">
+                                        {this.props.data.code}
+                                    </Text>
+                                </Box>
+                            </Box>
+                            <Box
+                                width="100%"
+                                height={{"max":"95%"}}
+                                direction="column"
+                                align="center"
+                                justify="start"
+                                gap="8px"
+                                overflow = "show"
+                                pad={{"left":"5px","right":"5px"}}
+                            >
+                                {this.props.data.players.map((item, i) => (
+                                    
+                                    <Box
+                                        width="100%"
+                                        height={{"min":"30px","max":"30px"}}
+                                        background={this.state.selectedPlayer[item.playerTag] ? orange: grey2}
+                                        round="3px"
+                                        direction="row"
+                                        align="center"
+                                        justify="between"
+                                        pad={{"top":"2px","bottom":"2px", "left":"5px","right":"5px"}}
+                                        id={"player-" + i}
+                                        className="lobby-player"
+                                    >
+                                        <Box
+                                            width={{"max": "95%"}}
+                                            height="100%"
+                                            overflow="hidden"
+                                            direction="row"
+                                            align="center"
+                                            justify="start"
+                                        >
+                                            {// player name
+                                            }
+                                            <Text color={back} size="15px">{item.playerNickName}</Text>
+                                        </Box>
+                                        <Box
+                                            width="35px"
+                                            height="100%"
+                                            direction="row"
+                                            align="center"
+                                            justify="end"
+                                        >
+                                            {// game role (president / chancellor // executed) 
+                                            }
+
+                                            {// secret role at the end of the game
+                                            }
+                                            {this.state.playerStatusIcons[item.playerTag]}
+                                        </Box>
+                                    </Box>
+                                ))}
+                                
+                            </Box>
+                        </Box>
+                        <Box
+                            width="100%"
+                            height="40%"
                             direction="column"
                             align="center"
                             justify="start"
                             pad="10px"
-                            overflow="auto"
+                            overflow="show"
                         >
-                            <Text color={offWhite} style={{"textAlign": "center"}}>Party Membership &amp; Secret Role</Text>
+                            {/* <Text color={offWhite} style={{"textAlign": "center"}}>Party Membership &amp; Secret Role</Text> */}
                             <Box height="60px"/>
                             <GameEnvelope 
                                 data={{
-                                    envWidth:90, 
+                                    envWidth:120, 
                                     fascist:this.state.fascist,
                                     hitler:this.state.hitler
                                 }}
                             />
                         </Box>
-                        <Box
-                            width="100%"
-                            height={{"max":"35%"}}
-                            background={orange}
-                        >
-                            {// LOBBY INFORMATION
-                            }
-                        </Box>
+                        
                         
                     </Box>
                     <Box

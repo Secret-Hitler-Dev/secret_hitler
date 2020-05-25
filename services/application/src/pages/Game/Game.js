@@ -25,7 +25,7 @@ const customFocus = deepMerge(grommet, {
     }
 });
 
-const socket = io("http://localhost:8080/")
+const socket = io()
 
 class Game extends Component {
     _isMounted = false;
@@ -136,6 +136,10 @@ class Game extends Component {
         const offWhite = "#f7e1c3";
         const blue = "#6d97b9";
 
+        const data = this.props.data;
+        data.code = this.state.code;
+        data.players = this.state.players;
+
         return (
             <Grommet 
                 theme={customFocus}
@@ -149,11 +153,8 @@ class Game extends Component {
                     justify="center" 
                     style={{"padding": "none", "margin":"none"}}
                 >
-                    {!this.state.gameInProgress ? 
-                        <Lobby data={{players:this.state.players}} />
-                    :
-                        <GameDash data={{players:this.state.players, code:this.state.code}} />
-                    }
+                    
+                    <GameDash data={data} />
                 </Box>
             </Grommet>
         );

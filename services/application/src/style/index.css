@@ -11,6 +11,7 @@ body {
 }
 
 .game-card {
+    
 
 }
 
@@ -18,9 +19,24 @@ body {
 
 }
 
-.game-card:hover, .game-card-border:hover, .game-card-no-shadow:hover{
-    z-index:2;
+.game-card:hover, .game-card-border:hover{
+    transform: translate(1px , -100px);
+}
+
+.game-card-no-shadow:hover{
     transform: translate(1px , -15px);
+}
+
+.game-card-glow {
+    z-index:3;
+}
+
+.game-card-glow:hover {
+    z-index:3;
+    -webkit-filter: drop-shadow(1px 1px 0 rgb(255, 255, 255)) 
+                    drop-shadow(-1px -1px 0 rgb(255, 255, 255));
+    filter:drop-shadow(1px 1px 0 rgb(255, 255, 255)) 
+           drop-shadow(-1px -1px 0 white);
 }
 
 
