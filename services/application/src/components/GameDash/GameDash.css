@@ -51,8 +51,7 @@
 }
 
 .lobby-player:hover {
-    z-index: 2;
-    transform: translate(1px , 1px) scale(1.08);
+    z-index: 6;
     border: 1px solid #fff9f1;
     cursor: pointer;
 }

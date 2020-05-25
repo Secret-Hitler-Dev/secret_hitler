@@ -558,59 +558,61 @@ class GameDash extends Component {
                             </Box>
                             <Box
                                 width="100%"
-                                height={{"max":"95%"}}
+                                height={{"min":"95%","max":"95%"}}
                                 direction="column"
                                 align="center"
                                 justify="start"
                                 gap="8px"
                                 overflow = "show"
                                 pad={{"left":"5px","right":"5px"}}
-                                overflow="auto"
                                 style={{overflowX:"none"}}
                             >
-                                {this.props.data.players.map((item, i) => (
-                                    
-                                    <Box
-                                        width="100%"
-                                        height={{"min":"30px","max":"30px"}}
-                                        background={this.state.selectedPlayer[item.playerTag] ? orange: grey2}
-                                        round="3px"
-                                        direction="row"
-                                        align="center"
-                                        justify="between"
-                                        pad={{"top":"2px","bottom":"2px", "left":"5px","right":"5px"}}
-                                        id={"player-" + i}
-                                        className="lobby-player"
-                                    >
+                                <Scrollbars 
+                                    style={{ width: "100%", height: "100%", display:"flex", justifyContent:"center", alignItems:"center", }}
+                                >
+                                    {this.props.data.players.map((item, i) => (
                                         <Box
-                                            width={{"max": "95%"}}
-                                            height="100%"
-                                            overflow="hidden"
+                                            width="100%"
+                                            height={{"min":"30px","max":"30px"}}
+                                            background={this.state.selectedPlayer[item.playerTag] ? orange: grey2}
+                                            round="3px"
                                             direction="row"
                                             align="center"
-                                            justify="start"
+                                            justify="between"
+                                            pad={{"top":"2px","bottom":"2px", "left":"5px","right":"5px"}}
+                                            id={"player-" + i}
+                                            className="lobby-player"
+                                            margin={{"bottom":"9px"}}
                                         >
-                                            {// player name
-                                            }
-                                            <Text color={back} size="15px">{item.playerNickName}</Text>
-                                        </Box>
-                                        <Box
-                                            width="35px"
-                                            height="100%"
-                                            direction="row"
-                                            align="center"
-                                            justify="end"
-                                        >
-                                            {// game role (president / chancellor // executed) 
-                                            }
+                                            <Box
+                                                width={{"max": "95%"}}
+                                                height="100%"
+                                                overflow="hidden"
+                                                direction="row"
+                                                align="center"
+                                                justify="start"
+                                            >
+                                                {// player name
+                                                }
+                                                <Text color={back} size="15px">{item.playerNickName}</Text>
+                                            </Box>
+                                            <Box
+                                                width="35px"
+                                                height="100%"
+                                                direction="row"
+                                                align="center"
+                                                justify="end"
+                                            >
+                                                {// game role (president / chancellor // executed) 
+                                                }
 
-                                            {// secret role at the end of the game
-                                            }
-                                            {this.state.playerStatusIcons[item.playerTag]}
+                                                {// secret role at the end of the game
+                                                }
+                                                {this.state.playerStatusIcons[item.playerTag]}
+                                            </Box>
                                         </Box>
-                                    </Box>
-                                ))}
-                                
+                                    ))}                               
+                                </Scrollbars>
                             </Box>
                         </Box>
                         <Box
