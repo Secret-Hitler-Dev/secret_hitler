@@ -92,7 +92,8 @@ class Guest extends Component {
                 this.setState({error: data.msg});
             }
             else {
-                // set the states
+
+                data.playerNickName = data.playerTag;
                 this.props.data.login(data);
                 this.props.history.push('/');
             }

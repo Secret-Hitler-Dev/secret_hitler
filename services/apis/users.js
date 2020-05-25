@@ -179,14 +179,27 @@ module.exports = function(app) {
                             // tag doesn't exist we are good
                             createUser(formData, (err, data) => {
                                 if (err) {
-                                    return res.status(400).json({error: err, msg:"Failed to create user."});
+                                    var errType = err.name;
+                                    if (errType === 'ValidationError') {
+                                        // go through each error ( there will only be one but still)
+                                        var msg = ""
+                                        var validationErrors = err.errors;
+                                        for (var error in validationErrors) {
+                                            if (validationErrors[error].kind === 'minlength') {
+                                                msg += 'Player tag needs to be atleast 4 characters long. '
+                                            } else {
+                                                msg += 'Player tag cannot contain any special symbols other than _ or -. '
+                                            }
+                                        }
+                                        return res.status(400).json({error: err, msg:msg});
+                                    } else {
+                                        return res.status(400).json({error: err, msg:"Failed to create user."});
+                                    }
                                 } else {
                                     var userData = {
                                         playerTag: data.playerTag,
                                         isGuest: false,
                                         email: data.email
-                                        // playerNickName: data.playerNickName,
-                                        // verified: data.verified
                                     }
                                     return createSession(req, res, userData);
                                 }

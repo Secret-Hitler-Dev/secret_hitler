@@ -5,6 +5,7 @@ import { Link, Route, Switch, BrowserRouter } from 'react-router-dom';
 import { Box, Heading, Grommet } from 'grommet';
 
 import { Home, Login, Logout, Guest, Register, Loading, Verify, Profile, Game } from 'Pages';
+import { parseToHsl } from 'polished';
 
 
 class App extends Component {
@@ -23,16 +24,41 @@ class App extends Component {
             totalLiberalWins: 0,
             totalFascistWins: 0,
             guest: false,
-            playerNickName: ""
+            code: '',
+            playerNickName: "",
+            create: false,
+            players: [] // format: [{playerTag: .., playerNickName: ..}, ..]
+            
         };
 
         this.logout = this.logout.bind(this);
         this.login = this.login.bind(this);
         this.setPlayerTag = this.setPlayerTag.bind(this);
+        this.updateRoom = this.updateRoom.bind(this);
+        this.setInfo = this.setInfo.bind(this);
+
     }
 
     login(data) {
         this.setState({isLoggedIn: true, playerTag:data.playerTag, verified:data.verified, totalUsers: data.totalUsers, guest:data.guest, playerNickName: data.playerNickName});
+    }
+
+    updateRoom(code, tag, nickName) {
+        var newListOfPlayers = this.state.players;
+        newListOfPlayers.push({playerTag: tag, playerNickName: nickName});
+        this.setState({
+            code:code,
+            players: newListOfPlayers
+        });
+    }
+
+    setInfo(code, playerTag, playerNickName, isCreator) {
+        this.setState({
+            code:code,
+            playerTag: playerTag,
+            playerNickName: playerNickName,
+            create:isCreator
+        });
     }
 
     logout() {
@@ -108,6 +134,9 @@ class App extends Component {
         var propsData = {
             login: this.login,
             logout:this.logout,
+            logout:this.logout,
+            setInfo: this.setInfo,
+            updateRoom:this.updateRoom,
             setPlayerTag: this.setPlayerTag,
             playerTag:this.state.playerTag,
             verified:this.state.verified,
@@ -117,6 +146,9 @@ class App extends Component {
             totalLiberalWins:this.state.totalLiberalWins,
             totalFascistWins:this.state.totalFascistWins,
             guest:this.state.guest,
+            create:this.state.create,
+            code: this.state.code,
+            players: this.state.players,
             playerNickName: this.state.playerNickName
         };
 

@@ -147,7 +147,7 @@ class GameDash extends Component {
     }
 
     startGame = () => {
-        console.log("RESET GAME!");
+        console.log("START GAME!");
         this.setStatus("START GAME");
     }
 
@@ -433,7 +433,6 @@ class GameDash extends Component {
         if (this._isMounted) {
             this.addToGameLog();
             this.setState(this.props.data);
-
             var playerNum = this.props.data.players.length;
 
             var testData = {
@@ -736,7 +735,8 @@ class GameDash extends Component {
                                 >
                                     <GiExitDoor color={grey2} />
                                     <Text color={grey}>LEAVE GAME</Text>
-                                </Box>   
+                                </Box>
+                                   
                             </Box>
                             {(this.state.gamePhase === GAMEPHASE.LEGISLATIVE_SESSION_CHANCELLOR ||
                                 this.state.gamePhase === GAMEPHASE.LEGISLATIVE_SESSION_PRESIDENT) ?
