@@ -529,6 +529,7 @@ class GameDash extends Component {
                         background={grey}
                         round="xsmall"
                         pad="small"
+                        overflow="hidden"
                     >
                         <Box
                             width="100%"
@@ -544,6 +545,7 @@ class GameDash extends Component {
                                 align="center"
                                 justify="center"
                                 gap="small"
+                                margin={{"top":"5px"}}
                             >
                                 <Text style={{"textAlign": "center"}} color={offWhite}>Lobby</Text>
                                 <Box
@@ -564,7 +566,7 @@ class GameDash extends Component {
                                 justify="start"
                                 gap="8px"
                                 overflow = "show"
-                                pad={{"left":"5px","right":"5px"}}
+                                pad={{"left":"3px","right":"3px", "top":"3px"}}
                                 style={{overflowX:"none"}}
                             >
                                 <Scrollbars 

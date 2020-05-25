@@ -45,11 +45,6 @@
     cursor: pointer;
 }
 
-
-.lobby-player {
-
-}
-
 .lobby-player:hover {
     z-index: 6;
     border: 1px solid #fff9f1;

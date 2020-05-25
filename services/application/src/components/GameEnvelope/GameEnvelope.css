@@ -1,7 +1,7 @@
 .game-card-1, .game-card-1:hover {
-    z-index: 1;
+    z-index: 4;
 }
 
 .game-card-2, .game-card-2:hover {
-    z-index: 2;
+    z-index: 5;
 }
