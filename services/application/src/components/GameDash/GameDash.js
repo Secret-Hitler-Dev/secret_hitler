@@ -124,7 +124,7 @@ class GameDash extends Component {
             gameStarted: false,
             status: '',
             playerStatusIcons:{},
-            selectedPlayer:{}
+            selectedPlayer:{},
             log: [],
             hideLog: false,
             logHeight: "100%",
@@ -451,8 +451,8 @@ class GameDash extends Component {
             var select = this.getRandomArbitrary(0, playerNum - 1);
             
             this.props.data.players.forEach((item, i) => {
-                pIcons[item] = i == pres ? <GiEagleEmblem color="#fdde4e" />: i == dead ? <FaSkull color="#ddd" /> : null;
-                selectedPlayer[item] = i == select;
+                pIcons[item.playerTag] = i == pres ? <GiEagleEmblem color="#fdde4e" />: i == dead ? <FaSkull color="#ddd" /> : null;
+                selectedPlayer[item.playerTag] = i == select;
             });
 
             var testData = {
@@ -571,7 +571,7 @@ class GameDash extends Component {
                                     <Box
                                         width="100%"
                                         height={{"min":"30px","max":"30px"}}
-                                        background={this.state.selectedPlayer[item] ? orange: grey2}
+                                        background={this.state.selectedPlayer[item.playerTag] ? orange: grey2}
                                         round="3px"
                                         direction="row"
                                         align="center"
@@ -590,7 +590,7 @@ class GameDash extends Component {
                                         >
                                             {// player name
                                             }
-                                            <Text color={back} size="15px">{item}</Text>
+                                            <Text color={back} size="15px">{item.playerNickName}</Text>
                                         </Box>
                                         <Box
                                             width="35px"
@@ -604,7 +604,7 @@ class GameDash extends Component {
 
                                             {// secret role at the end of the game
                                             }
-                                            {this.state.playerStatusIcons[item]}
+                                            {this.state.playerStatusIcons[item.playerTag]}
                                         </Box>
                                     </Box>
                                 ))}

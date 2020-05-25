@@ -25,7 +25,7 @@ const customFocus = deepMerge(grommet, {
     }
 });
 
-const socket = io("http://localhost:8080/")
+const socket = io()
 
 class Game extends Component {
     _isMounted = false;
