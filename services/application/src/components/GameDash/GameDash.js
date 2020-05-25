@@ -1,6 +1,8 @@
-import React, { Component } from 'react';
+import React, { Component, useState, useEffect, useRef } from 'react';
 import { withRouter } from 'react-router-dom';
 import { Link, Route, Switch, BrowserRouter } from 'react-router-dom';
+
+import { Scrollbars, scrollToBottom } from 'react-custom-scrollbars';
 
 import "./GameDash.css";
 
@@ -11,16 +13,19 @@ import {
     Box, 
     Button, 
     Avatar, 
-    Image
+    Image,
+    Paragraph,
+    Layer
 } from 'grommet';
 
-import { StatusInfoSmall } from "grommet-icons";
+import { StatusInfoSmall, StatusGood,FormClose } from "grommet-icons";
 
 import { AiFillEye } from "react-icons/ai";
-import { FaHandPaper, FaSkull } from "react-icons/fa";
+import { FaHandPaper, FaSkull, FaCentercode } from "react-icons/fa";
 import { BsXCircleFill, BsCircle, BsPlayFill } from "react-icons/bs";
 import { GiCardDraw, GiCardDiscard, GiEagleEmblem, GiExitDoor } from "react-icons/gi";
 import { GrPowerCycle } from "react-icons/gr";
+import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 
 import { deepMerge } from 'grommet/utils';
 import ReactTooltip from "react-tooltip";
@@ -49,6 +54,17 @@ const customFocus = deepMerge(grommet, {
       }
     }
 });
+
+const GAME_EVENT = {
+    CHANCELLOR_NOMINATION : 'CHANCELLOR_NOMINATION',
+    ELECTION : 'ELECTION',
+    POLICY_ELECTED : 'POLICY_ELECTED',
+    POLICY_PEEK: 'POLICY_PEEK',
+    INVESTIGATE_LOYALTY: 'INVESTIGATE_LOYALTY',
+    SPECIAL_ELECTION: 'SPECIAL_ELECTION',
+    EXECUTION: 'EXECUTION',
+    GAME_WON: 'GAME_WON'
+}
 
 const GAMEPHASE = {
     CHANCELLOR_NOMINATION : 'CHANCELLOR_NOMINATION',
@@ -84,7 +100,8 @@ class GameDash extends Component {
     
 
     constructor(props) {
-        super(props)
+        super(props);
+        this.gameLogRef = React.createRef();
         this.state = {
             msg: '',
             reveal: 0,
@@ -103,7 +120,12 @@ class GameDash extends Component {
             votePicked: false,
             vote:VOTE.NONE,
             gameStarted: false,
-            status: ''
+            status: '',
+            log: [],
+            hideLog: false,
+            logHeight: "100%",
+            atLogBottom: false,
+            logPosition: 0
         };
         
     }
@@ -168,6 +190,240 @@ class GameDash extends Component {
         }
     }
 
+    addTestLog = () => {
+        var log = this.state.log;
+        log.push(
+            {
+                phase: GAME_EVENT.CHANCELLOR_NOMINATION,
+                president: 'Roomba64',
+                chancellor: 'El Momo'
+            }
+        );
+
+        this.setState({log:log});
+    }
+
+    hideLog = (vals) => {
+
+        const { scrollbars } = this.refs;
+
+        if (this.state.hideLog) {
+            this.setState({hideLog: false, logHeight: "100%"}, () => {
+                console.log("restoring log positon -> ", this.state.logPosition);
+                scrollbars.scrollTop(this.state.logPosition * (vals.scrollHeight - vals.clientHeight));
+            });
+        }
+        else {
+            this.setState({hideLog: true, logHeight: "0%", logPosition:vals.top});
+        }
+        
+    }
+
+    addToGameLog = () => {
+        var log = this.state.log;
+
+        var msgs = [
+
+            {
+                phase: GAME_EVENT.CHANCELLOR_NOMINATION,
+                president: 'Roomba64',
+                chancellor: 'El Momo'
+            },
+            {
+                phase: GAME_EVENT.ELECTION,
+                approvals: 7,
+                rejections: 1
+            },
+            {
+                phase: GAME_EVENT.POLICY_ELECTED,
+                president: 'Roomba64',
+                chancellor: 'El Momo',
+                fascist: true
+            },
+            {
+                phase: GAME_EVENT.POLICY_PEEK,
+                president: 'GucciKage'
+            },
+            
+            {
+                phase: GAME_EVENT.CHANCELLOR_NOMINATION,
+                president: 'GucciKage',
+                chancellor: 'mb'
+            },
+            {
+                phase: GAME_EVENT.ELECTION,
+                approvals: 4,
+                rejections: 3
+            },
+            {
+                phase: GAME_EVENT.POLICY_ELECTED,
+                president: 'GucciKage',
+                chancellor: 'mb',
+                fascist: true
+            },
+            {
+                phase: GAME_EVENT.INVESTIGATE_LOYALTY,
+                president: 'GucciKage',
+                investigated: 'Roomba64'
+            },
+
+            {
+                phase: GAME_EVENT.CHANCELLOR_NOMINATION,
+                president: 'venkman',
+                chancellor: 'angela'
+            },
+            {
+                phase: GAME_EVENT.ELECTION,
+                approvals: 6,
+                rejections: 1
+            },
+            {
+                phase: GAME_EVENT.POLICY_ELECTED,
+                president: 'venkman',
+                chancellor: 'angela',
+                fascist: true
+            },
+            {
+                phase: GAME_EVENT.SPECIAL_ELECTION,
+                president: 'venkman',
+                newPresident: 'GucciKage'
+            },
+
+            {
+                phase: GAME_EVENT.CHANCELLOR_NOMINATION,
+                president: 'GucciKage',
+                chancellor: 'Roomba64'
+            },
+            {
+                phase: GAME_EVENT.ELECTION,
+                approvals: 5,
+                rejections: 2
+            },
+            {
+                phase: GAME_EVENT.POLICY_ELECTED,
+                president: 'GucciKage',
+                chancellor: 'Roomba64',
+                fascist: true
+            },
+            {
+                phase: GAME_EVENT.EXECUTION,
+                president: 'GucciKage',
+                executed: 'radsouza'
+            },
+
+            {
+                phase: GAME_EVENT.CHANCELLOR_NOMINATION,
+                president: 'angela',
+                chancellor: 'venkman'
+            },
+            {
+                phase: GAME_EVENT.ELECTION,
+                approvals: 4,
+                rejections: 3
+            },
+            {
+                phase: GAME_EVENT.POLICY_ELECTED,
+                president: 'angela',
+                chancellor: 'venkman',
+                fascist: false
+            },
+
+            {
+                phase: GAME_EVENT.GAME_WON,
+                fascists: false
+            }
+        ];
+
+        this.setState({log:msgs});
+    }
+
+    processLog = (item, i) => {
+
+        const grey = "#474442";
+        const grey2 = "#79706d";
+        const yellow = "#fbb867";
+        const brightYellow = "#fdde4e";
+        const orange = "#f2664a";
+        const back = "	#fbb867";
+        const offWhite = "#fde0bc";
+        const blue = "#6d97b9";
+
+        const style = {"wordWrap": "break-word", "borderBottom":"0px solid #9a928f", "margin":"0px", "padding":"5px 10px 5px 10px", "width":"auto", "fontSize":"12px", "backgroundColor":grey, "borderRadius":"3px"};
+
+        const specialStyle = {"backgroundColor":offWhite, "fontSize":"12px", "marginLeft": "2px", "marginRight": "2px", "padding": "2px 5px 2px 5px", "borderRadius":"3px"};
+
+        const styleSpacing = {"margin":"0px 10px 0px 0px", "fontSize":"12px"};
+
+        const key="log-" + i + Date.now();
+        const d = new Date();
+        const h = ("0" + d.getHours()).slice(-2);
+        const m = ("0" + d.getMinutes()).slice(-2);
+        const s = ("0" + d.getSeconds()).slice(-2);
+
+        const index = h+" : "+m+" : "+s;
+
+        var event = <span></span>;
+
+        switch(item.phase) {
+            case GAME_EVENT.CHANCELLOR_NOMINATION:
+                event = <Paragraph key={key} border="all" style={style} color={offWhite}>
+                    President <Text color={grey} style={specialStyle}>{item.president}</Text> picks <Text color={grey} style={specialStyle}>{item.chancellor}</Text> as chancellor.
+                </Paragraph>;
+                break;
+            case GAME_EVENT.ELECTION:
+                event = <Paragraph key={key} border="all" style={style} color={offWhite}>
+                    Election <Text color={grey} style={specialStyle}>{item.approvals > item.rejections ? "passed" : "failed"}</Text> with <Text color={blue}>{item.approvals}</Text> approval(s) and <Text color={orange}>{item.rejections}</Text> rejection(s).
+                </Paragraph>;
+                break;
+            case GAME_EVENT.EXECUTION:
+                event = <Paragraph key={key} border="all" style={style} color={offWhite}>
+                   President <Text color={grey} style={specialStyle}>{item.president}</Text> executed <Text color={"#000"} style={specialStyle}>{item.executed}</Text>.
+                </Paragraph>;
+                break;
+            case GAME_EVENT.INVESTIGATE_LOYALTY:
+                event = <Paragraph key={key} border="all" style={style} color={offWhite}>
+                    President <Text color={grey} style={specialStyle}>{item.president}</Text> investigated <Text color={grey} style={specialStyle}>{item.investigated}</Text>.
+                </Paragraph>;
+                break;
+            case GAME_EVENT.POLICY_ELECTED:
+                event = <Paragraph key={key} border="all" style={style} color={offWhite}>
+                    President <Text color={grey} style={specialStyle}>{item.president}</Text> and Chancellor <Text color={grey} style={specialStyle}>{item.chancellor}</Text> elected a <Text color={item.fascist ? orange: blue} size="15px">{item.fascist ? "FASCIST" : "LIBERAL"}</Text> policy.
+                </Paragraph>;
+                break;
+            case GAME_EVENT.POLICY_PEEK:
+                event = <Paragraph key={key} border="all" style={style} color={offWhite}>
+                    President <Text color={grey} style={specialStyle}>{item.president}</Text> peeked at the next 3 policies.
+                </Paragraph>;
+                break;
+            case GAME_EVENT.GAME_WON:
+                event = <Paragraph key={key} border="all" style={style} color={offWhite}>
+                   <Text color={item.fascist ? orange: blue} size="16px">{item.fascist ? "FASCISTS" : "LIBERALS"}</Text> win.
+                </Paragraph>;
+                break;
+            case GAME_EVENT.SPECIAL_ELECTION:
+                event = <Paragraph key={key} border="all" style={style} color={offWhite}>
+                    President <Text color={grey} style={specialStyle}>{item.president}</Text> called a special election with <Text color={grey} style={specialStyle}>{item.newPresident}</Text> as the next President.
+                </Paragraph>;
+                break;
+            default:
+                event = <Paragraph key={key} border="all" style={style} color={offWhite}>
+                    {item.message}
+                </Paragraph>;
+                break;
+            
+        }
+
+        return <Box direction="row" width="auto" height="auto">
+            <Box width={{"min":"90px"}} style={{"padding":"5px 0px 5px 10px"}}><Text color={offWhite} style={styleSpacing}>{index}.</Text></Box>
+            
+            <Box width="100%">
+                {event}
+            </Box>
+            
+
+        </Box>
+    }
+
     componentWillUnmount() {
         this._isMounted = false;
     }
@@ -175,6 +431,7 @@ class GameDash extends Component {
     componentDidMount() {
         this._isMounted = true;
         if (this._isMounted) {
+            this.addToGameLog();
             this.setState(this.props.data);
             var playerNum = this.props.data.players.length;
 
@@ -225,6 +482,8 @@ class GameDash extends Component {
         const back = "	#fbb867";
         const offWhite = "#fde0bc";
         const blue = "#6d97b9";
+
+        
 
         return (
             <Grommet 
@@ -301,7 +560,7 @@ class GameDash extends Component {
                             justify="center"
                             round="10px"
                         >
-                            {// draw pile, number of faschists, election tracker, liberals, discard pile
+                            {// draw pile, number of fascists, election tracker, liberals, discard pile
                             }
                             <Box
                                 direction="row"
@@ -587,11 +846,175 @@ class GameDash extends Component {
                         direction="column"
                         align="center"
                         justify="between"
-                        background={grey}
+                        background="none"
                         round="xsmall"
+                        pad="small"
+                        background={grey}
                     >
                         {// CHAT LOG AND ALLY INFORMATION
                         }
+                        <Box
+                            width="100%"
+                            height="34%"
+                            background={grey}
+                            round="5px"
+                            overflow="auto"
+                            direction="column"
+                            align="center"
+                            justify="start"
+                            gap="0px"
+                            style={{"border": "0px solid " + grey2}}
+                        >
+                            {// ally info
+                            }
+                        </Box>
+                        
+                        
+                        <Box
+                            width="99%"
+                            height="65%"
+                            background={grey}
+                            round="5px"
+                            overflow="auto"
+                            direction="column"
+                            align="center"
+                            justify="end"
+                            gap="0px"
+                            ref = {this.gameLogRef}
+                        >
+                            
+                            {// chat log
+                            }
+                            <Box
+                                width="100%"
+                                direction="row"
+                                align="center"
+                                justify="between"
+                                background={offWhite}
+                                style={{"border": "1px solid " + grey2}}
+                            >
+                                <Box 
+                                    width="50px" 
+                                    height={{"min":"1px"}} 
+                                    pad="5px" 
+                                    data-tip data-for="logCount"
+                                    style={{fontSize:"15px", textAlign:"center"}}
+                                >
+                                    {this.state.log.length}
+
+                                    <ReactTooltip 
+                                        id="logCount" 
+                                        type='info' 
+                                        backgroundColor={offWhite} 
+                                        textColor={grey} 
+                                        effect="solid" 
+                                        place="left" 
+                                        className="tooltop-round policy-tool-tip"
+                                    >
+                                            GAME LOG COUNT
+                                    </ReactTooltip>
+                                </Box>
+                                <Text color={grey} style={{"backgroundColor":offWhite,"width":"auto", "textAlign": "center"}}>Game Log</Text>
+                                <Box 
+                                    onClick={()=>{
+
+                                        const { scrollbars } = this.refs;
+                                        var vals = scrollbars.getValues();
+                                        console.log("hide event values ->", vals);
+                                        this.hideLog(vals);
+                                    }}
+
+                                    style={{
+                                        "width":"50px",
+                                        background:"none",
+                                        color:{offWhite},
+                                        display:"flex",
+                                        justifyContent:"center",
+                                        alignItems:"center",
+                                        margin:"5px",
+                                        padding:"5px",
+                                        border:"0px solid #999"
+                                    }}
+                                    primary
+                                >
+                                    {this.state.hideLog ? <IoIosArrowUp color={grey} />
+                                    :<IoIosArrowDown color={grey} />}
+                                </Box>
+                            </Box>
+                            <Box
+                                width="100%"
+                                height={this.state.logHeight}
+                                overflow="auto"
+                                direction="column"
+                                align="center"
+                                justify="start"
+                                gap="xsmall"
+                                style={{"border": "1px solid " + grey2}}
+                            >
+                                <Scrollbars 
+                                    style={{ width: "100%", height: "100%" }}
+                                    onUpdate={(event) => {}}
+                                    ref="scrollbars"
+                                    universal={true}
+                                    onUpdate={(event) => {
+                                        console.log("update called -> ", event);
+                                        if (event.top > 0.99) {
+                                            if (!this.state.atLogBottom){
+                                                this.setState({atLogBottom:true}, () => {console.log("botom reached")});
+                                            }
+                                        }
+                                        else {
+                                            if (this.state.atLogBottom){
+                                                this.setState({atLogBottom:false}, () => {console.log("not at bottom")});
+                                            }
+                                        }
+                                    }}
+                                >
+                                        <Box width="2px" height="5px"></Box>
+                                        {this.state.log.map((item, i) => (
+                                            this.processLog(item, i)
+                                        ))}
+                                        <Box width="2px" height="5px"></Box>
+                                                                            
+                                </Scrollbars>
+                                
+                                
+                            </Box>
+  
+                            <Box
+                                width="auto"
+                                height="auto"
+                                style={{
+                                    position:"fixed",
+                                    zIndex: (!this.state.atLogBottom && !this.state.hideLog) ? 2 : -1,
+                                    opacity:(!this.state.atLogBottom && !this.state.hideLog) ? 1 : 0,
+                                }}
+                                pad="10px"
+                            >
+                                {
+                                    //// const { scrollbars } = this.refs;
+                                        // scrollbars.scrollToBottom();
+                                        //(!this.state.atLogBottom && !this.state.hideLog) ? "-100px" : "0px"
+                                }
+                                <Box
+                                    direction="row"
+                                    align="center"
+                                    gap="small"
+                                    justify="center"
+                                    round="medium"
+                                    pad="5px"
+                                    background="status-critical"
+                                    width="65px"
+                                    onClick={()=>{
+                                        const { scrollbars } = this.refs;
+                                        scrollbars.scrollToBottom();
+                                    }}
+                                    className="policy-tool-tip policy"
+                                >
+                                    <IoIosArrowDown color={offWhite} style={{fontSize:"18px"}} />
+                                </Box>
+                            </Box> 
+                        </Box>
                     </Box>
                 </Box>
 
