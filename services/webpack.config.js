@@ -60,7 +60,14 @@ module.exports = {
     devServer: {
         historyApiFallback: true,
         proxy: {
-            '/': 'http://localhost:8080'
+            '/': {
+                target: 'http://localhost:8080',
+                pathRewrite: {"^/": ""}
+            },
+            '/socket.io': {
+                target: 'http://localhost:8080',
+                ws: true
+            }
         }
     },
     plugins: [htmlWebpackPlugin]
