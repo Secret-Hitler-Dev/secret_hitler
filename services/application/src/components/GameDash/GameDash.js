@@ -14,17 +14,18 @@ import {
     Button, 
     Avatar, 
     Image,
-    Paragraph
+    Paragraph,
+    Layer
 } from 'grommet';
 
-import { StatusInfoSmall } from "grommet-icons";
+import { StatusInfoSmall, StatusGood,FormClose } from "grommet-icons";
 
 import { AiFillEye } from "react-icons/ai";
 import { FaHandPaper, FaSkull, FaCentercode } from "react-icons/fa";
 import { BsXCircleFill, BsCircle, BsPlayFill } from "react-icons/bs";
 import { GiCardDraw, GiCardDiscard, GiEagleEmblem, GiExitDoor } from "react-icons/gi";
 import { GrPowerCycle } from "react-icons/gr";
-import { IoIosArrowDown } from "react-icons/io";
+import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 
 import { deepMerge } from 'grommet/utils';
 import ReactTooltip from "react-tooltip";
@@ -99,7 +100,8 @@ class GameDash extends Component {
     
 
     constructor(props) {
-        super(props)
+        super(props);
+        this.gameLogRef = React.createRef();
         this.state = {
             msg: '',
             reveal: 0,
@@ -119,7 +121,11 @@ class GameDash extends Component {
             vote:VOTE.NONE,
             gameStarted: false,
             status: '',
-            log: []
+            log: [],
+            hideLog: false,
+            logHeight: "100%",
+            atLogBottom: false,
+            logPosition: 0
         };
         
     }
@@ -195,6 +201,22 @@ class GameDash extends Component {
         );
 
         this.setState({log:log});
+    }
+
+    hideLog = (vals) => {
+
+        const { scrollbars } = this.refs;
+
+        if (this.state.hideLog) {
+            this.setState({hideLog: false, logHeight: "100%"}, () => {
+                console.log("restoring log positon -> ", this.state.logPosition);
+                scrollbars.scrollTop(this.state.logPosition * (vals.scrollHeight - vals.clientHeight));
+            });
+        }
+        else {
+            this.setState({hideLog: true, logHeight: "0%", logPosition:vals.top});
+        }
+        
     }
 
     addToGameLog = () => {
@@ -310,7 +332,6 @@ class GameDash extends Component {
                 phase: GAME_EVENT.GAME_WON,
                 fascists: false
             }
-            
         ];
 
         this.setState({log:msgs});
@@ -410,8 +431,6 @@ class GameDash extends Component {
     componentDidMount() {
         this._isMounted = true;
         if (this._isMounted) {
-            const { scrollbars } = this.refs;
-            console.log("scrollbars --- ", scrollbars);
             this.addToGameLog();
             this.setState(this.props.data);
 
@@ -827,16 +846,29 @@ class GameDash extends Component {
                         direction="column"
                         align="center"
                         justify="between"
-                        background={grey}
+                        background="none"
                         round="xsmall"
                         pad="small"
+                        background={grey}
                     >
                         {// CHAT LOG AND ALLY INFORMATION
                         }
-                        <Box>
+                        <Box
+                            width="100%"
+                            height="34%"
+                            background={grey}
+                            round="5px"
+                            overflow="auto"
+                            direction="column"
+                            align="center"
+                            justify="start"
+                            gap="0px"
+                            style={{"border": "0px solid " + grey2}}
+                        >
                             {// ally info
                             }
                         </Box>
+                        
                         
                         <Box
                             width="99%"
@@ -846,10 +878,11 @@ class GameDash extends Component {
                             overflow="auto"
                             direction="column"
                             align="center"
-                            justify="start"
+                            justify="end"
                             gap="0px"
-                            style={{"border": "1px solid " + grey2}}
+                            ref = {this.gameLogRef}
                         >
+                            
                             {// chat log
                             }
                             <Box
@@ -858,7 +891,7 @@ class GameDash extends Component {
                                 align="center"
                                 justify="between"
                                 background={offWhite}
-
+                                style={{"border": "1px solid " + grey2}}
                             >
                                 <Box 
                                     width="50px" 
@@ -881,54 +914,106 @@ class GameDash extends Component {
                                             GAME LOG COUNT
                                     </ReactTooltip>
                                 </Box>
-                                <Text color={grey} style={{"backgroundColor":offWhite,"width":"auto", "padding":"10px 0px 10px 0px", "textAlign": "center", "borderBottom": "1px solid " + grey2}}>Game Log</Text>
-                                <Button 
+                                <Text color={grey} style={{"backgroundColor":offWhite,"width":"auto", "textAlign": "center"}}>Game Log</Text>
+                                <Box 
                                     onClick={()=>{
 
                                         const { scrollbars } = this.refs;
-                                        scrollbars.scrollToBottom();
-
+                                        var vals = scrollbars.getValues();
+                                        console.log("hide event values ->", vals);
+                                        this.hideLog(vals);
                                     }}
 
                                     style={{
                                         "width":"50px",
-                                        background:"#f76",
+                                        background:"none",
                                         color:{offWhite},
                                         display:"flex",
                                         justifyContent:"center",
                                         alignItems:"center",
                                         margin:"5px",
                                         padding:"5px",
-                                        border:"1px solid #999"
+                                        border:"0px solid #999"
                                     }}
                                     primary
                                 >
-                                    <IoIosArrowDown color={offWhite} />
-                                </Button>
+                                    {this.state.hideLog ? <IoIosArrowUp color={grey} />
+                                    :<IoIosArrowDown color={grey} />}
+                                </Box>
                             </Box>
                             <Box
                                 width="100%"
-                                height="100%"
+                                height={this.state.logHeight}
                                 overflow="auto"
                                 direction="column"
                                 align="center"
                                 justify="start"
                                 gap="xsmall"
+                                style={{"border": "1px solid " + grey2}}
                             >
                                 <Scrollbars 
                                     style={{ width: "100%", height: "100%" }}
                                     onUpdate={(event) => {}}
                                     ref="scrollbars"
+                                    universal={true}
+                                    onUpdate={(event) => {
+                                        console.log("update called -> ", event);
+                                        if (event.top > 0.99) {
+                                            if (!this.state.atLogBottom){
+                                                this.setState({atLogBottom:true}, () => {console.log("botom reached")});
+                                            }
+                                        }
+                                        else {
+                                            if (this.state.atLogBottom){
+                                                this.setState({atLogBottom:false}, () => {console.log("not at bottom")});
+                                            }
+                                        }
+                                    }}
                                 >
-                                    <Box width="2px" height="5px"></Box>
-                                    {this.state.log.map((item, i) => (
-                                        this.processLog(item, i)
-                                    ))}
-                                    <Box width="2px" height="5px"></Box>
-                                    
+                                        <Box width="2px" height="5px"></Box>
+                                        {this.state.log.map((item, i) => (
+                                            this.processLog(item, i)
+                                        ))}
+                                        <Box width="2px" height="5px"></Box>
+                                                                            
                                 </Scrollbars>
                                 
+                                
                             </Box>
+  
+                            <Box
+                                width="auto"
+                                height="auto"
+                                style={{
+                                    position:"fixed",
+                                    zIndex: (!this.state.atLogBottom && !this.state.hideLog) ? 2 : -1,
+                                    opacity:(!this.state.atLogBottom && !this.state.hideLog) ? 1 : 0,
+                                }}
+                                pad="10px"
+                            >
+                                {
+                                    //// const { scrollbars } = this.refs;
+                                        // scrollbars.scrollToBottom();
+                                        //(!this.state.atLogBottom && !this.state.hideLog) ? "-100px" : "0px"
+                                }
+                                <Box
+                                    direction="row"
+                                    align="center"
+                                    gap="small"
+                                    justify="center"
+                                    round="medium"
+                                    pad="5px"
+                                    background="status-critical"
+                                    width="65px"
+                                    onClick={()=>{
+                                        const { scrollbars } = this.refs;
+                                        scrollbars.scrollToBottom();
+                                    }}
+                                    className="policy-tool-tip policy"
+                                >
+                                    <IoIosArrowDown color={offWhite} style={{fontSize:"18px"}} />
+                                </Box>
+                            </Box> 
                         </Box>
                     </Box>
                 </Box>
