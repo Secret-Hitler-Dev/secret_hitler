@@ -565,6 +565,8 @@ class GameDash extends Component {
                                 gap="8px"
                                 overflow = "show"
                                 pad={{"left":"5px","right":"5px"}}
+                                overflow="auto"
+                                style={{overflowX:"none"}}
                             >
                                 {this.props.data.players.map((item, i) => (
                                     
