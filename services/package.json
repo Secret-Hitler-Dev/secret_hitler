@@ -30,7 +30,7 @@
         "https": "^1.0.0",
         "jsonwebtoken": "^8.5.1",
         "mongodb": "^3.5.5",
-        "mongoose": "^5.9.15",
+        "mongoose": "^5.9.17",
         "nodemailer": "^6.4.6",
         "path": "^0.12.7",
         "polished": "^3.6.3",
