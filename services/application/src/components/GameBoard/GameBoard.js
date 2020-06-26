@@ -98,7 +98,6 @@ class GameBoard extends Component {
             var msg = '';
 
             if (this.props.data.fascist) {
-                console.log(this.props.data);
                 msg = this.props.data.playerNum >= 9 ? "9 OR 10 PLAYERS: PLAYING WITH 3 FASCISTS AND HITLER, HITLER DOESN'T KNOW WHO THE FASCISTS ARE." : 
                 this.props.data.playerNum >= 7 ? "7 OR 8 PLAYERS: PLAYING WITH 2 FASCISTS AND HITLER, HITLER DOESN'T KNOW WHO THE FASCISTS ARE." : "5 OR 6 PLAYERS: PLAYING WITH 1 FASCISTS AND HITLER, HITLER KNOWS WHO THE FASCIST IS."; 
 
@@ -286,7 +285,7 @@ class GameBoard extends Component {
                     >
                         {this.state.gameCards.map((item, i) => (
                             
-                            <GameCard id={"card" + item.id + i} data={item} />
+                            <GameCard key={"card" + item.id + i} data={item} />
                         ))}
                     </Box>
                     <Text width={widthText + "px"} height={heightText + "px"} size="11px" color={this.props.data.fascist ? orange : blue} > {this.state.msg}</Text>

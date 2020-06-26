@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { Link, Route, Switch, BrowserRouter } from 'react-router-dom';
-import io from "socket.io-client";
 
 
 import "./Dashboard.css";
@@ -25,7 +24,6 @@ import { AiFillEdit, AiOutlineUsergroupAdd } from "react-icons/ai";
 
 import {Rules} from 'Components';
 
-const socket = io("http://localhost:8080/")
 
 class Dashboard extends Component {
     
@@ -52,35 +50,17 @@ class Dashboard extends Component {
     }
 
     joinGame = () => {
-        socket.emit('playerJoin', this.props.data.playerTag, this.state.roomCode);
+        this.props.data.setInfo(this.state.roomCode, this.props.data.playerTag, this.props.data.playerNickName, false)
+        this.props.history.push('/game');
     }
 
     createGame = () => {
-        console.log("CREATE GAME!!!");
+        this.props.data.setInfo(this.state.roomCode, this.props.data.playerTag, this.props.data.playerNickName, true)
+        this.props.history.push('/game');
     }
 
     componentDidMount() {
         this.setState(this.props.data);
-
-        socket.on("joinResult", (result) => {
-            if (result.status === "error") {
-                var rc = this.state.roomCode;
-                this.setState({error:result.message});
-            } else {
-                if (result.status === "success") {
-                    console.log("redirect to game lobby: " + result.data)
-                } else {
-                    this.setState({
-                        error: true
-                    });
-                }
-            }
-            console.log("yeeaa buddy")
-            this.setState({
-                joining: false
-            });
-        });
-
     }
     
 
@@ -277,4 +257,4 @@ class Dashboard extends Component {
     
 }
 
-export default Dashboard;
+export default withRouter(Dashboard);

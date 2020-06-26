@@ -87,6 +87,7 @@ class Login extends Component {
                 this.setState({error: data.msg});
             }
             else {
+                data.playerNickName = data.playerTag;
                 this.props.data.login(data);
                 this.props.history.push('/');
             }
