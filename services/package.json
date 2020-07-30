@@ -31,7 +31,7 @@
         "jsonwebtoken": "^8.5.1",
         "mongodb": "^3.5.9",
         "mongoose": "^5.9.26",
-        "nodemailer": "^6.4.10",
+        "nodemailer": "^6.4.11",
         "path": "^0.12.7",
         "polished": "^3.6.5",
         "react": "^16.13.1",
