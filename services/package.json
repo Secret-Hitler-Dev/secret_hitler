@@ -40,7 +40,7 @@
         "react-icons": "^3.10.0",
         "react-router-dom": "^5.2.0",
         "react-scripts": "^3.4.2",
-        "react-tooltip": "^4.2.7",
+        "react-tooltip": "^4.2.8",
         "request": "^2.88.2",
         "request-promise": "^4.2.6",
         "shortid": "^2.2.15",
