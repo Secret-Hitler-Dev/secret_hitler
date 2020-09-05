@@ -55,7 +55,7 @@
         "@babel/polyfill": "^7.11.5",
         "@babel/preset-env": "^7.11.0",
         "@babel/preset-react": "^7.10.4",
-        "@babel/register": "^7.10.5",
+        "@babel/register": "^7.11.5",
         "@types/react": "^16.9.49",
         "babel-jest": "^26.3.0",
         "babel-loader": "^8.0.6",
