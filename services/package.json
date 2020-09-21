@@ -33,7 +33,7 @@
         "mongoose": "^5.10.5",
         "nodemailer": "^6.4.11",
         "path": "^0.12.7",
-        "polished": "^3.6.6",
+        "polished": "^3.6.7",
         "react": "^16.13.1",
         "react-custom-scrollbars": "^4.2.1",
         "react-dom": "^16.13.1",
