@@ -67,7 +67,7 @@
         "enzyme": "^3.11.0",
         "enzyme-adapter-react-16": "^1.15.5",
         "jest": "^26.5.3",
-        "jest-cli": "^26.5.3",
+        "jest-cli": "^26.6.0",
         "jest-css-modules-transform": "^4.0.1",
         "jest-fetch-mock": "^3.0.3",
         "mocha": "^8.2.0",
