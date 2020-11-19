@@ -45,7 +45,7 @@
         "request-promise": "^4.2.6",
         "shortid": "^2.2.16",
         "socket.io": "^3.0.3",
-        "socket.io-client": "^3.0.2",
+        "socket.io-client": "^3.0.3",
         "styled-components": "^5.2.1",
         "uniqid": "^5.2.0"
     },
