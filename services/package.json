@@ -71,7 +71,7 @@
         "jest-css-modules-transform": "^4.0.1",
         "jest-fetch-mock": "^3.0.3",
         "mocha": "^8.2.1",
-        "mongodb-memory-server": "^6.9.2",
+        "mongodb-memory-server": "^6.9.3",
         "morgan": "^1.10.0",
         "react-hot-loader": "^4.13.0",
         "style-loader": "^2.0.0",
