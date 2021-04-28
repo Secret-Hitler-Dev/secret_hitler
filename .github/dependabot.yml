@@ -1,0 +1,29 @@
+version: 2
+updates:
+- package-ecosystem: npm
+  directory: "/services"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
+  target-branch: dependencies
+  labels:
+  - automerge
+  ignore:
+  - dependency-name: core-js
+    versions:
+    - 3.10.2
+  - dependency-name: "@babel/register"
+    versions:
+    - 7.13.14
+  - dependency-name: "@babel/core"
+    versions:
+    - 7.13.13
+  - dependency-name: jest-css-modules-transform
+    versions:
+    - 4.2.0
+  - dependency-name: mongoose
+    versions:
+    - 5.11.19
+  - dependency-name: mocha
+    versions:
+    - 8.3.0
